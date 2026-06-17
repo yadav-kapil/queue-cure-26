@@ -12,7 +12,7 @@ import doctorConsultation from "../../assets/doctor-consultation.png";
 
 const Hero = () => {
   return (
-    <main className="px-4 pb-2 sm:px-6 lg:px-8">
+    <main id="home" className="px-4 pb-2 pt-20 sm:px-6 lg:px-8 ">
       <section className="relative mx-auto mt-5 max-w-7xl overflow-hidden rounded-[34px] bg-[radial-gradient(circle_at_76%_22%,#46b7ff_0%,#356df4_38%,#3541c9_100%)] px-6 pt-10 pb-4 text-white shadow-[0_30px_90px_rgba(21,42,133,0.24)] sm:rounded-[42px] sm:px-10 lg:min-h-[640px] lg:px-14 lg:pt-12 lg:pb-2">
         <div className="relative grid gap-10 lg:grid-cols-[1.36fr_0.64fr] lg:items-end">
           {/* Left Column (Content & Cards) */}
@@ -153,36 +153,35 @@ const Hero = () => {
               </div>
 
               {/* Card 3: Diagnosis Success */}
-<div className="flex h-36 flex-col justify-between rounded-2xl bg-white p-2.5 text-[#0d1321] shadow-[0_18px_50px_rgba(15,23,42,0.12)] sm:h-44 sm:p-4 lg:h-52">
-  <div className="flex items-center justify-between">
-    <span className="inline-flex rounded-full bg-slate-100 px-2 py-1 text-[7px] font-semibold text-slate-600 sm:text-[10px]">
-      Analytics
-    </span>
+              <div className="flex h-36 flex-col justify-between rounded-2xl bg-white p-2.5 text-[#0d1321] shadow-[0_18px_50px_rgba(15,23,42,0.12)] sm:h-44 sm:p-4 lg:h-52">
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex rounded-full bg-slate-100 px-2 py-1 text-[7px] font-semibold text-slate-600 sm:text-[10px]">
+                    Analytics
+                  </span>
 
-    <span className="hidden rounded-full bg-emerald-50 px-2 py-1 text-[9px] font-semibold text-emerald-600 sm:inline-flex">
-      +12%
-    </span>
-  </div>
+                  <span className="hidden rounded-full bg-emerald-50 px-2 py-1 text-[9px] font-semibold text-emerald-600 sm:inline-flex">
+                    +12%
+                  </span>
+                </div>
 
-  <div className="flex items-center justify-center">
-    <div className="grid size-12 place-items-center rounded-full bg-[conic-gradient(#315cf0_0_96%,#dbe4ff_96%_100%)] sm:size-16">
-      <div className="grid size-8 place-items-center rounded-full bg-white text-[10px] font-extrabold sm:size-11 sm:text-sm">
-        96%
-      </div>
-    </div>
-  </div>
+                <div className="flex items-center justify-center">
+                  <div className="grid size-12 place-items-center rounded-full bg-[conic-gradient(#315cf0_0_96%,#dbe4ff_96%_100%)] sm:size-16">
+                    <div className="grid size-8 place-items-center rounded-full bg-white text-[10px] font-extrabold sm:size-11 sm:text-sm">
+                      96%
+                    </div>
+                  </div>
+                </div>
 
-  <div className="text-center">
-    <p className="text-[10px] font-bold sm:text-xs">
-      Successful Diagnosis
-    </p>
+                <div className="text-center">
+                  <p className="text-[10px] font-bold sm:text-xs">
+                    Successful Diagnosis
+                  </p>
 
-    <p className="mt-0.5 hidden text-[9px] text-slate-500 sm:block">
-      Accuracy across consultations
-    </p>
-  </div>
+                  <p className="mt-0.5 hidden text-[9px] text-slate-500 sm:block">
+                    Accuracy across consultations
+                  </p>
+                </div>
               </div>
-              
             </div>
           </div>
 

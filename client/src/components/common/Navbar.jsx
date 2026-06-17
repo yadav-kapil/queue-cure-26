@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { NavLink } from "react-router";
 import {
   FiArrowRight,
   FiCalendar,
@@ -6,21 +7,47 @@ import {
   FiMenu,
   FiPlus,
   FiX,
+  FiHome,
 } from "react-icons/fi";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const navLinks = [
+    { label: "Home", href: "#home", icon: FiHome },
     { label: "Features", href: "#features", icon: FiGrid },
     { label: "How It Works", href: "#how-it-works", icon: FiCalendar },
-    { label: "Pricing", href: "#pricing", icon: FiPlus },
     { label: "Contact", href: "#contact", icon: FiArrowRight },
   ];
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="relative z-30 px-4 pt-3 sm:px-6 lg:px-8">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between rounded-[24px] bg-white/92 px-5 py-3 shadow-[0_20px_60px_rgba(15,23,42,0.06)] backdrop-blur md:px-7">
+    <header
+      className={`fixed top-0 left-0 right-0 z-30 transition-all duration-300 ${
+        isScrolled
+          ? "px-0 pt-0"
+          : "px-4 pt-3 sm:px-6 lg:px-8"
+      }`}
+    >
+      <nav
+        className={`mx-auto flex items-center justify-between transition-all duration-300 ${
+          isScrolled
+            ? "max-w-full rounded-none bg-white/95 px-6 py-3.5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] border-b border-slate-100/80 backdrop-blur-md md:px-12"
+            : "max-w-7xl rounded-[24px] bg-white/92 px-5 py-3 shadow-[0_20px_60px_rgba(15,23,42,0.06)] backdrop-blur-md md:px-7"
+        }`}
+      >
         <a
           href="/"
           className="flex items-center gap-2.5"
@@ -46,8 +73,8 @@ const Navbar = () => {
           ))}
         </div>
 
-        <a
-          href="#login"
+        <NavLink
+          to="/auth/login"
           className="group hidden items-center gap-3 rounded-full bg-[#090d15] py-2 pl-5 pr-2 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-all duration-300 hover:bg-[#3e444f] md:inline-flex"
         >
           {" "}
@@ -56,7 +83,7 @@ const Navbar = () => {
             {" "}
             <FiArrowRight className="text-base" />{" "}
           </span>{" "}
-        </a>
+        </NavLink>
 
         <button
           type="button"
@@ -103,8 +130,8 @@ const Navbar = () => {
               })}
             </div>
 
-            <a
-              href="#login"
+            <NavLink
+              to="/auth/login"
               className="mt-6 flex items-center justify-between rounded-full bg-[#090d15] py-3.5 pl-6 pr-4 text-[15px] font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-[#171d29] active:scale-[0.98]"
               onClick={() => setIsOpen(false)}
             >
@@ -112,7 +139,7 @@ const Navbar = () => {
               <span className="grid size-8 place-items-center rounded-full bg-white text-[#090d15]">
                 <FiArrowRight />
               </span>
-            </a>
+            </NavLink>
           </div>
         </>
       )}

@@ -2,6 +2,10 @@
 
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 html,
 body {
   overflow-x: hidden;
@@ -41,5 +45,97 @@ body {
 
 .animate-fade-in {
   animation: fadeIn 0.25s ease-out forwards;
+}
+
+/* --- Features Section Animations --- */
+
+/* 1. Live Queue Number Animation */
+@keyframes slideUpNum {
+  0% { transform: translateY(8px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.animate-slide-up-num {
+  animation: slideUpNum 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 2. Real-Time Sync Connection Packets */
+@keyframes dbGlow {
+  0%, 100% { box-shadow: 0 0 0px rgba(49, 92, 240, 0.2); }
+  50% { box-shadow: 0 0 16px rgba(49, 92, 240, 0.7); }
+}
+@keyframes flowRightMobile {
+  0% { left: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+.animate-db-glow {
+  animation: dbGlow 2.5s ease-in-out infinite;
+}
+.animate-flow-right-mobile {
+  animation: flowRightMobile 1.6s infinite linear;
+}
+
+/* 3. Smart Wait Time Progress Gauge & Card Effects */
+.card-glow-active {
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.25) !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+}
+@keyframes pulseScale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.025); }
+}
+.animate-card-pulse {
+  animation: pulseScale 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes scaleFadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-scale-fade-in {
+  animation: scaleFadeIn 0.4s ease-out forwards;
+}
+
+/* 4. Instant Notifications Gentle Floating */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* 5. Doctor Dashboard Sparkline Chart Bars */
+@keyframes growBar1 { 0%, 100% { height: 35%; } 50% { height: 80%; } }
+@keyframes growBar2 { 0%, 100% { height: 60%; } 50% { height: 25%; } }
+@keyframes growBar3 { 0%, 100% { height: 20%; } 50% { height: 95%; } }
+@keyframes growBar4 { 0%, 100% { height: 75%; } 50% { height: 40%; } }
+@keyframes growBar5 { 0%, 100% { height: 45%; } 50% { height: 85%; } }
+@keyframes growBar6 { 0%, 100% { height: 85%; } 50% { height: 30%; } }
+
+.animate-grow-1 { animation: growBar1 3s ease-in-out infinite; }
+.animate-grow-2 { animation: growBar2 3.4s ease-in-out infinite; }
+.animate-grow-3 { animation: growBar3 2.8s ease-in-out infinite; }
+.animate-grow-4 { animation: growBar4 3.2s ease-in-out infinite; }
+.animate-grow-5 { animation: growBar5 2.6s ease-in-out infinite; }
+.animate-grow-6 { animation: growBar6 3.6s ease-in-out infinite; }
+
+/* 6. Dashboard Queue Table Row Animation */
+@keyframes fadeInRow {
+  from { opacity: 0.3; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-row {
+  animation: fadeInRow 1s ease-out forwards;
+}
+
+/* Waving Hand Animation */
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  20%, 60% { transform: rotate(-12deg); }
+  40%, 80% { transform: rotate(16deg); }
+}
+.animate-wave {
+  animation: wave 2.2s infinite ease-in-out;
 }
 
