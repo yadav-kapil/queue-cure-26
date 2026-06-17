@@ -252,12 +252,12 @@ const Login = () => {
           <div className="pt-2">
             <p className="text-[10px] text-slate-400 font-bold">
               Don't have an account?{" "}
-              <a
-                href="#signup"
+              <NavLink
+                to="/auth/signup"
                 className="text-[#315cf0] font-black hover:underline"
               >
                 Create Account
-              </a>
+              </NavLink>
             </p>
           </div>
         </div>
