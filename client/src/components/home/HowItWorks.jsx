@@ -11,19 +11,19 @@ import {
 } from "react-icons/fi";
 
 const HowItWorks = () => {
-  // Animation loop state for the 4 workflow steps
+  
   const [activeStep, setActiveStep] = useState(0);
 
-  // Simulation states inside step mockups
+  
   const [patientName, setPatientName] = useState("");
   const [patientPhone, setPatientPhone] = useState("");
   const [step1BtnText, setStep1BtnText] = useState("Generate Token");
-  const [generatedToken, setGeneratedToken] = useState(null); // null, then 33
+  const [generatedToken, setGeneratedToken] = useState(null); 
   const [whatsappReceived, setWhatsappReceived] = useState(false);
   const [doctorToken, setDoctorToken] = useState(23);
 
   useEffect(() => {
-    // 11.2-second global step loop (2.8s per step)
+    
     const stepInterval = setInterval(() => {
       setActiveStep((prev) => (prev + 1) % 4);
     }, 2800);
@@ -31,11 +31,11 @@ const HowItWorks = () => {
     return () => clearInterval(stepInterval);
   }, []);
 
-  // Sync specific animations with the activeStep
+  
   useEffect(() => {
     if (activeStep === 0) {
-      // Step 1: Receptionist registers patient
-      // Reset everything else to default first
+      
+      
       setGeneratedToken(null);
       setWhatsappReceived(false);
       setDoctorToken(23);
@@ -43,13 +43,13 @@ const HowItWorks = () => {
       setPatientPhone("");
       setStep1BtnText("Generate Token");
 
-      // Animate typing
+      
       const t1 = setTimeout(() => {
         setPatientName("Alice Smith");
         setPatientPhone("555-0199");
       }, 800);
 
-      // Animate button click
+      
       const t2 = setTimeout(() => {
         setStep1BtnText("Token Generated!");
       }, 1800);
@@ -59,13 +59,13 @@ const HowItWorks = () => {
         clearTimeout(t2);
       };
     } else if (activeStep === 1) {
-      // Step 2: Token generated
+      
       setGeneratedToken(33);
     } else if (activeStep === 2) {
-      // Step 3: WhatsApp received
+      
       setWhatsappReceived(true);
     } else if (activeStep === 3) {
-      // Step 4: Doctor calls next (23 -> 24)
+      
       const t1 = setTimeout(() => {
         setDoctorToken(24);
       }, 1000);
@@ -75,16 +75,16 @@ const HowItWorks = () => {
 
   return (
     <section id="how-it-works" className="bg-[#080b13] text-white overflow-hidden py-14 lg:py-20 relative">
-      {/* Background Decorative Gradients */}
+      
       <div className="absolute top-0 left-1/4 size-[400px] rounded-full bg-blue-900/10 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 size-[400px] rounded-full bg-purple-900/10 blur-[120px] pointer-events-none" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
-        {/* UPPER PART: Title + Live Sync Engine Diagram */}
+        
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
-          {/* Left Column: Heading and Subtitle */}
+          
           <div className="lg:col-span-5 space-y-6 text-left">
             <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-400">
               <span className="inline-block size-1.5 rounded-full bg-blue-400 animate-pulse"></span>
@@ -101,29 +101,29 @@ const HowItWorks = () => {
             </p>
           </div>
 
-          {/* Right Column: Live Sync Engine diagram container */}
+          
           <div className="lg:col-span-7 relative h-[400px] sm:h-[460px] w-full flex items-center justify-center">
             
-            {/* SVG Interactive Connection Lines */}
+            
             <svg className="absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 100 100" preserveAspectRatio="none">
-              {/* Connection paths */}
-              {/* Receptionist (bottom left, ~22,80) -> Sync Engine (center, ~50,52) */}
+              
+              
               <path
                 d="M 22 80 L 50 52"
                 className="stroke-slate-700 stroke-[1] fill-none stroke-dasharray-[3,3]"
               />
-              {/* Doctor (top center, ~50,20) -> Sync Engine (center, ~50,52) */}
+              
               <path
                 d="M 50 20 L 50 52"
                 className="stroke-slate-700 stroke-[1] fill-none stroke-dasharray-[3,3]"
               />
-              {/* Sync Engine (center, ~50,52) -> Patient (bottom right, ~78,80) */}
+              
               <path
                 d="M 50 52 L 78 80"
                 className="stroke-slate-700 stroke-[1] fill-none stroke-dasharray-[3,3]"
               />
 
-              {/* Glowing traveling dots */}
+              
               <circle r="0.8" className="fill-purple-400">
                 <animateMotion
                   dur="4s"
@@ -149,21 +149,21 @@ const HowItWorks = () => {
               </circle>
             </svg>
 
-            {/* Diagram Arrow labels */}
-            {/* Label: Updates Queue (Receptionist -> Center) */}
+            
+            
             <div className="absolute top-[66%] left-[28%] -translate-x-1/2 -translate-y-1/2 bg-[#0e172a]/90 border border-slate-800 rounded-full px-2 py-0.5 text-[8px] sm:text-[10px] font-bold text-slate-400 shadow-md">
               Updates Queue
             </div>
-            {/* Label: Calls Next (Center -> Doctor) */}
+            
             <div className="absolute top-[33%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-[#0e172a]/90 border border-slate-800 rounded-full px-2 py-0.5 text-[8px] sm:text-[10px] font-bold text-slate-400 shadow-md">
               Calls Next
             </div>
-            {/* Label: Sends Updates (Center -> Patient) */}
+            
             <div className="absolute top-[66%] left-[72%] -translate-x-1/2 -translate-y-1/2 bg-[#0e172a]/90 border border-slate-800 rounded-full px-2 py-0.5 text-[8px] sm:text-[10px] font-bold text-slate-400 shadow-md">
               Sends Updates
             </div>
 
-            {/* Node 1: Doctor Dashboard Card (Top Center) */}
+            
             <div className="absolute top-[1%] left-1/2 -translate-x-1/2 z-10 w-[210px] sm:w-[280px] bg-[#0d1527]/95 border border-slate-800 hover:border-slate-700 rounded-2xl p-2 sm:p-3 flex items-center gap-2 sm:gap-3 shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition duration-300">
               <img
                 src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=150"
@@ -175,7 +175,7 @@ const HowItWorks = () => {
                 <p className="text-[8px] sm:text-[9px] text-slate-500 font-semibold mt-0.5">Current Token</p>
                 <p className="text-sm sm:text-lg font-black text-blue-400 leading-none mt-1">24</p>
               </div>
-              {/* Mini Sparkline Chart Widget */}
+              
               <div className="w-12 sm:w-16 h-7 sm:h-8 shrink-0">
                 <svg className="w-full h-full stroke-blue-500 stroke-[1.5] fill-none" viewBox="0 0 60 20">
                   <path d="M 0 15 Q 10 5, 20 12 T 40 4 T 60 10" />
@@ -185,9 +185,9 @@ const HowItWorks = () => {
               </div>
             </div>
 
-            {/* Node 2: Queue Cure Live Sync Engine (Center) */}
+            
             <div className="absolute top-[52%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 size-24 sm:size-28 rounded-full bg-gradient-to-br from-blue-600 to-indigo-800 flex flex-col items-center justify-center text-center shadow-[0_0_50px_rgba(49,92,240,0.5)] border border-blue-400/30">
-              {/* Outer pulsing rings */}
+              
               <div className="absolute inset-0 rounded-full border border-blue-500/20 animate-ping pointer-events-none" style={{ animationDuration: '3s' }} />
               <div className="absolute -inset-4 rounded-full border border-indigo-500/10 pointer-events-none" />
               
@@ -196,7 +196,7 @@ const HowItWorks = () => {
               <p className="text-[7px] sm:text-[8px] text-blue-200 uppercase tracking-widest font-bold mt-1">Live Sync</p>
             </div>
 
-            {/* Node 3: Receptionist Dashboard Card (Bottom Left) */}
+            
             <div className="absolute bottom-[2%] left-[2%] sm:left-[5%] z-10 w-[150px] sm:w-[220px] bg-[#0d1527]/95 border border-slate-800 hover:border-slate-700 rounded-2xl p-2.5 sm:p-3 flex items-center gap-2 sm:gap-3 shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition duration-300">
               <img
                 src="https://images.unsplash.com/photo-1594824813573-246434e33963?auto=format&fit=crop&q=80&w=150"
@@ -213,7 +213,7 @@ const HowItWorks = () => {
               </span>
             </div>
 
-            {/* Node 4: Patient View Card (Bottom Right) */}
+            
             <div className="absolute bottom-[2%] right-[2%] sm:right-[5%] z-10 w-[150px] sm:w-[220px] bg-[#0d1527]/95 border border-slate-800 hover:border-slate-700 rounded-2xl p-2.5 sm:p-3 flex items-center gap-2 sm:gap-3 shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition duration-300">
               <img
                 src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
@@ -237,7 +237,7 @@ const HowItWorks = () => {
 
         </div>
 
-        {/* LOWER PART: Workflow Steps Visualizer */}
+        
         <div className="mt-16 lg:mt-20">
           <div className="text-center space-y-4">
             <div className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-indigo-400">
@@ -249,10 +249,10 @@ const HowItWorks = () => {
             </h3>
           </div>
 
-          {/* Steps Timeline Grid: 1 column on mobile, 2 columns on iPad, 4 columns on PC */}
+          
           <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6 items-stretch">
             
-            {/* STEP 1: Receptionist Adds Patient */}
+            
             <div className="relative flex flex-col gap-3 h-full justify-between w-full max-w-[280px] mx-auto">
               <div className="flex items-center gap-3 text-left">
                 <span className={`size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 shrink-0 ${
@@ -270,7 +270,7 @@ const HowItWorks = () => {
                 </div>
               </div>
 
-              {/* Step 1 Visual Mockup */}
+              
               <div className={`bg-white rounded-2xl p-3 shadow-lg border text-[8px] font-semibold text-slate-700 transition-all duration-500 h-[140px] flex flex-col justify-between mt-3 w-full ${
                 activeStep === 0 ? "scale-[1.02] border-purple-500/50 shadow-purple-500/5 ring-1 ring-purple-500/10" : "border-slate-100 opacity-60"
               }`}>
@@ -310,7 +310,7 @@ const HowItWorks = () => {
                 </button>
               </div>
 
-              {/* Arrow Connector to Next Step */}
+              
               <div className="hidden lg:block absolute top-[14px] -right-3 text-slate-700 z-10">
                 <FiChevronRight className="text-base" />
               </div>
@@ -319,7 +319,7 @@ const HowItWorks = () => {
               </div>
             </div>
 
-            {/* STEP 2: Token Generated */}
+            
             <div className="relative flex flex-col gap-3 h-full justify-between w-full max-w-[280px] mx-auto">
               <div className="flex items-center gap-3 text-left">
                 <span className={`size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 shrink-0 ${
@@ -337,7 +337,7 @@ const HowItWorks = () => {
                 </div>
               </div>
 
-              {/* Step 2 Visual Mockup */}
+              
               <div className={`bg-white rounded-2xl p-3 shadow-lg border text-[8px] font-semibold text-slate-700 transition-all duration-500 h-[140px] flex flex-col justify-between mt-3 w-full ${
                 activeStep === 1 ? "scale-[1.02] border-blue-500/50 shadow-blue-500/5 ring-1 ring-blue-500/10" : "border-slate-100 opacity-60"
               }`}>
@@ -366,7 +366,7 @@ const HowItWorks = () => {
                 )}
               </div>
 
-              {/* Arrow Connector to Next Step */}
+              
               <div className="hidden lg:block absolute top-[14px] -right-3 text-slate-700 z-10">
                 <FiChevronRight className="text-base" />
               </div>
@@ -375,7 +375,7 @@ const HowItWorks = () => {
               </div>
             </div>
 
-            {/* STEP 3: Patients Get Updates */}
+            
             <div className="relative flex flex-col gap-3 h-full justify-between w-full max-w-[280px] mx-auto">
               <div className="flex items-center gap-3 text-left">
                 <span className={`size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 shrink-0 ${
@@ -393,7 +393,7 @@ const HowItWorks = () => {
                 </div>
               </div>
 
-              {/* Step 3 Visual Mockup */}
+              
               <div className={`bg-white rounded-2xl p-3 shadow-lg border text-[8px] font-semibold text-slate-700 transition-all duration-500 h-[140px] flex flex-col justify-between mt-3 w-full ${
                 activeStep === 2 ? "scale-[1.02] border-blue-500/50 shadow-blue-500/5 ring-1 ring-blue-500/10" : "border-slate-100 opacity-60"
               }`}>
@@ -425,7 +425,7 @@ const HowItWorks = () => {
                 )}
               </div>
 
-              {/* Arrow Connector to Next Step */}
+              
               <div className="hidden lg:block absolute top-[14px] -right-3 text-slate-700 z-10">
                 <FiChevronRight className="text-base" />
               </div>
@@ -434,7 +434,7 @@ const HowItWorks = () => {
               </div>
             </div>
 
-            {/* STEP 4: Doctor Calls Next */}
+            
             <div className="relative flex flex-col gap-3 h-full justify-between w-full max-w-[280px] mx-auto">
               <div className="flex items-center gap-3 text-left">
                 <span className={`size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 shrink-0 ${
@@ -452,7 +452,7 @@ const HowItWorks = () => {
                 </div>
               </div>
 
-              {/* Step 4 Visual Mockup */}
+              
               <div className={`bg-white rounded-2xl p-3 shadow-lg border text-[8px] font-semibold text-slate-700 transition-all duration-500 h-[140px] flex flex-col justify-between mt-3 w-full ${
                 activeStep === 3 ? "scale-[1.02] border-purple-500/50 shadow-purple-500/5 ring-1 ring-purple-500/10" : "border-slate-100 opacity-60"
               }`}>
@@ -463,7 +463,7 @@ const HowItWorks = () => {
                   </span>
                 </div>
                 
-                {/* Metric Display */}
+                
                 <div className="bg-slate-50 p-1.5 rounded-lg border border-slate-100 text-center flex-1 flex flex-col justify-center my-1.5">
                   <p className="text-[5.5px] text-slate-400 font-bold uppercase tracking-wider">Current Token</p>
                   <p className="text-base font-black text-slate-800 leading-none mt-0.5" key={doctorToken}>

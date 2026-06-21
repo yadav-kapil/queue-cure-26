@@ -15,7 +15,7 @@ const Hero = () => {
     <main id="home" className="px-4 pb-2 pt-20 sm:px-6 lg:px-8 ">
       <section className="relative mx-auto mt-5 max-w-7xl overflow-hidden rounded-[34px] bg-[radial-gradient(circle_at_76%_22%,#46b7ff_0%,#356df4_38%,#3541c9_100%)] px-6 pt-10 pb-4 text-white shadow-[0_30px_90px_rgba(21,42,133,0.24)] sm:rounded-[42px] sm:px-10 lg:min-h-[640px] lg:px-14 lg:pt-12 lg:pb-2">
         <div className="relative grid gap-10 lg:grid-cols-[1.36fr_0.64fr] lg:items-end">
-          {/* Left Column (Content & Cards) */}
+          
           <div className="relative z-20 max-w-[760px] pt-2 lg:pb-0">
             <div className="mb-5 inline-flex items-center gap-3 text-xs font-medium">
               <span className="grid size-9 place-items-center rounded-full bg-white text-[#315cf0] shadow-[0_8px_24px_rgba(15,23,42,0.12)]">
@@ -57,9 +57,9 @@ const Hero = () => {
               </a>
             </div>
 
-            {/* 100K+ badge for Mobile (below buttons) */}
+            
             <div className="relative mt-7 mb-4 ml-4 lg:hidden w-fit">
-              {/* Concentric rings */}
+              
               <div className="absolute inset-[-14px] rounded-full border border-white/10" />
               <div className="absolute inset-[-7px] rounded-full border border-white/20" />
 
@@ -78,7 +78,7 @@ const Hero = () => {
               </div>
             </div>
 
-            {/* Unified Cards Grid - 3 columns on mobile and desktop, scaling down on mobile */}
+            
             <div className="mt-7 grid max-w-[720px] grid-cols-3 gap-2 sm:gap-4">
               <div className="flex h-36 flex-col justify-between rounded-2xl bg-white p-2.5 text-[#0d1321] shadow-[0_18px_50px_rgba(15,23,42,0.12)] sm:h-44 sm:p-4 lg:h-52">
                 <div>
@@ -132,7 +132,7 @@ const Hero = () => {
                 </div>
               </div>
 
-              {/* Card 2: Online Consultation (waving doctor) */}
+              
               <div className="relative h-36 overflow-hidden rounded-2xl bg-[#a2ebf2] shadow-[0_18px_50px_rgba(15,23,42,0.12)] sm:h-44 lg:h-52">
                 <img
                   src={doctorConsultation}
@@ -152,7 +152,7 @@ const Hero = () => {
                 </div>
               </div>
 
-              {/* Card 3: Diagnosis Success */}
+              
               <div className="flex h-36 flex-col justify-between rounded-2xl bg-white p-2.5 text-[#0d1321] shadow-[0_18px_50px_rgba(15,23,42,0.12)] sm:h-44 sm:p-4 lg:h-52">
                 <div className="flex items-center justify-between">
                   <span className="inline-flex rounded-full bg-slate-100 px-2 py-1 text-[7px] font-semibold text-slate-600 sm:text-[10px]">
@@ -185,12 +185,12 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* Right Column (Placeholder for desktop spacing & 100K+ badge) */}
+          
           <div className="relative h-full w-full hidden lg:block">
-            {/* 100K+ badge for Desktop */}
+            
             <div className="absolute right-[1%] top-[10%] z-20">
               <div className="relative w-fit">
-                {/* Concentric rings */}
+                
                 <div className="absolute inset-[-16px] rounded-full border border-white/10" />
                 <div className="absolute inset-[-8px] rounded-full border border-white/20" />
 
@@ -212,7 +212,7 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* Doctor Image - Absolute positioned, shared between Mobile and Desktop */}
+        
         <img
           src={doctorHero}
           alt="Smiling doctor for Queue Cure clinic queue management"

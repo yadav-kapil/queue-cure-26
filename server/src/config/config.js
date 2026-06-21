@@ -11,11 +11,15 @@ if (!process.env.MONGO_URI) {
 }
 
 if (!process.env.JWT_SECRET) {
-  throw new Error("PORT is not defined in environment variables")
+  throw new Error("JWT_SECRET is not defined in environment variables")
 }
 
 if (!process.env.CLIENT_URI) {
-  throw new Error("MONGO_URI is not defined in environment variables")
+  throw new Error("CLIENT_URI is not defined in environment variables")
+}
+
+if (!process.env.COOKIE_SECRET) {
+  throw new Error("COOKIE_SECRET is not defined in environment variables")
 }
 
 const config = {
@@ -23,6 +27,7 @@ const config = {
   MONGO_URI: process.env.MONGO_URI,
   JWT_SECRET: process.env.JWT_SECRET,
   CLIENT_URI: process.env.CLIENT_URI,
+  COOKIE_SECRET: process.env.COOKIE_SECRET,
 };
 
 export default config;

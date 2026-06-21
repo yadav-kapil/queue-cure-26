@@ -9,10 +9,14 @@ import {
   FiX,
   FiHome,
 } from "react-icons/fi";
+import { useAuth } from "../../context/auth/AuthContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { isAuthenticated, user } = useAuth();
+
+  const dashboardPath = user?.role === "doctor" ? "/doctor" : "/receptionist";
 
   const navLinks = [
     { label: "Home", href: "#home", icon: FiHome },
@@ -73,17 +77,27 @@ const Navbar = () => {
           ))}
         </div>
 
-        <NavLink
-          to="/auth/login"
-          className="group hidden items-center gap-3 rounded-full bg-[#090d15] py-2 pl-5 pr-2 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-all duration-300 hover:bg-[#3e444f] md:inline-flex"
-        >
-          {" "}
-          Login{" "}
-          <span className="grid size-8 place-items-center rounded-full bg-white text-[#090d15] transition-all duration-300 group-hover:translate-x-1">
-            {" "}
-            <FiArrowRight className="text-base" />{" "}
-          </span>{" "}
-        </NavLink>
+        {isAuthenticated ? (
+          <NavLink
+            to={dashboardPath}
+            className="group hidden items-center gap-3 rounded-full bg-[#315cf0] py-2 pl-5 pr-2 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:bg-[#204ad0] md:inline-flex cursor-pointer"
+          >
+            Dashboard
+            <span className="grid size-8 place-items-center rounded-full bg-white text-[#315cf0] transition-all duration-300 group-hover:translate-x-1">
+              <FiArrowRight className="text-base" />
+            </span>
+          </NavLink>
+        ) : (
+          <NavLink
+            to="/auth/login"
+            className="group hidden items-center gap-3 rounded-full bg-[#090d15] py-2 pl-5 pr-2 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-all duration-300 hover:bg-[#3e444f] md:inline-flex cursor-pointer"
+          >
+            Login
+            <span className="grid size-8 place-items-center rounded-full bg-white text-[#090d15] transition-all duration-300 group-hover:translate-x-1">
+              <FiArrowRight className="text-base" />
+            </span>
+          </NavLink>
+        )}
 
         <button
           type="button"
@@ -107,7 +121,7 @@ const Navbar = () => {
             onClick={() => setIsOpen(false)}
           />
           <div className="fixed bottom-0 left-0 right-0 z-50 rounded-t-[32px] bg-white p-6 pb-8 shadow-[0_-12px_40px_rgba(15,23,42,0.12)] lg:hidden animate-slide-up">
-            {/* Drag Handle */}
+            
             <div className="mx-auto mb-5 h-1.5 w-12 rounded-full bg-slate-200" />
 
             <div className="space-y-1.5">
@@ -130,16 +144,29 @@ const Navbar = () => {
               })}
             </div>
 
-            <NavLink
-              to="/auth/login"
-              className="mt-6 flex items-center justify-between rounded-full bg-[#090d15] py-3.5 pl-6 pr-4 text-[15px] font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-[#171d29] active:scale-[0.98]"
-              onClick={() => setIsOpen(false)}
-            >
-              Login
-              <span className="grid size-8 place-items-center rounded-full bg-white text-[#090d15]">
-                <FiArrowRight />
-              </span>
-            </NavLink>
+            {isAuthenticated ? (
+              <NavLink
+                to={dashboardPath}
+                className="mt-6 flex items-center justify-between rounded-full bg-[#315cf0] py-3.5 pl-6 pr-4 text-[15px] font-bold text-white shadow-md transition hover:bg-[#204ad0] active:scale-[0.98] cursor-pointer"
+                onClick={() => setIsOpen(false)}
+              >
+                Dashboard
+                <span className="grid size-8 place-items-center rounded-full bg-white text-[#315cf0]">
+                  <FiArrowRight />
+                </span>
+              </NavLink>
+            ) : (
+              <NavLink
+                to="/auth/login"
+                className="mt-6 flex items-center justify-between rounded-full bg-[#090d15] py-3.5 pl-6 pr-4 text-[15px] font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-[#171d29] active:scale-[0.98] cursor-pointer"
+                onClick={() => setIsOpen(false)}
+              >
+                Login
+                <span className="grid size-8 place-items-center rounded-full bg-white text-[#090d15]">
+                  <FiArrowRight />
+                </span>
+              </NavLink>
+            )}
           </div>
         </>
       )}

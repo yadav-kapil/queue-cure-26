@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { NavLink } from "react-router";
+import { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router";
 import {
   FiPlus,
   FiMail,
@@ -18,23 +18,40 @@ import {
 } from "react-icons/fi";
 import authBg from "../assets/auth-bg.jpeg";
 import authDoctor from "../assets/auth-doctor.png";
+import useSignup from "../hooks/useSignup";
+import Loading from "../components/common/Loading";
+import Error from "../components/common/Error";
+import { useAuth } from "../context/auth/AuthContext";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [role, setRole] = useState("doctor");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const { signup, isLoading, error, setError } = useSignup();
+  const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const redirectPath = user.role === "doctor" ? "/doctor" : "/receptionist";
+      navigate(redirectPath, { replace: true });
+    }
+  }, [isAuthenticated, user, navigate]);
+
   const handleSignUp = (e) => {
     e.preventDefault();
-    console.log("Signing up with:", {
-      name,
+    signup({
+      fullName: name,
+      username,
       email,
-      mobile,
+      mobileNumber: mobile,
       role,
       password,
       confirmPassword,
@@ -46,12 +63,20 @@ const Signup = () => {
       className="min-h-screen w-full relative flex items-center justify-center bg-cover bg-center overflow-hidden py-10 px-4 select-none"
       style={{ backgroundImage: `url(${authBg})` }}
     >
-      {/* Background circular path wrapping the signup box (Desktop only) */}
+      {isLoading && <Loading message="Creating account..." />}
+      {error && (
+        <Error 
+          heading="Registration Error" 
+          message={error} 
+          onClose={() => setError("")} 
+        />
+      )}
+      
       <div className="absolute inset-0 pointer-events-none hidden lg:block z-0">
-        {/* Large centered circular dashed outline */}
+        
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[76%] rounded-full border border-dashed border-slate-300/40" />
 
-        {/* Orbiting Stats Node 2: Current Token (Top Right) */}
+        
         <div
           className="absolute top-[22%] right-[18%] flex flex-col items-center gap-2 animate-float pointer-events-none"
           style={{ animationDelay: "0.8s", animationDuration: "5.8s" }}
@@ -70,7 +95,7 @@ const Signup = () => {
           </div>
         </div>
 
-        {/* Orbiting Stats Node 3: Live Notifications (Bottom Right) */}
+        
         <div
           className="absolute bottom-[18%] right-[18%] flex flex-col items-center gap-2 animate-float pointer-events-none"
           style={{ animationDelay: "1.6s", animationDuration: "6.2s" }}
@@ -89,7 +114,7 @@ const Signup = () => {
           </div>
         </div>
 
-        {/* Orbiting Stats Node 5: Today's Consultations (Bottom Left) */}
+        
         <div
           className="absolute bottom-[28%] left-[18%] flex flex-col items-center gap-2 animate-float pointer-events-none"
           style={{ animationDelay: "3.2s", animationDuration: "6s" }}
@@ -108,7 +133,7 @@ const Signup = () => {
           </div>
         </div>
 
-        {/* Orbiting Stats Node 6: Avg. Wait Time (Top Left) */}
+        
         <div
           className="absolute top-[18%] left-[18%] flex flex-col items-center gap-2 animate-float pointer-events-none"
           style={{ animationDelay: "4s", animationDuration: "5.4s" }}
@@ -130,12 +155,12 @@ const Signup = () => {
         </div>
       </div>
 
-      {/* Center Glow */}
+      
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
         <div className="size-[500px] rounded-full bg-blue-400/10 blur-3xl" />
       </div>
 
-      {/* Main Signup Box Form - Set width to fit content and remove excess white space */}
+      
       <div className="relative w-full max-w-[540px] mx-auto bg-white rounded-[32px] p-6 sm:p-8 lg:p-8 shadow-[0_24px_64px_rgba(0,0,0,0.06)] border border-slate-100/55 z-10 select-text">
         <img
           src={authDoctor}
@@ -155,9 +180,9 @@ const Signup = () => {
                     "
         />
 
-        {/* Form Content Wrapper */}
+        
         <div className="w-full max-w-[450px] text-center space-y-5 shrink-0 mx-auto">
-          {/* Header Block */}
+          
           <div className="flex flex-col items-center gap-1 max-w-[400px] mx-auto">
             <NavLink to="/" className="inline-flex items-center gap-1.5">
               <span className="grid size-6 place-items-center rounded-[6px] border-2 border-[#2f75ff] text-[#2f75ff]">
@@ -176,9 +201,9 @@ const Signup = () => {
             </p>
           </div>
 
-          {/* Form Fields */}
+          
           <form onSubmit={handleSignUp} className="space-y-3 text-left">
-            {/* Full Name */}
+            
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
                 Full Name
@@ -198,7 +223,26 @@ const Signup = () => {
               </div>
             </div>
 
-            {/* Email Address */}
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                Username
+              </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                  <FiUser className="text-base" />
+                </span>
+                <input
+                  type="text"
+                  required
+                  placeholder="johndoe123"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="block w-full pl-10 pr-4 py-2 bg-[#f8fafc] border border-slate-200/80 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#315cf0] focus:ring-1 focus:ring-[#315cf0] transition duration-200"
+                />
+              </div>
+            </div>
+
+            
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
                 Email Address
@@ -218,7 +262,7 @@ const Signup = () => {
               </div>
             </div>
 
-            {/* Mobile Number */}
+            
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
                 Mobile Number
@@ -238,7 +282,7 @@ const Signup = () => {
               </div>
             </div>
 
-            {/* Role Selection */}
+            
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
                 I am a...
@@ -302,7 +346,7 @@ const Signup = () => {
               </div>
             </div>
 
-            {/* Password */}
+            
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
                 Password
@@ -333,7 +377,7 @@ const Signup = () => {
               </div>
             </div>
 
-            {/* Confirm Password */}
+            
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
                 Confirm Password
@@ -364,7 +408,7 @@ const Signup = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
+            
             <button
               type="submit"
               className="w-full bg-[#315cf0] hover:bg-[#204ad0] text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-all duration-200 shadow-md shadow-blue-500/10 flex items-center justify-center gap-2 mt-2.5 cursor-pointer"
@@ -374,7 +418,7 @@ const Signup = () => {
             </button>
           </form>
 
-          {/* Bottom link */}
+          
           <div className="pt-2">
             <p className="text-[10px] text-slate-400 font-bold">
               Already have an account?{" "}

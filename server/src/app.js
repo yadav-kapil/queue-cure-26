@@ -1,11 +1,23 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import ExpressError from './utils/ExpressError.js';
+import cors from 'cors'
+import userRouter from './routes/user.routes.js';
+import config from './config/config.js';
 
 const app = express();
 
-app.get('/', (req, res, next) => {
-    res.send("hello")
-})
+// middlewares
+app.use(cors({
+  origin: config.CLIENT_URI,
+  credentials: true
+}))
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser(config.COOKIE_SECRET));
+
+// routes
+app.use('/api/auth', userRouter)
 
 // error handlers
 app.use((req, res, next) => {

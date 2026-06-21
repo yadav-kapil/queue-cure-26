@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { NavLink } from "react-router";
+import { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router";
 import {
   FiPlus,
   FiMail,
@@ -16,6 +16,10 @@ import {
 } from "react-icons/fi";
 import authBg from "../assets/auth-bg.jpeg";
 import authDoctor from "../assets/auth-doctor.png";
+import useLogin from "../hooks/useLogin";
+import Loading from "../components/common/Loading";
+import Error from "../components/common/Error";
+import { useAuth } from "../context/auth/AuthContext";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,9 +27,20 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
+  const { login, isLoading, error, setError } = useLogin();
+  const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const redirectPath = user.role === "doctor" ? "/doctor" : "/receptionist";
+      navigate(redirectPath, { replace: true });
+    }
+  }, [isAuthenticated, user, navigate]);
+
   const handleSignIn = (e) => {
     e.preventDefault();
-    console.log("Signing in with:", { email, password, rememberMe });
+    login({ email, password });
   };
 
   return (
@@ -33,12 +48,20 @@ const Login = () => {
       className="min-h-screen w-full relative flex items-center justify-center bg-cover bg-center overflow-hidden py-10 px-4 select-none"
       style={{ backgroundImage: `url(${authBg})` }}
     >
-      {/* Background circular path wrapping the login box (Desktop only) */}
+      {isLoading && <Loading message="Logging you in..." />}
+      {error && (
+        <Error 
+          heading="Login Error" 
+          message={error} 
+          onClose={() => setError("")} 
+        />
+      )}
+      
       <div className="absolute inset-0 pointer-events-none hidden lg:block z-0">
-        {/* Large centered circular dashed outline */}
+        
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[76%] rounded-full border border-dashed border-slate-300/40" />
 
-        {/* Orbiting Stats Node 2: Current Token (Top Right) */}
+        
         <div
           className="absolute top-[22%] right-[18%] flex flex-col items-center gap-2 animate-float pointer-events-none"
           style={{ animationDelay: "0.8s", animationDuration: "5.8s" }}
@@ -57,7 +80,7 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Orbiting Stats Node 3: Live Notifications (Bottom Right) */}
+        
         <div
           className="absolute bottom-[18%] right-[18%] flex flex-col items-center gap-2 animate-float pointer-events-none"
           style={{ animationDelay: "1.6s", animationDuration: "6.2s" }}
@@ -76,7 +99,7 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Orbiting Stats Node 5: Today's Consultations (Bottom Left) */}
+        
         <div
           className="absolute bottom-[28%] left-[18%] flex flex-col items-center gap-2 animate-float pointer-events-none"
           style={{ animationDelay: "3.2s", animationDuration: "6s" }}
@@ -95,7 +118,7 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Orbiting Stats Node 6: Avg. Wait Time (Top Left) */}
+        
         <div
           className="absolute top-[18%] left-[18%] flex flex-col items-center gap-2 animate-float pointer-events-none"
           style={{ animationDelay: "4s", animationDuration: "5.4s" }}
@@ -117,14 +140,14 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Center Glow */}
+      
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
         <div className="size-[500px] rounded-full bg-blue-400/10 blur-3xl" />
       </div>
 
-      {/* Main Login Box Form - Set width to fit content and remove excess white space */}
+      
       <div className="relative w-full max-w-[540px] mx-auto bg-white rounded-[32px] p-8 sm:p-10 lg:p-10 shadow-[0_24px_64px_rgba(0,0,0,0.06)] border border-slate-100/55 z-10 select-text">
-        {/* Doctor Image absolute inside login form box - interacts with "Welcome Back 👋" */}
+        
         <img
           src={authDoctor}
           alt="Auth Doctor"
@@ -143,9 +166,9 @@ const Login = () => {
             "
         />
 
-        {/* Form Content Wrapper */}
+        
         <div className="w-full max-w-[450px] text-center space-y-8 shrink-0 mx-auto">
-          {/* Header Block */}
+          
           <div className="flex flex-col items-center gap-2 max-w-[400px] mx-auto">
             <NavLink to="/" className="inline-flex items-center gap-2">
               <span className="grid size-7 place-items-center rounded-[7px] border-2 border-[#2f75ff] text-[#2f75ff]">
@@ -164,9 +187,9 @@ const Login = () => {
             </p>
           </div>
 
-          {/* Form Fields */}
+          
           <form onSubmit={handleSignIn} className="space-y-4 text-left">
-            {/* Email Address */}
+            
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
                 Email Address
@@ -186,7 +209,7 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Password */}
+            
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
                 Password
@@ -217,7 +240,7 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Remember Me & Forgot Password Row */}
+            
             <div className="flex items-center justify-between pt-1">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -238,7 +261,7 @@ const Login = () => {
               </a>
             </div>
 
-            {/* Submit Button */}
+            
             <button
               type="submit"
               className="w-full bg-[#315cf0] hover:bg-[#204ad0] text-white font-bold py-3.5 px-4 rounded-xl text-xs transition-all duration-200 shadow-md shadow-blue-500/10 flex items-center justify-center gap-2 mt-2 cursor-pointer"
@@ -248,7 +271,7 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Bottom link */}
+          
           <div className="pt-2">
             <p className="text-[10px] text-slate-400 font-bold">
               Don't have an account?{" "}
