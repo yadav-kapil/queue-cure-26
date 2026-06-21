@@ -9,10 +9,10 @@ import {
   FiPlus,
   FiRadio,
 } from 'react-icons/fi'
-import { useAuth } from '../../context/auth/AuthContext'
-import Profile from './Profile'
+import { useAuth } from '../../../context/auth/AuthContext'
+import Profile from '../Profile'
 
-const Navigationbar = () => {
+const NavigationbarDoc = () => {
   const { user } = useAuth()
   const [isProfileOpen, setIsProfileOpen] = useState(false)
 
@@ -22,7 +22,6 @@ const Navigationbar = () => {
     { label: 'History', to: '/doctor/history', icon: FiClock },
   ]
 
-  // Get initials for profile picture placeholder (only first letter)
   const getInitials = (name) => {
     if (!name) return 'U';
     return name.split(' ').map((n) => n[0]).slice(0, 1).join('').toUpperCase();
@@ -113,4 +112,4 @@ const Navigationbar = () => {
   )
 }
 
-export default Navigationbar
+export default NavigationbarDoc

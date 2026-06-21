@@ -13,28 +13,72 @@ import {
 } from 'react-icons/fi'
 import doctorHero from '../../assets/doctor-hero.png'
 import { useAuth } from '../../context/auth/AuthContext'
+import { useSession } from '../../context/session/SessionContext'
+import { useDoc } from '../../hooks/useDoc'
 import DocHandleRec from '../../components/app/doctor/DocHandleRec'
-
-const getStoredSessionStatus = () => {
-  if (typeof window === 'undefined') return false
-  return window.sessionStorage.getItem('doctor-session-online') === 'true'
-}
 
 const DashboardDoc = () => {
   const { user } = useAuth()
+  const { session, queue, isSessionActive } = useSession()
+  const { goLive } = useDoc()
   const navigate = useNavigate()
-  const [sessionOnline, setSessionOnline] = useState(getStoredSessionStatus)
-  const [averageConsultationTime] = useState(5)
-  const [currentPatient] = useState(null)
-  const [waitingPatients] = useState([])
-  const [completedPatients] = useState([])
   const [activity] = useState([])
-  const [clockBase] = useState(() => Date.now())
+
+  const currentPatient = useMemo(() => {
+    if (!queue || !queue.patients) return null
+    return queue.patients.find((p) => p.tokenNumber === queue.currentToken) || null
+  }, [queue])
+
+  const waitingPatients = useMemo(() => {
+    if (!queue || !queue.patients) return []
+    return queue.patients.filter(
+      (p) => p.tokenNumber > queue.currentToken && !p.skipped && !p.consultationEndedAt
+    )
+  }, [queue])
+
+  const completedPatients = useMemo(() => {
+    if (!queue || !queue.patients) return []
+    return queue.patients.filter((p) => p.consultationEndedAt)
+  }, [queue])
+
+  const averageConsultationTime = useMemo(() => {
+    if (!queue || !queue.patients || queue.patients.length === 0) return null
+
+    const completed = queue.patients.filter(
+      (p) => p.consultationStartedAt && p.consultationEndedAt
+    )
+
+    if (completed.length === 0) return null
+
+    const totalMs = completed.reduce((sum, p) => {
+      const start = new Date(p.consultationStartedAt).getTime()
+      const end = new Date(p.consultationEndedAt).getTime()
+      return sum + Math.max(0, end - start)
+    }, 0)
+
+    const averageMs = totalMs / completed.length
+    const averageMinutes = averageMs / 60000 // Convert milliseconds to minutes
+
+    return Number(averageMinutes.toFixed(1))
+  }, [queue])
 
   const queueStats = useMemo(() => {
-    const estimatedRemainingMinutes = waitingPatients.length * averageConsultationTime
+    if (!isSessionActive || !queue) {
+      return {
+        estimatedRemainingMinutes: '--',
+        finishBy: '--:--',
+        totalPatients: '--',
+      }
+    }
+    
+    // Calculate remaining patients (waiting patients + 1 for the current patient being served)
+    const remainingPatientsCount = waitingPatients.length + (currentPatient ? 1 : 0)
+    const avgTimeForCalc = averageConsultationTime !== null ? averageConsultationTime : 5
+    const estimatedRemainingMinutes = remainingPatientsCount * avgTimeForCalc
+    
+    // Calculate estimated finish time relative to the current actual time
     const finishBy = estimatedRemainingMinutes
-      ? new Date(clockBase + estimatedRemainingMinutes * 60000).toLocaleTimeString([], {
+      ? new Date(Date.now() + estimatedRemainingMinutes * 60000).toLocaleTimeString([], {
           hour: '2-digit',
           minute: '2-digit',
         })
@@ -43,49 +87,39 @@ const DashboardDoc = () => {
     return {
       estimatedRemainingMinutes,
       finishBy,
-      totalPatients: waitingPatients.length + completedPatients.length + (currentPatient ? 1 : 0),
+      totalPatients: queue.patients ? queue.patients.length : 0,
     }
-  }, [averageConsultationTime, clockBase, completedPatients.length, currentPatient, waitingPatients.length])
-
-  const goLive = () => {
-    setSessionOnline(true)
-    window.sessionStorage.setItem('doctor-session-online', 'true')
-    navigate('/doctor/live-session', { state: { startOnline: true } })
-  }
-
-  const openLiveSession = () => {
-    navigate('/doctor/live-session')
-  }
+  }, [isSessionActive, queue, waitingPatients.length, currentPatient, averageConsultationTime])
 
   const statCards = [
     {
       title: 'Current Patient',
-      value: currentPatient ? `Token #${currentPatient.token}` : 'No active token',
-      helper: currentPatient?.name || 'Not being served',
+      value: !isSessionActive ? '--' : (currentPatient ? `Token #${currentPatient.tokenNumber}` : 'No active token'),
+      helper: !isSessionActive ? 'No active session' : (currentPatient?.name || 'Not being served'),
       icon: FiUser,
       color: 'text-[#2459ff]',
       bg: 'bg-[#eef4ff]',
     },
     {
       title: 'Patients Waiting',
-      value: `${waitingPatients.length} Waiting`,
-      helper: 'Total in queue',
+      value: !isSessionActive ? '--' : `${waitingPatients.length} Waiting`,
+      helper: !isSessionActive ? 'No active session' : 'Total in queue',
       icon: FiUsers,
       color: 'text-[#22c55e]',
       bg: 'bg-[#ecfdf5]',
     },
     {
       title: 'Patients Completed',
-      value: `${completedPatients.length} Completed`,
-      helper: 'Today',
+      value: !isSessionActive ? '--' : `${completedPatients.length} Completed`,
+      helper: !isSessionActive ? 'No active session' : 'Today',
       icon: FiCheckCircle,
       color: 'text-[#22c55e]',
       bg: 'bg-[#ecfdf5]',
     },
     {
       title: 'Average Consultation Time',
-      value: `${averageConsultationTime} Minutes`,
-      helper: 'Current estimate',
+      value: !isSessionActive || averageConsultationTime === null ? '--' : `${averageConsultationTime} Minutes`,
+      helper: !isSessionActive ? 'No active session' : 'Current estimate',
       icon: FiClock,
       color: 'text-[#5b5ff7]',
       bg: 'bg-[#f2f0ff]',
@@ -105,9 +139,17 @@ const DashboardDoc = () => {
                 {user?.fullName ? `Dr. ${user.fullName.replace(/^Dr\.\s*/i, "")}` : "Doctor"}
               </span>
             </h1>
-            <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/16 px-4 py-2 text-sm font-bold">
-              <span className={`h-2.5 w-2.5 rounded-full ${sessionOnline ? 'bg-[#22c55e]' : 'bg-white/70'}`} />
-              Session: {sessionOnline ? 'Online' : 'Offline'}
+            <div className="mt-4 flex flex-wrap gap-2">
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/16 px-4 py-2 text-xs font-bold">
+                <span className={`h-2.5 w-2.5 rounded-full ${isSessionActive ? 'bg-[#22c55e]' : 'bg-white/70'}`} />
+                Session: {isSessionActive ? 'Active' : 'Offline'}
+              </div>
+              {isSessionActive && (
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/16 px-4 py-2 text-xs font-bold">
+                  <span className={`h-2.5 w-2.5 rounded-full ${session?.receptionistId ? 'bg-[#22c55e]' : 'bg-red-400'}`} />
+                  Receptionist: {session?.receptionistId ? 'Online' : 'Not Joined'}
+                </div>
+              )}
             </div>
             <p className="mt-4 max-w-md text-sm leading-6 text-white/85">
               See the clinic snapshot, queue health, estimated timing, and latest activity before moving into the live workspace.
@@ -115,16 +157,16 @@ const DashboardDoc = () => {
             <div className="mt-6 flex flex-wrap gap-3">
               <button
                 type="button"
-                onClick={sessionOnline ? openLiveSession : goLive}
-                className="inline-flex h-12 items-center gap-3 rounded-full bg-white px-6 text-sm font-bold text-[#2459ff] shadow-[0_12px_25px_rgba(15,23,42,0.14)] transition hover:-translate-y-0.5"
+                onClick={isSessionActive ? () => navigate('/doctor/live-session') : goLive}
+                className="inline-flex h-12 items-center gap-3 rounded-full bg-white px-6 text-sm font-bold text-[#2459ff] shadow-[0_12px_25px_rgba(15,23,42,0.14)] transition hover:-translate-y-0.5 cursor-pointer"
               >
-                {sessionOnline ? <FiRadio className="h-5 w-5" /> : <FiPlay className="h-5 w-5" />}
-                {sessionOnline ? 'Resume Session' : 'Go Live'}
+                {isSessionActive ? <FiRadio className="h-5 w-5" /> : <FiPlay className="h-5 w-5" />}
+                {isSessionActive ? 'Resume Session' : 'Go Live'}
               </button>
               <button
                 type="button"
-                onClick={openLiveSession}
-                className="inline-flex h-12 items-center gap-3 rounded-full bg-white/14 px-6 text-sm font-bold text-white ring-1 ring-white/30 transition hover:bg-white/20"
+                onClick={() => navigate('/doctor/live-session')}
+                className="inline-flex h-12 items-center gap-3 rounded-full bg-white/14 px-6 text-sm font-bold text-white ring-1 ring-white/30 transition hover:bg-white/20 cursor-pointer"
               >
                 View Live Session
                 <FiArrowRight className="h-5 w-5" />
@@ -171,11 +213,15 @@ const DashboardDoc = () => {
             <FiActivity className="h-5 w-5 text-[#2459ff]" />
           </div>
           <div className="mt-4 grid gap-3">
-            <SummaryRow icon={FiUsers} label="Total Patients Today" value={`${queueStats.totalPatients} Patients`} />
+            <SummaryRow
+              icon={FiUsers}
+              label="Total Patients Today"
+              value={queueStats.totalPatients === '--' ? '--' : `${queueStats.totalPatients} Patients`}
+            />
             <SummaryRow
               icon={FiClock}
               label="Estimated Remaining Time"
-              value={`${queueStats.estimatedRemainingMinutes} min`}
+              value={queueStats.estimatedRemainingMinutes === '--' ? '--' : `${queueStats.estimatedRemainingMinutes} min`}
               success
             />
             <SummaryRow icon={FiFlag} label="Estimated Finish Time" value={queueStats.finishBy} />
@@ -210,15 +256,6 @@ const DashboardDoc = () => {
     </section>
   )
 }
-
-const StatusLine = ({ label, active = false }) => (
-  <div className="flex items-center justify-between rounded-2xl bg-[#f8fbff] px-4 py-3">
-    <span className="text-sm font-bold text-[#111827]">{label}</span>
-    <span className={`rounded-full px-3 py-1 text-xs font-extrabold ${active ? 'bg-[#ecfdf5] text-[#16a34a]' : 'bg-[#fff1f2] text-[#ef4444]'}`}>
-      {active ? 'Allowed' : 'Not here'}
-    </span>
-  </div>
-)
 
 const SummaryRow = ({ icon: Icon, label, value, success = false }) => (
   <div className="flex items-center gap-3 rounded-2xl bg-[#f8fbff] px-4 py-3">

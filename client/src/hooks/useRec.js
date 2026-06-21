@@ -1,8 +1,11 @@
 import { useState, useCallback } from "react";
 import { useAuth } from "../context/auth/AuthContext";
+import { useSession } from "../context/session/SessionContext";
 
-export const useManageRec = () => {
-  const { user, dispatch } = useAuth();
+export const useRec = () => {
+  const { user, dispatch: authDispatch } = useAuth();
+  const { dispatch: sessionDispatch } = useSession();
+
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
@@ -18,9 +21,10 @@ export const useManageRec = () => {
   const [isCancelling, setIsCancelling] = useState(false);
   const [hireLoading, setHireLoading] = useState(false);
   const [removeLoading, setRemoveLoading] = useState(false);
+  const [addPatientLoading, setAddPatientLoading] = useState(false);
 
-  const hasHired = user?.associatedReceptionistId && user?.associationStatus === "active";
-  const hasPendingSent = user?.associatedReceptionistId && user?.associationStatus === "pending";
+  const hasHired = user?.associatedDoctorId && user?.associationStatus === "active";
+  const hasPendingSent = user?.associatedDoctorId && user?.associationStatus === "pending";
 
   const fetchIncomingRequests = useCallback(async () => {
     try {
@@ -39,23 +43,23 @@ export const useManageRec = () => {
     }
   }, []);
 
-  const handleAction = async (receptionistId, action) => {
+  const handleAction = async (doctorId, action) => {
     try {
-      setActionLoading(receptionistId);
+      setActionLoading(doctorId);
       const res = await fetch("/api/auth/handle-association-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ targetUserId: receptionistId, action }),
+        body: JSON.stringify({ targetUserId: doctorId, action }),
         credentials: "include",
       });
       const data = await res.json();
       if (data.success) {
-        dispatch({ type: "LOGIN", payload: { user: data.user } });
+        authDispatch({ type: "LOGIN", payload: { user: data.user } });
         if (action === "reject") {
-          setRequests((prev) => prev.filter((r) => r._id !== receptionistId && r.id !== receptionistId));
+          setRequests((prev) => prev.filter((r) => r._id !== doctorId && r.id !== doctorId));
         }
       } else {
-         throw new Error(data.message || "Action failed");
+        throw new Error(data.message || "Action failed");
       }
       return data;
     } catch (err) {
@@ -76,11 +80,10 @@ export const useManageRec = () => {
     try {
       setSearchLoading(true);
       setSearchError("");
-      const targetRole = user?.role === "doctor" ? "receptionist" : "doctor";
       const res = await fetch("/api/auth/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: searchQuery.trim(), role: targetRole }),
+        body: JSON.stringify({ username: searchQuery.trim(), role: "doctor" }),
         credentials: "include",
       });
       const data = await res.json();
@@ -91,7 +94,7 @@ export const useManageRec = () => {
       if (data.success) {
         setSearchResults(data.users);
         if (data.users.length === 0) {
-          setSearchError("No available receptionists found");
+          setSearchError("No available doctors found");
         }
       }
     } catch (err) {
@@ -102,18 +105,18 @@ export const useManageRec = () => {
     }
   };
 
-  const sendRequest = async (receptionistId) => {
+  const sendRequest = async (doctorId) => {
     try {
       setHireLoading(true);
       const res = await fetch("/api/auth/request-association", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ targetUserId: receptionistId }),
+        body: JSON.stringify({ targetUserId: doctorId }),
         credentials: "include",
       });
       const data = await res.json();
       if (data.success) {
-        dispatch({ type: "LOGIN", payload: { user: data.user } });
+        authDispatch({ type: "LOGIN", payload: { user: data.user } });
         setSearchQuery("");
         setSearchResults([]);
       } else {
@@ -137,7 +140,7 @@ export const useManageRec = () => {
       });
       const data = await res.json();
       if (data.success) {
-        dispatch({ type: "LOGIN", payload: { user: data.user } });
+        authDispatch({ type: "LOGIN", payload: { user: data.user } });
       } else {
         throw new Error(data.message || "Failed to cancel request");
       }
@@ -159,9 +162,10 @@ export const useManageRec = () => {
       });
       const data = await res.json();
       if (data.success) {
-        dispatch({ type: "LOGIN", payload: { user: data.user } });
+        authDispatch({ type: "LOGIN", payload: { user: data.user } });
+        sessionDispatch({ type: "CLEAR_SESSION" });
       } else {
-        throw new Error(data.message || "Failed to remove receptionist");
+        throw new Error(data.message || "Failed to remove doctor");
       }
       return data;
     } catch (err) {
@@ -169,6 +173,55 @@ export const useManageRec = () => {
       throw err;
     } finally {
       setRemoveLoading(false);
+    }
+  };
+
+  const leaveSession = async () => {
+    try {
+      setRemoveLoading(true);
+      const res = await fetch("/api/rec/leave-session", {
+        method: "POST",
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (data.success) {
+        sessionDispatch({ type: "CLEAR_SESSION" });
+      } else {
+        throw new Error(data.message || "Failed to leave session");
+      }
+      return data;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    } finally {
+      setRemoveLoading(false);
+    }
+  };
+
+  const addPatientToQueue = async ({ name, mobile, age, gender }) => {
+    try {
+      setAddPatientLoading(true);
+      const res = await fetch("/api/rec/add-patient", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, mobile, age, gender }),
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to add patient to queue");
+      }
+      // Update local state if needed (though Socket handler will also fire)
+      sessionDispatch({
+        type: "UPDATE_QUEUE",
+        payload: { queue: data.queue },
+      });
+      return data;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    } finally {
+      setAddPatientLoading(false);
     }
   };
 
@@ -191,11 +244,14 @@ export const useManageRec = () => {
     isCancelling,
     hireLoading,
     removeLoading,
+    addPatientLoading,
     fetchIncomingRequests,
     handleAction,
     handleSearch,
     sendRequest,
     cancelSentRequest,
-    removeReceptionist
+    removeReceptionist,
+    leaveSession,
+    addPatientToQueue,
   };
 };

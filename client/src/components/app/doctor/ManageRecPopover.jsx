@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useManageRec } from "../../../hooks/useManageRec";
+import { useDoc } from "../../../hooks/useDoc";
 import Loading from "../../common/Loading";
 import {
   FiUser,
@@ -33,7 +33,7 @@ const ManageRecPopover = ({ setIsPopoverOpen }) => {
     cancelSentRequest,
     removeReceptionist,
     fetchIncomingRequests
-  } = useManageRec();
+  } = useDoc();
 
   const [activeTab, setActiveTab] = useState("received");
   const [showReplaceConfirm, setShowReplaceConfirm] = useState(null);

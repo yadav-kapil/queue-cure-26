@@ -3,6 +3,9 @@ import cookieParser from 'cookie-parser';
 import ExpressError from './utils/ExpressError.js';
 import cors from 'cors'
 import userRouter from './routes/user.routes.js';
+import sessionRouter from './routes/session.routes.js';
+import recRouter from './routes/rec.routes.js';
+import doctorRouter from './routes/doctor.routes.js';
 import config from './config/config.js';
 
 const app = express();
@@ -17,7 +20,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(config.COOKIE_SECRET));
 
 // routes
-app.use('/api/auth', userRouter)
+app.use('/api/auth', userRouter);
+app.use('/api/session', sessionRouter);
+app.use('/api/rec', recRouter);
+app.use('/api/doctor', doctorRouter);
 
 // error handlers
 app.use((req, res, next) => {

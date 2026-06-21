@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useLocation } from 'react-router'
+import { useNavigate } from 'react-router'
 import {
   FiCheckCircle,
   FiClock,
@@ -13,40 +13,108 @@ import {
   FiUsers,
   FiWifi,
 } from 'react-icons/fi'
-
-const getStoredSessionStatus = () => {
-  if (typeof window === 'undefined') return false
-  return window.sessionStorage.getItem('doctor-session-online') === 'true'
-}
+import { useSession } from '../../context/session/SessionContext'
+import { useDoc } from '../../hooks/useDoc'
 
 const LiveSessionDoc = () => {
-  const location = useLocation()
-  const [sessionOnline, setSessionOnline] = useState(() => Boolean(location.state?.startOnline) || getStoredSessionStatus())
-  const [sessionStartedAt, setSessionStartedAt] = useState(() => (sessionOnline ? new Date() : null))
+  const { session, queue, isSessionActive } = useSession()
+  const { goLive, callNextPatient, skipCurrentPatient, completeCurrentPatient, endSession } = useDoc()
+  const navigate = useNavigate()
+
   const [elapsedMinutes, setElapsedMinutes] = useState(0)
-  const [averageConsultationTime] = useState(5)
-  const [receptionist] = useState(null)
-  const [currentPatient, setCurrentPatient] = useState(null)
-  const [waitingPatients, setWaitingPatients] = useState([])
-  const [skippedPatients, setSkippedPatients] = useState([])
-  const [completedPatients, setCompletedPatients] = useState([])
-  const [clockBase] = useState(() => Date.now())
 
+  // Track session duration since starting
   useEffect(() => {
-    if (!sessionOnline || !sessionStartedAt) return undefined
+    if (!isSessionActive || !session?.startedAt) return
 
-    const timer = window.setInterval(() => {
-      const elapsed = Math.max(0, Math.floor((Date.now() - sessionStartedAt.getTime()) / 60000))
+    const start = new Date(session.startedAt).getTime()
+    const updateElapsed = () => {
+      const elapsed = Math.max(0, Math.floor((Date.now() - start) / 60000))
       setElapsedMinutes(elapsed)
-    }, 30000)
+    }
 
-    return () => window.clearInterval(timer)
-  }, [sessionOnline, sessionStartedAt])
+    updateElapsed()
+    const timer = setInterval(updateElapsed, 30000)
+    return () => clearInterval(timer)
+  }, [isSessionActive, session?.startedAt])
+
+  // Extract receptionist details
+  const receptionist = useMemo(() => {
+    if (!session || !session.receptionistId) return null
+    return {
+      name: session.receptionistId.fullName || session.receptionistId.username,
+      connectedAt: session.receptionistId.connectedAt || new Date(session.startedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    }
+  }, [session])
+
+  // Map currently serving patient
+  const currentPatient = useMemo(() => {
+    if (!queue || !queue.patients || !queue.currentToken) return null
+    const patient = queue.patients.find((p) => p.tokenNumber === queue.currentToken)
+    if (!patient) return null
+    
+    return {
+      token: patient.tokenNumber,
+      name: patient.name,
+      age: patient.age,
+      gender: patient.gender,
+      arrivalTime: formatTime(patient.joinedAt),
+      queuePosition: queue.patients.filter((p) => !p.consultationEndedAt && p.tokenNumber < patient.tokenNumber).length + 1,
+    }
+  }, [queue])
+
+  // Map waiting patients
+  const waitingPatients = useMemo(() => {
+    if (!queue || !queue.patients) return []
+    return queue.patients
+      .filter((p) => !p.consultationStartedAt && !p.consultationEndedAt && !p.skipped)
+      .map((p) => ({
+        id: p.tokenNumber,
+        token: p.tokenNumber,
+        name: p.name,
+        arrivalTime: formatTime(p.joinedAt),
+        status: 'Waiting',
+      }))
+  }, [queue])
+
+  // Map skipped patients
+  const skippedPatients = useMemo(() => {
+    if (!queue || !queue.patients) return []
+    return queue.patients.filter((p) => p.skipped)
+  }, [queue])
+
+  // Map completed patients
+  const completedPatients = useMemo(() => {
+    if (!queue || !queue.patients) return []
+    return queue.patients.filter((p) => p.consultationEndedAt && !p.skipped)
+  }, [queue])
+
+  const averageConsultationTime = useMemo(() => {
+    if (!queue || !queue.patients || queue.patients.length === 0) return null
+
+    const completed = queue.patients.filter(
+      (p) => p.consultationStartedAt && p.consultationEndedAt
+    )
+
+    if (completed.length === 0) return null
+
+    const totalMs = completed.reduce((sum, p) => {
+      const start = new Date(p.consultationStartedAt).getTime()
+      const end = new Date(p.consultationEndedAt).getTime()
+      return sum + Math.max(0, end - start)
+    }, 0)
+
+    const averageMs = totalMs / completed.length
+    const averageMinutes = averageMs / 60000 // Convert milliseconds to minutes
+
+    return Number(averageMinutes.toFixed(1))
+  }, [queue])
 
   const queueSummary = useMemo(() => {
-    const estimatedRemainingMinutes = waitingPatients.length * averageConsultationTime
+    const avgTimeForCalc = averageConsultationTime !== null && averageConsultationTime > 0 ? averageConsultationTime : 5
+    const estimatedRemainingMinutes = Math.round(waitingPatients.length * avgTimeForCalc)
     const finishBy = estimatedRemainingMinutes
-      ? new Date(clockBase + estimatedRemainingMinutes * 60000).toLocaleTimeString([], {
+      ? new Date(Date.now() + estimatedRemainingMinutes * 60000).toLocaleTimeString([], {
           hour: '2-digit',
           minute: '2-digit',
         })
@@ -56,51 +124,9 @@ const LiveSessionDoc = () => {
       estimatedRemainingMinutes,
       finishBy,
     }
-  }, [averageConsultationTime, clockBase, waitingPatients.length])
+  }, [waitingPatients.length, averageConsultationTime])
 
-  const goLive = () => {
-    const startTime = new Date()
-    setSessionOnline(true)
-    setSessionStartedAt(startTime)
-    setElapsedMinutes(0)
-    window.sessionStorage.setItem('doctor-session-online', 'true')
-  }
-
-  const callNext = () => {
-    if (!waitingPatients.length) return
-
-    setCurrentPatient((activePatient) => {
-      if (activePatient) {
-        setSkippedPatients((patients) => [{ ...activePatient, status: 'Skipped' }, ...patients])
-      }
-      return { ...waitingPatients[0], status: 'Being Served' }
-    })
-    setWaitingPatients((patients) => patients.slice(1))
-  }
-
-  const markCompleted = () => {
-    if (!currentPatient) return
-
-    setCompletedPatients((patients) => [{ ...currentPatient, status: 'Completed' }, ...patients])
-    setCurrentPatient(null)
-  }
-
-  const skipPatient = () => {
-    if (!currentPatient) return
-
-    setSkippedPatients((patients) => [{ ...currentPatient, status: 'Skipped' }, ...patients])
-    setCurrentPatient(null)
-  }
-
-  const endSession = () => {
-    setSessionOnline(false)
-    setSessionStartedAt(null)
-    setElapsedMinutes(0)
-    setCurrentPatient(null)
-    window.sessionStorage.setItem('doctor-session-online', 'false')
-  }
-
-  if (!sessionOnline) {
+  if (!isSessionActive) {
     return (
       <section className="grid min-h-[calc(100vh-180px)] place-items-center">
         <article className="w-full max-w-xl rounded-[28px] border border-[#e5eaf4] bg-white p-8 text-center shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
@@ -116,7 +142,7 @@ const LiveSessionDoc = () => {
           <button
             type="button"
             onClick={goLive}
-            className="mt-8 inline-flex h-14 items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#5b5ff7] to-[#4d9eff] px-10 font-bold text-white shadow-[0_14px_30px_rgba(77,124,254,0.26)] transition hover:-translate-y-0.5"
+            className="mt-8 inline-flex h-14 items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#5b5ff7] to-[#4d9eff] px-10 font-bold text-white shadow-[0_14px_30px_rgba(77,124,254,0.26)] transition hover:-translate-y-0.5 cursor-pointer"
           >
             <FiPlay className="h-5 w-5" />
             Go Live
@@ -130,6 +156,7 @@ const LiveSessionDoc = () => {
     <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
       <div className="space-y-5">
         <div className="grid gap-5 lg:grid-cols-2">
+          {/* Active Session Info */}
           <article className="rounded-[24px] border border-[#dff7e9] bg-[#f4fbf8] p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
             <div className="flex items-center justify-between gap-4">
               <div>
@@ -138,13 +165,14 @@ const LiveSessionDoc = () => {
                   Online
                 </div>
                 <p className="mt-2 text-sm font-semibold text-[#5b6478]">
-                  Started {formatTime(sessionStartedAt)} <span className="px-2">.</span> Duration {formatDuration(elapsedMinutes)}
+                  Started {formatTime(session?.startedAt)} <span className="px-2">.</span> Duration {formatDuration(elapsedMinutes)}
                 </p>
               </div>
               <FiWifi className="h-8 w-8 text-[#22c55e]" />
             </div>
           </article>
 
+          {/* Active Receptionist Connection info */}
           <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
             {receptionist ? (
               <div className="flex items-center gap-4">
@@ -168,6 +196,7 @@ const LiveSessionDoc = () => {
           </article>
         </div>
 
+        {/* Current Patient Banner */}
         <article className="rounded-[28px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
           <div className="rounded-[24px] bg-gradient-to-br from-[#5b5ff7] to-[#4d9eff] p-6 text-white">
             <span className="rounded-full bg-white/18 px-3 py-1 text-xs font-bold">Current Patient</span>
@@ -177,7 +206,7 @@ const LiveSessionDoc = () => {
                 <p className="mt-2 text-xl font-semibold text-white/90">{currentPatient?.name || 'Call next patient when queue has arrivals'}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <InfoPill label={currentPatient?.age ? `Age ${currentPatient.age}` : 'Age --'} />
-                  <InfoPill label={currentPatient?.gender || 'Gender --'} />
+                  <InfoPill label={currentPatient?.gender ? (currentPatient.gender.charAt(0).toUpperCase() + currentPatient.gender.slice(1)) : 'Gender --'} />
                   <InfoPill label={currentPatient?.arrivalTime ? `Arrived ${currentPatient.arrivalTime}` : 'Arrival --'} />
                   <InfoPill label={currentPatient?.queuePosition ? `Position ${currentPatient.queuePosition}` : 'Position --'} />
                 </div>
@@ -189,19 +218,21 @@ const LiveSessionDoc = () => {
           </div>
 
           <div className="mt-5 grid gap-3 md:grid-cols-4">
-            <ActionButton label="Call Next" icon={FiPhoneCall} onClick={callNext} disabled={!waitingPatients.length} primary />
-            <ActionButton label="Mark Completed" icon={FiCheckCircle} onClick={markCompleted} disabled={!currentPatient} />
-            <ActionButton label="Skip Patient" icon={FiSkipForward} onClick={skipPatient} disabled={!currentPatient} />
+            <ActionButton label="Call Next" icon={FiPhoneCall} onClick={callNextPatient} disabled={!waitingPatients.length} primary />
+            <ActionButton label="Mark Completed" icon={FiCheckCircle} onClick={completeCurrentPatient} disabled={!currentPatient} />
+            <ActionButton label="Skip Patient" icon={FiSkipForward} onClick={skipCurrentPatient} disabled={!currentPatient} />
             <ActionButton label="End Session" icon={FiStopCircle} onClick={endSession} danger />
           </div>
         </article>
 
+        {/* Mini Metrics list */}
         <div className="grid gap-4 sm:grid-cols-3">
           <MiniMetric label="Patients Waiting" value={waitingPatients.length} icon={FiUsers} tone="green" />
-          <MiniMetric label="Average Wait Time" value={`${averageConsultationTime} min`} icon={FiClock} tone="blue" />
+          <MiniMetric label="Average Wait Time" value={completedPatients.length === 0 ? '--' : `${averageConsultationTime} min`} icon={FiClock} tone="blue" />
           <MiniMetric label="Estimated Finish Time" value={queueSummary.finishBy} icon={FiFlag} tone="orange" />
         </div>
 
+        {/* Upcoming Patients Queue List */}
         <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
           <div className="flex items-center justify-between gap-4">
             <h2 className="text-lg font-extrabold text-[#07122f]">Upcoming Patients Queue</h2>
@@ -217,8 +248,8 @@ const LiveSessionDoc = () => {
           ) : (
             <div className="mt-4 max-h-[360px] space-y-3 overflow-y-auto pr-1">
               {waitingPatients.map((patient) => (
-                <div key={patient.id} className="grid gap-3 rounded-2xl border border-[#e5eaf4] px-4 py-3 sm:grid-cols-[90px_minmax(0,1fr)_100px_90px] sm:items-center">
-                  <span className="font-extrabold text-[#07122f]">#{patient.token}</span>
+                <div key={patient.token} className="grid gap-3 rounded-2xl border border-[#e5eaf4] px-4 py-3 sm:grid-cols-[90px_minmax(0,1fr)_100px_90px] sm:items-center">
+                  <span className="font-extrabold text-[#2459ff]">#{patient.token}</span>
                   <span className="font-bold text-[#111827]">{patient.name}</span>
                   <span className="text-sm font-semibold text-[#6b7280]">{patient.arrivalTime}</span>
                   <span className="rounded-full bg-[#fff7ed] px-3 py-1 text-center text-xs font-bold text-[#f59e0b]">{patient.status}</span>
@@ -230,6 +261,7 @@ const LiveSessionDoc = () => {
       </div>
 
       <aside className="space-y-5">
+        {/* Session Records */}
         <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
           <h2 className="text-lg font-extrabold text-[#07122f]">Session Records</h2>
           <div className="mt-4 grid gap-3">
@@ -239,6 +271,7 @@ const LiveSessionDoc = () => {
           </div>
         </article>
 
+        {/* Permissions / Status Info */}
         <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
           <h2 className="text-lg font-extrabold text-[#07122f]">Allowed Here</h2>
           <div className="mt-4 space-y-3">
@@ -253,8 +286,9 @@ const LiveSessionDoc = () => {
   )
 }
 
-const formatTime = (date) => {
-  if (!date) return '--:--'
+const formatTime = (dateStr) => {
+  if (!dateStr) return '--:--'
+  const date = new Date(dateStr)
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
 
@@ -273,7 +307,7 @@ const InfoPill = ({ label }) => (
 
 const ActionButton = ({ label, icon: Icon, onClick, disabled = false, primary = false, danger = false }) => {
   const colorClass = primary
-    ? 'bg-gradient-to-r from-[#5b5ff7] to-[#4d9eff] text-white shadow-[0_12px_24px_rgba(77,124,254,0.2)]'
+    ? 'bg-gradient-to-r from-[#5b5ff7] to-[#4d9eff] text-white shadow-[0_12px_24px_rgba(77,124,254,0.2)] hover:shadow-[0_14px_30px_rgba(77,124,254,0.25)]'
     : danger
       ? 'border border-[#fecaca] bg-white text-[#ef4444] hover:bg-[#fff1f2]'
       : 'border border-[#e5eaf4] bg-white text-[#111827] hover:border-[#4d7cfe] hover:text-[#2459ff]'
@@ -283,7 +317,7 @@ const ActionButton = ({ label, icon: Icon, onClick, disabled = false, primary = 
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`flex h-14 items-center justify-center gap-2 rounded-2xl text-sm font-extrabold transition enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 ${colorClass}`}
+      className={`flex h-14 items-center justify-center gap-2 rounded-2xl text-sm font-extrabold transition enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 ${colorClass} cursor-pointer`}
     >
       <Icon className="h-5 w-5" />
       {label}

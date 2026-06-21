@@ -16,7 +16,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { isAuthenticated, user } = useAuth();
 
-  const dashboardPath = user?.role === "doctor" ? "/doctor" : "/receptionist";
+  const dashboardPath = user?.role === "doctor" ? "/doctor" : "/rec";
 
   const navLinks = [
     { label: "Home", href: "#home", icon: FiHome },

@@ -8,6 +8,9 @@ import ProtectedLayout from "../layouts/ProtectedLayout";
 import DashboardDoc from "../pages/doctor/DashboardDoc";
 import HistoryDoc from "../pages/doctor/HistoryDoc";
 import LiveSessionDoc from "../pages/doctor/LiveSessionDoc";
+import DashboardRec from "../pages/receptionist/DashboardRec";
+import ManagePatientRec from "../pages/receptionist/ManagePatientRec";
+import HistoryRec from "../pages/receptionist/HistoryRec";
 
 export const router = createBrowserRouter([
   {
@@ -52,6 +55,28 @@ export const router = createBrowserRouter([
       {
         path: "history",
         element: <HistoryDoc />,
+      },
+    ],
+  },
+  {
+    path: "/rec",
+    element: <ProtectedLayout />,
+    children: [
+      {
+        index: true,
+        element: <Navigate to="dashboard" replace />,
+      },
+      {
+        path: "dashboard",
+        element: <DashboardRec />,
+      },
+      {
+        path: "manage-patient",
+        element: <ManagePatientRec />,
+      },
+      {
+        path: "history",
+        element: <HistoryRec />,
       },
     ],
   },

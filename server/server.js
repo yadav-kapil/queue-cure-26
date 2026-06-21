@@ -8,15 +8,17 @@ import { initializeSocket } from "./src/socket/index.socket.js";
 const startServer = async () => {
   try {
     await connectDB();
-
+    
     const server = http.createServer(app)
 
     const io = new Server(server, {
       cors: {
         origin: config.CLIENT_URI,
-        methods: ["GET", "POST"]
+        methods: ["GET", "POST", "PATCH", "DELETE"],
+        credentials: true
       }
     });
+    app.set("io", io)
     initializeSocket(io);
 
     server.listen(config.PORT, () => {
