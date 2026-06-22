@@ -8,6 +8,7 @@ import {
   FiPlus,
   FiX,
   FiHome,
+  FiSearch,
 } from "react-icons/fi";
 import { useAuth } from "../../context/auth/AuthContext";
 
@@ -19,10 +20,11 @@ const Navbar = () => {
   const dashboardPath = user?.role === "doctor" ? "/doctor" : "/rec";
 
   const navLinks = [
-    { label: "Home", href: "#home", icon: FiHome },
-    { label: "Features", href: "#features", icon: FiGrid },
-    { label: "How It Works", href: "#how-it-works", icon: FiCalendar },
-    { label: "Contact", href: "#contact", icon: FiArrowRight },
+    { label: "Home", href: "#home", icon: FiHome, isRoute: false },
+    { label: "Track", href: "/patient/track", icon: FiSearch, isRoute: true },
+    { label: "Features", href: "#features", icon: FiGrid, isRoute: false },
+    { label: "How It Works", href: "#how-it-works", icon: FiCalendar, isRoute: false },
+    { label: "Contact", href: "#contact", icon: FiArrowRight, isRoute: false },
   ];
 
   useEffect(() => {
@@ -67,13 +69,23 @@ const Navbar = () => {
 
         <div className="hidden items-center gap-9 text-sm font-semibold text-[#080b13] lg:flex">
           {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="transition hover:text-[#2f75ff]"
-            >
-              {link.label}
-            </a>
+            link.isRoute ? (
+              <NavLink
+                key={link.label}
+                to={link.href}
+                className="transition hover:text-[#2f75ff]"
+              >
+                {link.label}
+              </NavLink>
+            ) : (
+              <a
+                key={link.label}
+                href={window.location.pathname === '/' ? link.href : `/${link.href}`}
+                className="transition hover:text-[#2f75ff]"
+              >
+                {link.label}
+              </a>
+            )
           ))}
         </div>
 
@@ -128,10 +140,22 @@ const Navbar = () => {
               {navLinks.map((link) => {
                 const Icon = link.icon;
 
-                return (
+                return link.isRoute ? (
+                  <NavLink
+                    key={link.label}
+                    to={link.href}
+                    className="flex items-center gap-4 rounded-2xl px-4 py-3.5 text-[15px] font-semibold text-slate-800 transition hover:bg-slate-50 active:bg-slate-100"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <span className="grid size-9 place-items-center rounded-xl bg-slate-100 text-slate-600">
+                      <Icon className="text-lg" />
+                    </span>
+                    {link.label}
+                  </NavLink>
+                ) : (
                   <a
                     key={link.label}
-                    href={link.href}
+                    href={window.location.pathname === '/' ? link.href : `/${link.href}`}
                     className="flex items-center gap-4 rounded-2xl px-4 py-3.5 text-[15px] font-semibold text-slate-800 transition hover:bg-slate-50 active:bg-slate-100"
                     onClick={() => setIsOpen(false)}
                   >

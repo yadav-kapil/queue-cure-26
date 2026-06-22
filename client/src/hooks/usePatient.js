@@ -1,0 +1,78 @@
+import { useState, useCallback } from "react";
+import { io } from "socket.io-client";
+import { registerPatientSocketHandlers } from "../services/patientSocketHandlers";
+
+export const usePatient = (trackingId) => {
+  const [patient, setPatient] = useState(null);
+  const [session, setSession] = useState(null);
+  const [queue, setQueue] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSessionFound, setIsSessionFound] = useState(true);
+  const [isSessionEnded, setIsSessionEnded] = useState(false);
+  const [socket, setSocket] = useState(null);
+
+  const fetchPatientSession = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/patient/track/${trackingId}`, {
+        method: "GET",
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setIsSessionFound(false);
+        setIsLoading(false);
+        return false;
+      }
+
+      setPatient(data.patient);
+      setSession(data.session);
+      setQueue(data.queue);
+      setIsSessionFound(true);
+      return data;
+    } catch (err) {
+      console.error("Failed to fetch patient session", err);
+      setIsSessionFound(false);
+      setIsLoading(false);
+      return false;
+    }
+  }, [trackingId]);
+
+  const connectSocket = useCallback(
+    (sessionId) => {
+      const newSocket = io('http://localhost:3003', {
+        withCredentials: true,
+      });
+
+      newSocket.on("connect", () => {
+        newSocket.emit("join-session", { sessionId });
+      });
+
+      const cleanup = registerPatientSocketHandlers(
+        newSocket,
+        fetchPatientSession,
+        setIsSessionEnded
+      );
+
+      setSocket(newSocket);
+
+      return () => {
+        cleanup();
+        newSocket.disconnect();
+      };
+    },
+    [fetchPatientSession]
+  );
+
+  return {
+    patient,
+    session,
+    queue,
+    isLoading,
+    setIsLoading,
+    isSessionFound,
+    isSessionEnded,
+    fetchPatientSession,
+    connectSocket,
+    socket,
+  };
+};
