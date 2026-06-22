@@ -119,3 +119,44 @@ export const endSession = wrapAsync(async (req, res, next) => {
     session,
   });
 });
+
+// getSessionHistory
+export const getSessionHistory = wrapAsync(async (req, res, next) => {
+  let sessions = [];
+
+  if (req.user.role === "doctor") {
+    // Find ended sessions for this doctor
+    sessions = await Session.find({
+      doctorId: req.user._id,
+      status: "ended",
+    })
+      .populate("receptionistId", "fullName username")
+      .sort({ endedAt: -1 });
+  } else if (req.user.role === "receptionist") {
+    // Find ended sessions for this receptionist
+    sessions = await Session.find({
+      receptionistId: req.user._id,
+      status: "ended",
+    })
+      .populate("doctorId", "fullName username clinicName")
+      .sort({ endedAt: -1 });
+  } else {
+    throw new ExpressError(403, "Access denied.");
+  }
+
+  // Fetch queue for each session to retrieve patients processed
+  const history = await Promise.all(
+    sessions.map(async (session) => {
+      const queue = await Queue.findOne({ sessionId: session._id });
+      return {
+        session,
+        queue,
+      };
+    })
+  );
+
+  res.status(200).json({
+    success: true,
+    history,
+  });
+});

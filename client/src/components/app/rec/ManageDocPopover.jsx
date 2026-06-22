@@ -44,7 +44,14 @@ const ManageDocPopover = ({ setIsPopoverOpen }) => {
   const pendingDoc = hasPendingSent ? user.associatedDoctorId : null;
 
   useEffect(() => {
-    fetchIncomingRequests();
+    const loadRequests = async () => {
+      try {
+        await fetchIncomingRequests();
+      } catch (err) {
+        setLocalError(err.message || "Failed to load incoming requests.");
+      }
+    };
+    loadRequests();
   }, [fetchIncomingRequests]);
 
   const handleHireClick = async (doctorId) => {
@@ -90,6 +97,9 @@ const ManageDocPopover = ({ setIsPopoverOpen }) => {
   return (
     <>
       {hireLoading && <Loading message="Sending connection request..." />}
+      {removeLoading && <Loading message="Removing associated doctor..." />}
+      {isCancelling && <Loading message="Cancelling connection request..." />}
+      {actionLoading && <Loading message="Processing association request..." />}
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
         <div className="bg-white rounded-3xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
           <div className="flex items-center justify-between p-5 border-b border-slate-100 sticky top-0 bg-white/95 backdrop-blur z-10">

@@ -43,12 +43,16 @@ export const addPatient = wrapAsync(async (req, res, next) => {
     nextToken = lastPatient.tokenNumber + 1;
   }
 
+  // Generate 4-digit random OTP
+  const code = Math.floor(1000 + Math.random() * 9000).toString();
+
   const newPatient = {
     tokenNumber: nextToken,
     name,
     mobile,
     age: age ? Number(age) : undefined,
     gender,
+    code,
     joinedAt: new Date(),
   };
 
@@ -64,6 +68,7 @@ export const addPatient = wrapAsync(async (req, res, next) => {
   res.status(201).json({
     success: true,
     message: "Patient added to the queue successfully.",
+    patient: newPatient,
     queue,
   });
 });

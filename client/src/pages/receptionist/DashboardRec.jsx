@@ -18,15 +18,44 @@ import { useAuth } from '../../context/auth/AuthContext'
 import { useSession } from '../../context/session/SessionContext'
 import { useRec } from '../../hooks/useRec'
 import RecHandleDoc from '../../components/app/rec/RecHandleDoc'
+import { fetchSession } from '../../services/sessionService'
+import Loading from '../../components/common/Loading'
+import ErrorDialog from '../../components/common/Error'
 
 const DashboardRec = () => {
   const { user } = useAuth()
-  const { session, queue, isSessionActive } = useSession()
-  const { leaveSession, hasHired } = useRec()
+  const { session, queue, isSessionActive, dispatch } = useSession()
+  const { leaveSession, hasHired, removeLoading } = useRec()
   const navigate = useNavigate()
   
   const [elapsedMinutes, setElapsedMinutes] = useState(0)
   const [lastSyncSeconds, setLastSyncSeconds] = useState(0)
+  const [connectLoading, setConnectLoading] = useState(false)
+  const [errorMsg, setErrorMsg] = useState(null)
+
+  const handleConnectSession = async () => {
+    try {
+      setConnectLoading(true)
+      setErrorMsg(null)
+      const data = await fetchSession(dispatch)
+      if (!data || !data.session) {
+        setErrorMsg("Doctor is not active.")
+      }
+    } catch (err) {
+      setErrorMsg("Failed to connect session. Please verify that the doctor has started the session.")
+    } finally {
+      setConnectLoading(false)
+    }
+  }
+
+  const handleLeaveSession = async () => {
+    try {
+      setErrorMsg(null)
+      await leaveSession()
+    } catch (err) {
+      setErrorMsg(err.message || "Failed to leave the session.")
+    }
+  }
 
   // Track session duration
   useEffect(() => {
@@ -169,7 +198,17 @@ const DashboardRec = () => {
   const clinicName = session?.doctorId?.clinicName || user?.associatedDoctorId?.clinicName || 'Clinic'
 
   return (
-    <section className="space-y-6">
+    <>
+      {connectLoading && <Loading message="Connecting to live session..." />}
+      {removeLoading && <Loading message="Leaving current session..." />}
+      {errorMsg && (
+        <ErrorDialog
+          heading="Connection Error"
+          message={errorMsg}
+          onClose={() => setErrorMsg(null)}
+        />
+      )}
+      <section className="space-y-6">
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
         {/* Welcome Hero Banner */}
         <article className="relative min-h-[280px] overflow-hidden rounded-[32px] bg-gradient-to-br from-[#5b5ff7] via-[#346dff] to-[#5ab7ff] p-6 text-white shadow-[0_16px_38px_rgba(77,124,254,0.18)] sm:p-8">
@@ -186,14 +225,25 @@ const DashboardRec = () => {
               Ready to manage today&apos;s appointments and guide patients smoothly through their consultation journey.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={() => navigate('/rec/manage-patient')}
-                className="inline-flex h-12 items-center gap-3 rounded-full bg-white px-6 text-sm font-bold text-[#2459ff] shadow-[0_12px_25px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(15,23,42,0.15)] cursor-pointer"
-              >
-                <FiUsers className="h-5 w-5" />
-                Manage Patients
-              </button>
+              {!isSessionActive ? (
+                <button
+                  type="button"
+                  onClick={handleConnectSession}
+                  className="inline-flex h-12 items-center gap-3 rounded-full bg-white px-6 text-sm font-bold text-[#2459ff] shadow-[0_12px_25px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(15,23,42,0.15)] cursor-pointer"
+                >
+                  <FiRadio className="h-5 w-5" />
+                  Connect Session
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => navigate('/rec/manage-patient')}
+                  className="inline-flex h-12 items-center gap-3 rounded-full bg-white px-6 text-sm font-bold text-[#2459ff] shadow-[0_12px_25px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(15,23,42,0.15)] cursor-pointer"
+                >
+                  <FiUsers className="h-5 w-5" />
+                  Manage Patients
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => navigate('/rec/history')}
@@ -207,7 +257,7 @@ const DashboardRec = () => {
           <img
             src={recHero}
             alt="Receptionist illustration"
-            className="absolute bottom-0 right-3 hidden h-[90%] max-w-[42%] object-cover sm:block rounded-[20px] shadow-2xl border border-white/20"
+            className="absolute bottom-0 right-3 hidden h-[90%] max-w-[42%] object-cover sm:block rounded-[20px]"
           />
         </article>
 
@@ -293,6 +343,7 @@ const DashboardRec = () => {
                   <tr className="border-b border-slate-100 text-xs font-extrabold uppercase tracking-wider text-slate-400">
                     <th className="py-3.5 px-4">Token</th>
                     <th className="py-3.5 px-4">Patient Name</th>
+                    <th className="py-3.5 px-4">OTP</th>
                     <th className="py-3.5 px-4">Age / Gender</th>
                     <th className="py-3.5 px-4">Wait Time</th>
                     <th className="py-3.5 px-4">Status</th>
@@ -329,6 +380,9 @@ const DashboardRec = () => {
                         </td>
                         <td className="py-3.5 px-4">
                           <span className="text-sm font-extrabold text-[#07122f]">{patient.name}</span>
+                        </td>
+                        <td className="py-3.5 px-4 text-sm font-semibold text-slate-600">
+                          {patient.code || '--'}
                         </td>
                         <td className="py-3.5 px-4">
                           <span className="text-sm font-semibold text-slate-500">
@@ -417,7 +471,7 @@ const DashboardRec = () => {
             {isSessionActive && (
               <button
                 type="button"
-                onClick={leaveSession}
+                onClick={handleLeaveSession}
                 className="mt-4 w-full flex h-11 items-center justify-center gap-2 rounded-xl border border-red-200 bg-white text-red-500 hover:bg-[#fff5f5] transition text-xs font-extrabold cursor-pointer"
               >
                 <FiLogOut className="h-4 w-4" />
@@ -463,6 +517,7 @@ const DashboardRec = () => {
         </aside>
       </div>
     </section>
+    </>
   )
 }
 

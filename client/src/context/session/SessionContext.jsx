@@ -28,7 +28,7 @@ export const SessionContextProvider = ({ children }) => {
 
     const sessionId = state.session._id;
     const receptionistId =
-      user?.role === "receptionist" ? user?._id || user?.id : null;
+      user?.role === "receptionist" ? (user?._id || user?.id) : null;
 
     const joinRoom = () => {
       socket.emit("join-session", {
@@ -57,14 +57,14 @@ export const SessionContextProvider = ({ children }) => {
   // Effect 2: Connect socket and register event listeners on mount, disconnect on unmount
   useEffect(() => {
     socket.connect();
-    const cleanup = registerSocketHandlers(socket, dispatch);
+    const cleanup = registerSocketHandlers(socket, dispatch, user);
 
     return () => {
       cleanup();
       socket.disconnect();
       dispatch({ type: "CLEAR_SESSION" });
     };
-  }, []);
+  }, [user?._id, user?.associatedDoctorId]);
 
   return (
     <SessionContext.Provider

@@ -11,7 +11,7 @@ export const fetchSession = async (dispatch) => {
       dispatch({
         type: "CLEAR_SESSION",
       });
-      return;
+      return data;
     }
 
     dispatch({
@@ -21,10 +21,12 @@ export const fetchSession = async (dispatch) => {
         queue: data.queue,
       },
     });
+    return data;
   } catch (err) {
     console.error("Error fetching current session:", err);
     dispatch({
       type: "CLEAR_SESSION",
     });
+    throw err;
   }
 };

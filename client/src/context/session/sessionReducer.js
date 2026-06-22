@@ -22,6 +22,14 @@ export const sessionReducer = (state, action) => {
           : null,
       };
 
+    case "CLEAR_RECEPTIONIST":
+      return {
+        ...state,
+        session: state.session
+          ? { ...state.session, receptionistId: null }
+          : null,
+      };
+
     case "UPDATE_QUEUE":
       return {
         ...state,

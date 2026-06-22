@@ -37,6 +37,9 @@ const patientSubSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    code: {
+      type: String,
+    },
   },
   {
     _id: false,

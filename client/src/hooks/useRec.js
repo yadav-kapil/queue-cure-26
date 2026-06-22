@@ -33,11 +33,13 @@ export const useRec = () => {
         credentials: "include",
       });
       const data = await res.json();
-      if (data.success) {
-        setRequests(data.requests);
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to fetch incoming requests");
       }
+      setRequests(data.requests);
     } catch (err) {
       console.error("Error fetching requests:", err);
+      throw err;
     } finally {
       setLoading(false);
     }

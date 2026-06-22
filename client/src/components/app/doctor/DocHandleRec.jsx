@@ -21,26 +21,39 @@ const DocHandleRec = () => {
   return (
     <>
       {/* Main Dashboard Card */}
-      <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)] relative overflow-hidden">
-        <p className="text-xs font-bold uppercase tracking-wider text-[#2459ff] mb-4">
-          {hasHired && activeRec ? "Receptionist Status" : "Receptionist Connection"}
-        </p>
-        
-        {hasHired && activeRec ? (
-          <div className="flex items-center gap-4 border-b border-slate-100 pb-4 mb-4">
-            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#eef4ff] text-[#2459ff]">
-              <FiUser className="h-6 w-6" />
-            </span>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-sm font-extrabold text-[#07122f] truncate">{activeRec.fullName}</h3>
-              <p className="text-[10px] font-semibold text-slate-400 truncate">@{activeRec.username}</p>
-            </div>
-            <span className="rounded-full bg-[#ecfdf5] px-2.5 py-0.5 text-[9px] font-extrabold text-[#16a34a]">
-              Active
+      <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)] relative overflow-hidden flex flex-col justify-between h-full min-h-[280px]">
+        {hasHired && activeRec && (
+          <div className="absolute top-5 right-5">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#eef4ff] px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-[#2459ff] border border-[#dbeafe] shadow-xs">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#2459ff]" />
+              Linked
             </span>
           </div>
+        )}
+        
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider text-[#2459ff] mb-4">
+            {hasHired && activeRec ? "Receptionist Status" : "Receptionist Connection"}
+          </p>
+        </div>
+        
+        {hasHired && activeRec ? (
+          <div className="flex-1 flex flex-col items-center justify-center text-center my-3 p-5 rounded-2xl bg-gradient-to-b from-[#f8fbff] to-[#f4f7ff]/70 border border-[#e8efff]">
+            <div className="relative mb-3">
+              <span className="grid h-16 w-16 place-items-center rounded-2xl bg-white text-[#2459ff] shadow-[0_8px_20px_rgba(77,124,254,0.1)] border border-[#e8efff]">
+                <FiUser className="h-8 w-8" />
+              </span>
+              <div className="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-[#2459ff] border-2 border-white" />
+            </div>
+            <h3 className="text-base font-extrabold text-[#07122f] truncate max-w-full px-2">
+              {activeRec.fullName}
+            </h3>
+            <p className="text-[11px] font-bold text-slate-400 mt-1 truncate max-w-full px-2">
+              @{activeRec.username}
+            </p>
+          </div>
         ) : (
-          <div className="space-y-3 mb-3">
+          <div className="space-y-3 mb-3 flex-1 flex flex-col justify-center">
             <p className="text-[11px] text-slate-500 font-semibold leading-relaxed">
               No active receptionist has been assigned to your account.
             </p>
@@ -89,7 +102,7 @@ const DocHandleRec = () => {
         <button
           type="button"
           onClick={() => setIsPopoverOpen(true)}
-          className="w-full inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#315cf0] text-white hover:bg-[#204ad0] transition text-xs font-bold cursor-pointer"
+          className="w-full inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#315cf0] text-white hover:bg-[#204ad0] transition text-xs font-bold cursor-pointer mt-2"
         >
           {ctaText === "Search For Receptionist" ? <FiUserPlus className="text-base" /> : <FiUser className="text-base" />}
           {ctaText}

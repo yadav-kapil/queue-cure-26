@@ -16,12 +16,12 @@ import {
   FiActivity,
   FiUsers,
 } from "react-icons/fi";
-import authBg from "../assets/auth-bg.jpeg";
-import authDoctor from "../assets/auth-doctor.png";
-import useSignup from "../hooks/useSignup";
-import Loading from "../components/common/Loading";
-import Error from "../components/common/Error";
-import { useAuth } from "../context/auth/AuthContext";
+import authBg from "../../assets/auth-bg.jpeg";
+import authDoctor from "../../assets/auth-doctor.png";
+import useSignup from "../../hooks/useSignup";
+import Loading from "../../components/common/Loading";
+import Error from "../../components/common/Error";
+import { useAuth } from "../../context/auth/AuthContext";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);

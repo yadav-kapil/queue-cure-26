@@ -12,6 +12,7 @@ import {
 } from 'react-icons/fi'
 import { useSession } from '../../context/session/SessionContext'
 import { useRec } from '../../hooks/useRec'
+import Loading from '../../components/common/Loading'
 
 const ManagePatientRec = () => {
   const { queue, isSessionActive } = useSession()
@@ -51,14 +52,15 @@ const ManagePatientRec = () => {
     }
 
     try {
-      await addPatientToQueue({
+      const data = await addPatientToQueue({
         name: name.trim(),
         mobile: mobile.trim(),
         age: age ? Number(age) : undefined,
         gender
       })
 
-      setFormSuccess(`Patient "${name}" has been successfully added to the queue!`)
+      const patientCode = data?.patient?.code ? ` (OTP: ${data.patient.code})` : ''
+      setFormSuccess(`Patient "${name}" has been successfully added to the queue!${patientCode}`)
       // Clear form
       setName('')
       setMobile('')
@@ -93,7 +95,9 @@ const ManagePatientRec = () => {
   }, [queue, searchQuery])
 
   return (
-    <section className="space-y-6">
+    <>
+      {addPatientLoading && <Loading message="Adding patient to queue..." />}
+      <section className="space-y-6">
       <div className="flex items-center gap-3">
         <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#eef4ff] text-[#2459ff] shadow-xs">
           <FiUsers className="h-6 w-6" />
@@ -248,6 +252,7 @@ const ManagePatientRec = () => {
                   <tr className="border-b border-slate-100 text-xs font-extrabold uppercase tracking-wider text-slate-400">
                     <th className="py-3 px-4">Token</th>
                     <th className="py-3 px-4">Name</th>
+                    <th className="py-3 px-4">OTP</th>
                     <th className="py-3 px-4">Mobile</th>
                     <th className="py-3 px-4">Age / Gender</th>
                     <th className="py-3 px-4">Wait Time</th>
@@ -283,6 +288,9 @@ const ManagePatientRec = () => {
                         <td className="py-3.5 px-4">
                           <span className="text-sm font-extrabold text-[#07122f]">{patient.name}</span>
                         </td>
+                        <td className="py-3.5 px-4 text-sm font-semibold text-slate-600">
+                          {patient.code || '--'}
+                        </td>
                         <td className="py-3.5 px-4">
                           <span className="text-sm font-semibold text-slate-500">{patient.mobile}</span>
                         </td>
@@ -308,6 +316,7 @@ const ManagePatientRec = () => {
         </article>
       </div>
     </section>
+    </>
   )
 }
 
