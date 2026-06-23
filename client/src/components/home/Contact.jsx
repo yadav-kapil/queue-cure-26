@@ -10,6 +10,7 @@ import {
   FiHeadphones,
   FiCheckCircle,
 } from "react-icons/fi";
+import { motion } from "motion/react";
 import doctorContactImg from "../../assets/doctor-contactpage.png";
 
 const Contact = () => {
@@ -65,7 +66,13 @@ const Contact = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-6 items-stretch relative z-10">
           
           
-          <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="lg:col-span-5 flex flex-col justify-between space-y-6"
+          >
             
             
             <div className="space-y-4 text-left">
@@ -210,10 +217,16 @@ const Contact = () => {
                 🔒 Your information is safe with us.
               </p>
             </form>
-          </div>
+          </motion.div>
 
           
-          <div className="hidden lg:flex lg:col-span-7 relative items-end justify-center min-h-[520px] overflow-visible select-none z-10">
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="hidden lg:flex lg:col-span-7 relative items-end justify-center min-h-[520px] overflow-visible select-none z-10"
+          >
             
             
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[340px] lg:size-[480px] rounded-full bg-blue-400/10 blur-[90px] pointer-events-none z-0" />
@@ -257,7 +270,7 @@ const Contact = () => {
               alt="Doctor Contact"
               className="h-[340px] lg:h-[520px] w-auto object-contain absolute bottom-0 right-0 lg:right-[-20px] z-10 transition duration-500 hover:scale-[1.01]"
             />
-          </div>
+          </motion.div>
 
         </div>
       </div>
@@ -268,7 +281,14 @@ const Contact = () => {
         
         <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-6">
           
-          <div className="bg-white rounded-[28px] p-7 border border-slate-100 shadow-xs flex flex-col gap-4 text-left transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg hover:border-blue-500/10 cursor-pointer min-h-[180px] justify-between">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -6, transition: { duration: 0.3 } }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="bg-white rounded-[28px] p-7 border border-slate-100 shadow-xs flex flex-col gap-4 text-left transition-shadow duration-300 hover:shadow-lg hover:border-blue-500/10 cursor-pointer min-h-[180px] justify-between"
+          >
             <span className="size-11 rounded-2xl bg-blue-50 text-[#315cf0] flex items-center justify-center shrink-0 border border-blue-100/30">
               <FiPhone className="text-xl" />
             </span>
@@ -277,10 +297,17 @@ const Contact = () => {
               <p className="text-base font-extrabold text-[#315cf0] mt-1.5">+91 98765 43210</p>
               <p className="text-xs text-slate-400 font-semibold mt-1">Mon - Sat, 9:00 AM - 7:00 PM</p>
             </div>
-          </div>
+          </motion.div>
 
           
-          <div className="bg-white rounded-[28px] p-7 border border-slate-100 shadow-xs flex flex-col gap-4 text-left transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg hover:border-blue-500/10 cursor-pointer min-h-[180px] justify-between">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -6, transition: { duration: 0.3 } }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="bg-white rounded-[28px] p-7 border border-slate-100 shadow-xs flex flex-col gap-4 text-left transition-shadow duration-300 hover:shadow-lg hover:border-blue-500/10 cursor-pointer min-h-[180px] justify-between"
+          >
             <span className="size-11 rounded-2xl bg-blue-50 text-[#315cf0] flex items-center justify-center shrink-0 border border-blue-100/30">
               <FiMail className="text-xl" />
             </span>
@@ -289,10 +316,17 @@ const Contact = () => {
               <p className="text-base font-extrabold text-[#315cf0] mt-1.5">hello@queuecure.com</p>
               <p className="text-xs text-slate-400 font-semibold mt-1">We reply within 24 hours</p>
             </div>
-          </div>
+          </motion.div>
 
           
-          <div className="bg-white rounded-[28px] p-7 border border-slate-100 shadow-xs flex flex-col gap-4 text-left transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg hover:border-blue-500/10 cursor-pointer min-h-[180px] justify-between">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -6, transition: { duration: 0.3 } }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="bg-white rounded-[28px] p-7 border border-slate-100 shadow-xs flex flex-col gap-4 text-left transition-shadow duration-300 hover:shadow-lg hover:border-blue-500/10 cursor-pointer min-h-[180px] justify-between"
+          >
             <span className="size-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100/30">
               <FiMapPin className="text-xl" />
             </span>
@@ -301,10 +335,17 @@ const Contact = () => {
               <p className="text-base font-extrabold text-slate-850 mt-1.5">123, Health Street, Bangalore, 560001</p>
               <p className="text-xs text-slate-400 font-semibold mt-1">Mon - Sat, 10:00 AM - 6:00 PM</p>
             </div>
-          </div>
+          </motion.div>
 
           
-          <div className="bg-white rounded-[28px] p-7 border border-slate-100 shadow-xs flex flex-col gap-4 text-left transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg hover:border-blue-500/10 cursor-pointer min-h-[180px] justify-between">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -6, transition: { duration: 0.3 } }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="bg-white rounded-[28px] p-7 border border-slate-100 shadow-xs flex flex-col gap-4 text-left transition-shadow duration-300 hover:shadow-lg hover:border-blue-500/10 cursor-pointer min-h-[180px] justify-between"
+          >
             <span className="size-11 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0 border border-orange-100/30">
               <FiHeadphones className="text-xl" />
             </span>
@@ -313,11 +354,17 @@ const Contact = () => {
               <p className="text-sm font-extrabold text-slate-850 mt-1.5">help@queuecure.com</p>
               <p className="text-xs text-slate-400 font-semibold mt-1">We're here to help</p>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         
-        <div className="md:hidden bg-white rounded-2xl p-3 border border-slate-100 shadow-xs grid grid-cols-4 gap-2 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="md:hidden bg-white rounded-2xl p-3 border border-slate-100 shadow-xs grid grid-cols-4 gap-2 text-center"
+        >
           
           <a href="tel:+919876543210" className="flex flex-col items-center gap-1 hover:scale-105 transition-transform duration-200">
             <span className="size-9 rounded-xl bg-blue-50 text-[#315cf0] flex items-center justify-center">
@@ -349,7 +396,7 @@ const Contact = () => {
             </span>
             <span className="text-[9px] font-bold text-slate-500">Support</span>
           </a>
-        </div>
+        </motion.div>
 
       </div>
     </section>

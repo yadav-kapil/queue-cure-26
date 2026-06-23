@@ -10,6 +10,7 @@ import {
   FiUser,
   FiUsers,
 } from "react-icons/fi";
+import { motion } from "motion/react";
 
 const Features = () => {
   const doctorCheckmarks = [
@@ -203,7 +204,13 @@ const Features = () => {
   return (
     <section id="features" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
       
-      <div className="text-center">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="text-center"
+      >
         <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#315cf0] mb-4">
           <span className="inline-block size-1.5 rounded-full bg-[#315cf0]"></span>
           Features
@@ -215,7 +222,7 @@ const Features = () => {
         <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base text-slate-500 leading-relaxed">
           Powerful tools to simplify queue management, reduce waiting times, and improve patient satisfaction.
         </p>
-      </div>
+      </motion.div>
 
       
       <div className="mt-14 space-y-6">
@@ -224,7 +231,14 @@ const Features = () => {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           
           
-          <div className="group relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#dbeafe] via-[#c2d7ff] to-[#93c5fd] p-6 text-slate-800 shadow-md lg:col-span-3 lg:p-8 flex flex-col justify-between min-h-[340px] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_50px_rgba(31,92,240,0.1)] cursor-pointer">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -4, transition: { duration: 0.5 } }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="group relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#dbeafe] via-[#c2d7ff] to-[#93c5fd] p-6 text-slate-800 shadow-md lg:col-span-3 lg:p-8 flex flex-col justify-between min-h-[340px] transition-shadow duration-500 hover:shadow-[0_22px_50px_rgba(31,92,240,0.1)] cursor-pointer"
+          >
             
             <div className="absolute bottom-0 left-0 right-0 z-0 opacity-20 pointer-events-none select-none">
               <svg viewBox="0 0 400 100" className="w-full fill-none stroke-[#315cf0]/40 stroke-[2.5]">
@@ -237,7 +251,7 @@ const Features = () => {
             <div className="relative z-10 grid grid-cols-1 md:grid-cols-[1.1fr_0.9fr] gap-6 items-center h-full">
               
               <div>
-                <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-[#315cf0]/15 text-[#315cf0] transition-transform duration-300 group-hover:scale-110">
+                <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-[#315cf0]/15 text-[#315cf0] transition-transform duration-500 group-hover:scale-110">
                   <FiActivity className="text-xl" />
                 </span>
                 
@@ -254,7 +268,7 @@ const Features = () => {
               </div>
 
               
-              <div className="w-full transition-transform duration-300 group-hover:scale-[1.02]">
+              <div className="w-full transition-transform duration-500 group-hover:scale-[1.02]">
                 
                 <div className="hidden md:block bg-white rounded-2xl p-5 text-[#0d1321] shadow-[0_15px_35px_rgba(0,0,0,0.12)] border border-slate-100 max-w-[280px] mx-auto">
                   <div className="space-y-4">
@@ -298,12 +312,19 @@ const Features = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           
-          <div className="group rounded-[28px] bg-[#f3f7ff] p-6 text-[#0d1321] shadow-xs lg:col-span-2 lg:p-8 flex flex-col justify-between min-h-[340px] transition-all duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -4, transition: { duration: 0.5 } }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="group rounded-[28px] bg-[#f3f7ff] p-6 text-[#0d1321] shadow-xs lg:col-span-2 lg:p-8 flex flex-col justify-between min-h-[340px] transition-shadow duration-500 hover:shadow-md cursor-pointer"
+          >
             <div>
-              <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-[#315cf0]/10 text-[#315cf0] transition-transform duration-300 group-hover:scale-110">
+              <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-[#315cf0]/10 text-[#315cf0] transition-transform duration-500 group-hover:scale-110">
                 <FiDatabase className="text-xl" />
               </span>
               <h3 className="mt-5 text-lg font-bold sm:text-xl">Real-Time Synchronization</h3>
@@ -406,7 +427,7 @@ const Features = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
         </div>
 
@@ -414,9 +435,16 @@ const Features = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           
-          <div className="group rounded-[28px] bg-[#f0faf7] p-6 text-[#0d1321] shadow-xs flex flex-col justify-between min-h-[300px] transition-all duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer border border-transparent">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -4, transition: { duration: 0.5 } }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="group rounded-[28px] bg-[#f0faf7] p-6 text-[#0d1321] shadow-xs flex flex-col justify-between min-h-[300px] transition-shadow duration-500 hover:shadow-md cursor-pointer border border-transparent"
+          >
             <div>
-              <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600 transition-transform duration-300 group-hover:scale-110">
+              <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600 transition-transform duration-500 group-hover:scale-110">
                 <FiClock className="text-lg" />
               </span>
               <h3 className="mt-5 text-lg font-bold">Smart Wait Time Predictions</h3>
@@ -497,12 +525,19 @@ const Features = () => {
                 )}
               </div>
             </div>
-          </div>
+          </motion.div>
 
           
-          <div className="group rounded-[28px] bg-[#fffcf3] p-6 text-[#0d1321] shadow-xs flex flex-col justify-between min-h-[300px] transition-all duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -4, transition: { duration: 0.5 } }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="group rounded-[28px] bg-[#fffcf3] p-6 text-[#0d1321] shadow-xs flex flex-col justify-between min-h-[300px] transition-shadow duration-500 hover:shadow-md cursor-pointer"
+          >
             <div>
-              <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-amber-100 text-amber-600 transition-transform duration-300 group-hover:scale-110">
+              <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-amber-100 text-amber-600 transition-transform duration-500 group-hover:scale-110">
                 <FiBell className="text-lg" />
               </span>
               <h3 className="mt-5 text-lg font-bold">Instant Patient Notifications</h3>
@@ -513,7 +548,7 @@ const Features = () => {
 
             
             <div className="mt-6 w-full">
-              <div className="bg-white rounded-2xl p-3 border border-slate-100 shadow-[0_8px_20px_rgba(0,0,0,0.03)] flex items-start gap-3 max-w-[230px] mx-auto transition-transform duration-300 group-hover:scale-105 animate-float">
+              <div className="bg-white rounded-2xl p-3 border border-slate-100 shadow-[0_8px_20px_rgba(0,0,0,0.03)] flex items-start gap-3 max-w-[230px] mx-auto transition-transform duration-500 group-hover:scale-105 animate-float">
                 <div className="size-6 rounded-full bg-emerald-500 flex items-center justify-center text-white shrink-0 mt-0.5 shadow-sm relative">
                   
                   <svg className="size-3 fill-current" viewBox="0 0 24 24">
@@ -527,12 +562,19 @@ const Features = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           
-          <div className="group rounded-[28px] bg-[#fbf7ff] p-6 text-[#0d1321] shadow-xs flex flex-col justify-between min-h-[300px] transition-all duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer">
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -4, transition: { duration: 0.5 } }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="group rounded-[28px] bg-[#fbf7ff] p-6 text-[#0d1321] shadow-xs flex flex-col justify-between min-h-[300px] transition-shadow duration-500 hover:shadow-md cursor-pointer"
+          >
             <div>
-              <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-purple-100 text-purple-600 transition-transform duration-300 group-hover:scale-110">
+              <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-purple-100 text-purple-600 transition-transform duration-500 group-hover:scale-110">
                 <FiUsers className="text-lg" />
               </span>
               <h3 className="mt-5 text-lg font-bold">Multi-User Access</h3>
@@ -571,7 +613,7 @@ const Features = () => {
                 Patient
               </span>
             </div>
-          </div>
+          </motion.div>
 
         </div>
 
@@ -579,11 +621,18 @@ const Features = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
           
-          <div className="group rounded-[28px] bg-[#f3f7ff] p-6 text-[#0d1321] shadow-xs lg:p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -4, transition: { duration: 0.5 } }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="group rounded-[28px] bg-[#f3f7ff] p-6 text-[#0d1321] shadow-xs lg:p-8 transition-shadow duration-500 hover:shadow-md cursor-pointer"
+          >
             
             <div className="grid grid-cols-1 md:grid-cols-[1.1fr_1.3fr] gap-6 items-center">
               <div>
-                <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-[#315cf0]/10 text-[#315cf0] transition-transform duration-300 group-hover:scale-110">
+                <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-[#315cf0]/10 text-[#315cf0] transition-transform duration-500 group-hover:scale-110">
                   <FiMonitor className="text-xl" />
                 </span>
                 <h3 className="mt-5 text-xl font-bold">Doctor Dashboard</h3>
@@ -603,7 +652,7 @@ const Features = () => {
               </div>
 
               
-              <div className="bg-white rounded-2xl p-4 shadow-lg border border-slate-100 text-[8px] font-semibold text-slate-700 w-full max-w-sm mx-auto transition-transform duration-300 group-hover:scale-[1.02] mt-2 md:mt-0">
+              <div className="bg-white rounded-2xl p-4 shadow-lg border border-slate-100 text-[8px] font-semibold text-slate-700 w-full max-w-sm mx-auto transition-transform duration-500 group-hover:scale-[1.02] mt-2 md:mt-0">
                 
                 <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
                   <span className="font-bold text-[#0d1321] text-[9px]">Dr. Dashboard</span>
@@ -650,14 +699,21 @@ const Features = () => {
               </div>
             </div>
 
-          </div>
+          </motion.div>
 
           
-          <div className="group rounded-[28px] bg-[#fff5f6] p-6 text-[#0d1321] shadow-xs lg:p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -4, transition: { duration: 0.5 } }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="group rounded-[28px] bg-[#fff5f6] p-6 text-[#0d1321] shadow-xs lg:p-8 transition-shadow duration-500 hover:shadow-md cursor-pointer"
+          >
             
             <div className="grid grid-cols-1 md:grid-cols-[1.1fr_1.3fr] gap-6 items-center">
               <div>
-                <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-rose-100 text-rose-500 transition-transform duration-300 group-hover:scale-110">
+                <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-rose-100 text-rose-500 transition-transform duration-500 group-hover:scale-110">
                   <FiPlus className="text-xl" />
                 </span>
                 <h3 className="mt-5 text-xl font-bold">Receptionist Dashboard</h3>
@@ -677,7 +733,7 @@ const Features = () => {
               </div>
 
               
-              <div className="bg-white rounded-2xl p-4 shadow-lg border border-rose-100/50 text-[8px] font-semibold text-slate-700 w-full max-w-sm mx-auto transition-transform duration-300 group-hover:scale-[1.02] mt-2 md:mt-0">
+              <div className="bg-white rounded-2xl p-4 shadow-lg border border-rose-100/50 text-[8px] font-semibold text-slate-700 w-full max-w-sm mx-auto transition-transform duration-500 group-hover:scale-[1.02] mt-2 md:mt-0">
                 
                 <div className="flex justify-between items-center border-b border-slate-100 pb-2 mb-3">
                   <div className="flex items-center gap-1.5 min-w-0">
@@ -730,7 +786,7 @@ const Features = () => {
               </div>
             </div>
 
-          </div>
+          </motion.div>
 
         </div>
 

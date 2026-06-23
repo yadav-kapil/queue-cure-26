@@ -1,4 +1,5 @@
 import { FiArrowRight, FiUsers, FiClock, FiShield, FiPlus, FiBarChart2 } from "react-icons/fi";
+import { motion } from "motion/react";
 
 const CTA = () => {
   return (
@@ -13,7 +14,14 @@ const CTA = () => {
         <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center z-10">
           
           
-          <div className="lg:col-span-7 text-left space-y-6">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            style={{ willChange: "transform, opacity" }}
+            className="lg:col-span-7 text-left space-y-6"
+          >
             <div className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-white/95 backdrop-blur-md">
               <span className="inline-block size-1.5 rounded-full bg-[#80f5ff] animate-pulse"></span>
               ✨ Get Started
@@ -40,10 +48,17 @@ const CTA = () => {
                 </span>
               </a>
             </div>
-          </div>
+          </motion.div>
 
           
-          <div className="lg:col-span-5 relative h-[360px] sm:h-[400px] w-full flex items-center justify-center overflow-visible select-none">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay:0.2 }}
+            style={{ willChange: "transform, opacity" }}
+            className="lg:col-span-5 relative h-[360px] sm:h-[400px] w-full flex items-center justify-center overflow-visible select-none"
+          >
             
             
             <div className="absolute size-[280px] sm:size-[340px] rounded-full border border-dashed border-white/20 pointer-events-none" />
@@ -163,7 +178,7 @@ const CTA = () => {
               </span>
             </div>
 
-          </div>
+          </motion.div>
 
         </div>
 

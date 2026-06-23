@@ -9,6 +9,7 @@ import {
   FiCheckCircle,
   FiChevronDown,
 } from "react-icons/fi";
+import { motion } from "motion/react";
 
 const HowItWorks = () => {
   
@@ -85,7 +86,13 @@ const HowItWorks = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           
-          <div className="lg:col-span-5 space-y-6 text-left">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="lg:col-span-5 space-y-6 text-left"
+          >
             <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-400">
               <span className="inline-block size-1.5 rounded-full bg-blue-400 animate-pulse"></span>
               How it works
@@ -99,10 +106,16 @@ const HowItWorks = () => {
             <p className="text-slate-400 text-sm sm:text-base leading-relaxed max-w-lg">
               Every queue update happens instantly, keeping everyone in sync and your clinic running smoothly.
             </p>
-          </div>
+          </motion.div>
 
           
-          <div className="lg:col-span-7 relative h-[400px] sm:h-[460px] w-full flex items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2, type: "spring", bounce: 0.3 }}
+            className="lg:col-span-7 relative h-[400px] sm:h-[460px] w-full flex items-center justify-center"
+          >
             
             
             <svg className="absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -233,13 +246,19 @@ const HowItWorks = () => {
               </span>
             </div>
 
-          </div>
+          </motion.div>
 
         </div>
 
         
         <div className="mt-16 lg:mt-20">
-          <div className="text-center space-y-4">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center space-y-4"
+          >
             <div className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-indigo-400">
               <span className="inline-block size-1.5 rounded-full bg-indigo-400"></span>
               Workflow
@@ -247,13 +266,19 @@ const HowItWorks = () => {
             <h3 className="text-2xl font-extrabold tracking-tight sm:text-3xl lg:text-4xl text-white">
               How Queue Cure Works
             </h3>
-          </div>
+          </motion.div>
 
           
           <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6 items-stretch">
             
             
-            <div className="relative flex flex-col gap-3 h-full justify-between w-full max-w-[280px] mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="relative flex flex-col gap-3 h-full justify-between w-full max-w-[280px] mx-auto"
+            >
               <div className="flex items-center gap-3 text-left">
                 <span className={`size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 shrink-0 ${
                   activeStep === 0 ? "bg-purple-500 text-white ring-4 ring-purple-500/20" : "bg-[#18233c] text-slate-400"
@@ -317,10 +342,16 @@ const HowItWorks = () => {
               <div className="block md:hidden flex justify-center text-slate-700 py-1">
                 <FiChevronDown className="text-base" />
               </div>
-            </div>
+            </motion.div>
 
             
-            <div className="relative flex flex-col gap-3 h-full justify-between w-full max-w-[280px] mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="relative flex flex-col gap-3 h-full justify-between w-full max-w-[280px] mx-auto"
+            >
               <div className="flex items-center gap-3 text-left">
                 <span className={`size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 shrink-0 ${
                   activeStep === 1 ? "bg-blue-500 text-white ring-4 ring-blue-500/20" : "bg-[#18233c] text-slate-400"
@@ -373,10 +404,16 @@ const HowItWorks = () => {
               <div className="block md:hidden flex justify-center text-slate-700 py-1">
                 <FiChevronDown className="text-base" />
               </div>
-            </div>
+            </motion.div>
 
             
-            <div className="relative flex flex-col gap-3 h-full justify-between w-full max-w-[280px] mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="relative flex flex-col gap-3 h-full justify-between w-full max-w-[280px] mx-auto"
+            >
               <div className="flex items-center gap-3 text-left">
                 <span className={`size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 shrink-0 ${
                   activeStep === 2 ? "bg-blue-500 text-white ring-4 ring-blue-500/20" : "bg-[#18233c] text-slate-400"
@@ -432,10 +469,16 @@ const HowItWorks = () => {
               <div className="block md:hidden flex justify-center text-slate-700 py-1">
                 <FiChevronDown className="text-base" />
               </div>
-            </div>
+            </motion.div>
 
             
-            <div className="relative flex flex-col gap-3 h-full justify-between w-full max-w-[280px] mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="relative flex flex-col gap-3 h-full justify-between w-full max-w-[280px] mx-auto"
+            >
               <div className="flex items-center gap-3 text-left">
                 <span className={`size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 shrink-0 ${
                   activeStep === 3 ? "bg-purple-500 text-white ring-4 ring-purple-500/20" : "bg-[#18233c] text-slate-400"
@@ -480,7 +523,7 @@ const HowItWorks = () => {
                   <FiCheck className="text-[6px]" /> Call Next
                 </button>
               </div>
-            </div>
+            </motion.div>
 
           </div>
         </div>

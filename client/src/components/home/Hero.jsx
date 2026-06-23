@@ -7,35 +7,60 @@ import {
   FiVideo,
   FiPhone,
 } from "react-icons/fi";
+import { motion } from "motion/react";
 import doctorHero from "../../assets/doctor-hero.png";
 import doctorConsultation from "../../assets/doctor-consultation.png";
 
-const Hero = () => {
+const Hero = ({ onShowDemo }) => {
   return (
     <main id="home" className="px-4 pb-2 pt-20 sm:px-6 lg:px-8 ">
       <section className="relative mx-auto mt-5 max-w-7xl overflow-hidden rounded-[34px] bg-[radial-gradient(circle_at_76%_22%,#46b7ff_0%,#356df4_38%,#3541c9_100%)] px-6 pt-10 pb-4 text-white shadow-[0_30px_90px_rgba(21,42,133,0.24)] sm:rounded-[42px] sm:px-10 lg:min-h-[640px] lg:px-14 lg:pt-12 lg:pb-2">
         <div className="relative grid gap-10 lg:grid-cols-[1.36fr_0.64fr] lg:items-end">
           
           <div className="relative z-20 max-w-[760px] pt-2 lg:pb-0">
-            <div className="mb-5 inline-flex items-center gap-3 text-xs font-medium">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="mb-5 inline-flex items-center gap-3 text-xs font-medium"
+            >
               <span className="grid size-9 place-items-center rounded-full bg-white text-[#315cf0] shadow-[0_8px_24px_rgba(15,23,42,0.12)]">
                 <FiHeart className="fill-[#315cf0]" />
               </span>
               Smart Queue. Better Care.
-            </div>
+            </motion.div>
 
-            <h1 className="max-w-[760px] text-4xl font-extrabold leading-[1.15] tracking-normal sm:text-5xl lg:text-[56px]">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="max-w-[760px] text-4xl font-extrabold leading-[1.15] tracking-normal sm:text-5xl lg:text-[56px]"
+            >
               Real-Time Queue Management for{" "}
               <span className="block text-[#80f5ff]">Modern Clinics</span>
-            </h1>
+            </motion.h1>
 
-            <p className="mt-4 max-w-2xl text-xs font-normal leading-7 text-white/90 sm:text-base">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="mt-4 max-w-2xl text-xs font-normal leading-7 text-white/90 sm:text-base"
+            >
               Reduce patient waiting confusion with live token tracking,
               accurate wait-time predictions, and instant queue updates for
               doctors, receptionists, and patients.
-            </p>
+            </motion.p>
 
-            <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center"
+            >
               <a
                 href="#contact"
                 className="group inline-flex w-fit items-center gap-3 rounded-full bg-[#080c14] py-2 pl-5 pr-2 text-xs font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] transition hover:bg-white hover:text-[#080c14]"
@@ -46,19 +71,26 @@ const Hero = () => {
                 </span>
               </a>
 
-              <a
-                href="#demo"
-                className="inline-flex w-fit items-center gap-2 text-xs font-bold transition hover:text-[#80f5ff]"
+              <button
+                type="button"
+                onClick={onShowDemo}
+                className="inline-flex w-fit items-center gap-2 text-xs font-bold transition hover:text-[#80f5ff] cursor-pointer bg-transparent border-0 outline-none"
               >
                 <span className="grid size-8 place-items-center rounded-full border border-white/90 bg-white/5 transition hover:bg-white/10">
                   <FiPlay className="ml-0.5 fill-white text-[10px]" />
                 </span>
                 Watch Demo
-              </a>
-            </div>
+              </button>
+            </motion.div>
 
             
-            <div className="relative mt-7 mb-4 ml-4 lg:hidden w-fit">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="relative mt-7 mb-4 ml-4 lg:hidden w-fit"
+            >
               
               <div className="absolute inset-[-14px] rounded-full border border-white/10" />
               <div className="absolute inset-[-7px] rounded-full border border-white/20" />
@@ -76,11 +108,17 @@ const Hero = () => {
                   <FiPlus />
                 </span>
               </div>
-            </div>
+            </motion.div>
 
             
             <div className="mt-7 grid max-w-[720px] grid-cols-3 gap-2 sm:gap-4">
-              <div className="flex h-36 flex-col justify-between rounded-2xl bg-white p-2.5 text-[#0d1321] shadow-[0_18px_50px_rgba(15,23,42,0.12)] sm:h-44 sm:p-4 lg:h-52">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+                className="flex h-36 flex-col justify-between rounded-2xl bg-white p-2.5 text-[#0d1321] shadow-[0_18px_50px_rgba(15,23,42,0.12)] sm:h-44 sm:p-4 lg:h-52"
+              >
                 <div>
                   <span className="inline-flex rounded-full bg-slate-100 px-2 py-1 text-[7px] font-semibold text-slate-600 sm:text-[10px]">
                     Doctors
@@ -130,10 +168,16 @@ const Hero = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
               
-              <div className="relative h-36 overflow-hidden rounded-2xl bg-[#a2ebf2] shadow-[0_18px_50px_rgba(15,23,42,0.12)] sm:h-44 lg:h-52">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+                className="relative h-36 overflow-hidden rounded-2xl bg-[#a2ebf2] shadow-[0_18px_50px_rgba(15,23,42,0.12)] sm:h-44 lg:h-52"
+              >
                 <img
                   src={doctorConsultation}
                   alt="Doctor greeting patient in an online consultation"
@@ -150,10 +194,16 @@ const Hero = () => {
                     <FiMic className="text-[10px] sm:text-xs text-slate-600" />
                   </span>
                 </div>
-              </div>
+              </motion.div>
 
               
-              <div className="flex h-36 flex-col justify-between rounded-2xl bg-white p-2.5 text-[#0d1321] shadow-[0_18px_50px_rgba(15,23,42,0.12)] sm:h-44 sm:p-4 lg:h-52">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.7 }}
+                className="flex h-36 flex-col justify-between rounded-2xl bg-white p-2.5 text-[#0d1321] shadow-[0_18px_50px_rgba(15,23,42,0.12)] sm:h-44 sm:p-4 lg:h-52"
+              >
                 <div className="flex items-center justify-between">
                   <span className="inline-flex rounded-full bg-slate-100 px-2 py-1 text-[7px] font-semibold text-slate-600 sm:text-[10px]">
                     Analytics
@@ -181,14 +231,20 @@ const Hero = () => {
                     Accuracy across consultations
                   </p>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
 
           
           <div className="relative h-full w-full hidden lg:block">
             
-            <div className="absolute right-[1%] top-[10%] z-20">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.8 }}
+              className="absolute right-[1%] top-[10%] z-20"
+            >
               <div className="relative w-fit">
                 
                 <div className="absolute inset-[-16px] rounded-full border border-white/10" />
@@ -208,12 +264,16 @@ const Hero = () => {
                   </span>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
 
         
-        <img
+        <motion.img
+          initial={{ opacity: 0, x: 50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.2 }}
           src={doctorHero}
           alt="Smiling doctor for Queue Cure clinic queue management"
           className="absolute bottom-[-48px] right-[-20px] z-10 h-[500px] object-contain drop-shadow-[0_28px_45px_rgba(15,23,42,0.16)] sm:h-[560px] lg:bottom-[-48px] lg:left-[78%] lg:right-auto lg:h-auto lg:w-[400px] xl:w-[480px] lg:-translate-x-1/2"
