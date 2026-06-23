@@ -15,10 +15,11 @@ import {
 } from 'react-icons/fi'
 import { useSession } from '../../context/session/SessionContext'
 import { useDoc } from '../../hooks/useDoc'
+import Loading from '../../components/common/Loading'
 
 const LiveSessionDoc = () => {
   const { session, queue, isSessionActive } = useSession()
-  const { goLive, callNextPatient, skipCurrentPatient, completeCurrentPatient, endSession } = useDoc()
+  const { goLive, callNextPatient, skipCurrentPatient, completeCurrentPatient, endSession, sessionLoading, sessionLoadingMessage } = useDoc()
   const navigate = useNavigate()
 
   const [elapsedMinutes, setElapsedMinutes] = useState(0)
@@ -170,6 +171,7 @@ const LiveSessionDoc = () => {
   if (!isSessionActive) {
     return (
       <section className="grid min-h-[calc(100vh-180px)] place-items-center">
+        {sessionLoading && <Loading message={sessionLoadingMessage} />}
         <article className="w-full max-w-xl rounded-[28px] border border-[#e5eaf4] bg-white p-8 text-center shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
           <span className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-[#eef4ff] text-[#2459ff]">
             <FiRadio className="h-9 w-9" />
@@ -183,7 +185,8 @@ const LiveSessionDoc = () => {
           <button
             type="button"
             onClick={goLive}
-            className="mt-8 inline-flex h-14 items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#5b5ff7] to-[#4d9eff] px-10 font-bold text-white shadow-[0_14px_30px_rgba(77,124,254,0.26)] transition hover:-translate-y-0.5 cursor-pointer"
+            disabled={sessionLoading}
+            className="mt-8 inline-flex h-14 items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#5b5ff7] to-[#4d9eff] px-10 font-bold text-white shadow-[0_14px_30px_rgba(77,124,254,0.26)] transition hover:-translate-y-0.5 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <FiPlay className="h-5 w-5" />
             Go Live
@@ -195,30 +198,31 @@ const LiveSessionDoc = () => {
 
   return (
     <section className="space-y-6">
+      {sessionLoading && <Loading message={sessionLoadingMessage} />}
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
         <div className="space-y-5">
           {/* Top Row: Active Session & Receptionist Status */}
           <div className="grid gap-5 sm:grid-cols-2">
             {/* Active Session Info */}
-            <article className="flex flex-col justify-center rounded-[24px] border border-[#dff7e9] bg-[#f4fbf8] p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
-              <div className="flex items-center justify-between gap-4">
+            <article className="flex items-center rounded-[24px] border border-[#dff7e9] bg-[#f4fbf8] p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
+              <div className="flex flex-1 items-center justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2 text-xl font-extrabold text-[#07122f]">
                     <span className="h-3 w-3 rounded-full bg-[#22c55e]" />
                     Online
                   </div>
-                  <p className="mt-2 text-xs font-bold text-[#5b6478]">
+                  <p className="mt-1.5 text-xs font-bold text-[#5b6478]">
                     Started {formatTime(session?.startedAt)} <span className="px-2">.</span> Duration {formatDuration(elapsedMinutes)}
                   </p>
                 </div>
-                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#dff7e9] text-[#22c55e] shadow-[0_8px_16px_rgba(34,197,94,0.12)]">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#dff7e9] text-[#22c55e] shadow-[0_8px_16px_rgba(34,197,94,0.12)]">
                   <FiWifi className="h-6 w-6" />
                 </span>
               </div>
             </article>
 
             {/* Active Receptionist Connection info */}
-            <article className="flex flex-col justify-center rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
+            <article className="flex items-center rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
               {receptionist ? (
                 <div className="flex items-center gap-4 text-left">
                   <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#eef4ff] text-[#2459ff] shadow-xs">
@@ -568,12 +572,14 @@ const StatusLine = ({ label }) => (
 )
 
 const EmptyState = ({ icon: Icon, title, text, compact = false }) => (
-  <div className={`${compact ? 'py-2 text-left' : 'mt-5 rounded-[20px] border border-dashed border-[#d7e1f0] bg-[#f8fbff] px-5 py-8 text-center'}`}>
-    <span className={`${compact ? 'mb-4' : 'mx-auto'} grid h-12 w-12 place-items-center rounded-2xl bg-white text-[#2459ff] shadow-[0_8px_22px_rgba(15,23,42,0.06)]`}>
-      <Icon className="h-6 w-6" />
+  <div className={`${compact ? 'flex items-center gap-3' : 'mt-5 rounded-[20px] border border-dashed border-[#d7e1f0] bg-[#f8fbff] px-5 py-8 text-center'}`}>
+    <span className={`shrink-0 grid h-10 w-10 place-items-center rounded-2xl bg-white text-[#2459ff] shadow-[0_8px_22px_rgba(15,23,42,0.06)] ${compact ? '' : 'mx-auto'}`}>
+      <Icon className="h-5 w-5" />
     </span>
-    <h3 className="text-base font-extrabold text-[#07122f]">{title}</h3>
-    <p className={`${compact ? '' : 'mx-auto'} mt-2 max-w-xs text-sm leading-6 text-[#6b7280]`}>{text}</p>
+    <div className={compact ? '' : ''}>
+      <h3 className={`font-extrabold text-[#07122f] ${compact ? 'text-sm' : 'text-base'}`}>{title}</h3>
+      <p className={`${compact ? 'text-xs mt-0.5' : 'mx-auto mt-2 text-sm'} max-w-xs leading-relaxed text-[#6b7280]`}>{text}</p>
+    </div>
   </div>
 )
 

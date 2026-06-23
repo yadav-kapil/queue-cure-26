@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useNavigate } from "react-router";
 import { useAuth } from "../../../context/auth/AuthContext";
-import ManageDocPopover from "./ManageDocPopover";
 import { FiUser, FiUserPlus, FiSearch, FiCheck, FiRefreshCw, FiActivity } from "react-icons/fi";
 
 const RecHandleDoc = () => {
   const { user } = useAuth();
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const navigate = useNavigate();
 
   const hasHired = user?.associatedDoctorId && user?.associationStatus === "active";
   const hasPendingSent = user?.associatedDoctorId && user?.associationStatus === "pending";
@@ -101,20 +100,13 @@ const RecHandleDoc = () => {
 
         <button
           type="button"
-          onClick={() => setIsPopoverOpen(true)}
+          onClick={() => navigate('/rec/settings?tab=doctor')}
           className="w-full inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#315cf0] text-white hover:bg-[#204ad0] transition text-xs font-bold cursor-pointer mt-2"
         >
           {ctaText === "Search For Doctor" ? <FiUserPlus className="text-base" /> : <FiActivity className="text-base" />}
           {ctaText}
         </button>
       </article>
-
-      {/* Popover Modal */}
-      {isPopoverOpen && (
-        <ManageDocPopover
-          setIsPopoverOpen={setIsPopoverOpen}
-        />
-      )}
     </>
   );
 };

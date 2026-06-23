@@ -25,7 +25,7 @@ import ErrorDialog from '../../components/common/Error'
 const DashboardRec = () => {
   const { user } = useAuth()
   const { session, queue, isSessionActive, dispatch } = useSession()
-  const { leaveSession, hasHired, removeLoading } = useRec()
+  const { leaveSession, hasHired, sessionLoading, sessionLoadingMessage } = useRec()
   const navigate = useNavigate()
   
   const [elapsedMinutes, setElapsedMinutes] = useState(0)
@@ -200,7 +200,7 @@ const DashboardRec = () => {
   return (
     <>
       {connectLoading && <Loading message="Connecting to live session..." />}
-      {removeLoading && <Loading message="Leaving current session..." />}
+      {sessionLoading && <Loading message={sessionLoadingMessage || "Leaving current session..."} />}
       {errorMsg && (
         <ErrorDialog
           heading="Connection Error"

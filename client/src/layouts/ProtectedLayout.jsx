@@ -15,7 +15,7 @@ const ProtectedLayout = () => {
     <SessionContextProvider>
       <div className="min-h-screen bg-[#f7f9fc] text-[#111827]">
         {user?.role === 'doctor' ? <NavigationbarDoc /> : <NavigationbarRec />}
-        <main className="mx-auto w-full max-w-[1480px] px-4 pb-32 pt-24 sm:px-6 lg:px-8">
+        <main className="mx-auto w-full max-w-[1480px] px-4 pb-24 pt-24 sm:px-6 lg:px-8">
           <Outlet />
         </main>
       </div>

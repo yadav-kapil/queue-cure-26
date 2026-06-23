@@ -1,5 +1,5 @@
 import express from 'express';
-import { login, register, logout, getMe, requestAssociation, handleAssociationRequest, searchUsers, getAssociationRequests, cancelAssociationRequest, removeAssociation } from '../controllers/user.controller.js';
+import { login, register, logout, getMe, requestAssociation, handleAssociationRequest, searchUsers, getAssociationRequests, cancelAssociationRequest, removeAssociation, updateProfile, changePassword } from '../controllers/user.controller.js';
 import validate from '../middlewares/validate.middleware.js';
 import { loginSchemaValidation, signupSchemaValidation } from '../validator/user.validator.js';
 import { authenticate } from '../middlewares/auth.middleware.js';
@@ -17,5 +17,8 @@ userRouter.post('/search', authenticate, searchUsers);
 userRouter.get('/association-requests', authenticate, getAssociationRequests);
 userRouter.post('/cancel-association-request', authenticate, cancelAssociationRequest);
 userRouter.post('/remove-association', authenticate, removeAssociation);
+
+userRouter.patch('/profile', authenticate, updateProfile);
+userRouter.patch('/password', authenticate, changePassword);
 
 export default userRouter;

@@ -239,3 +239,74 @@ export const removeAssociation = wrapAsync(async (req, res, next) => {
     user: formatUserResponse(updatedUser),
   });
 });
+
+// update profile (fullName, mobileNumber, clinicName)
+export const updateProfile = wrapAsync(async (req, res, next) => {
+  const { fullName, mobileNumber, clinicName } = req.body;
+
+  if (!fullName || !fullName.trim()) {
+    throw new ExpressError(400, "Full name is required");
+  }
+
+  if (!mobileNumber || !mobileNumber.trim()) {
+    throw new ExpressError(400, "Mobile number is required");
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      fullName: fullName.trim(),
+      mobileNumber: mobileNumber.trim(),
+      clinicName: (clinicName || "").trim(),
+    },
+    { new: true, runValidators: true }
+  ).populate([
+    { path: "associatedDoctorId", select: "-password" },
+    { path: "associatedReceptionistId", select: "-password" },
+  ]);
+
+  if (!updatedUser) {
+    throw new ExpressError(404, "User not found");
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Profile updated successfully",
+    user: formatUserResponse(updatedUser),
+  });
+});
+
+// change password
+export const changePassword = wrapAsync(async (req, res, next) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    throw new ExpressError(400, "Current password and new password are required");
+  }
+
+  if (newPassword.length < 6) {
+    throw new ExpressError(400, "New password must be at least 6 characters");
+  }
+
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    throw new ExpressError(404, "User not found");
+  }
+
+  const isMatch = await bcrypt.compare(currentPassword, user.password);
+  if (!isMatch) {
+    throw new ExpressError(400, "Current password is incorrect");
+  }
+
+  if (currentPassword === newPassword) {
+    throw new ExpressError(400, "New password must be different from current password");
+  }
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Password changed successfully",
+  });
+});

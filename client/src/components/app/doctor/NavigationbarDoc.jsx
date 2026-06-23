@@ -81,8 +81,8 @@ const NavigationbarDoc = () => {
         </div>
       </header>
 
-      <nav className="fixed bottom-6 left-1/2 z-40 w-[calc(100%-2rem)] max-w-[420px] -translate-x-1/2 rounded-full border border-slate-200/50 bg-white/80 p-1.5 shadow-[0_16px_36px_rgba(15,23,42,0.08),0_4px_12px_rgba(15,23,42,0.03)] backdrop-blur-xl ring-1 ring-black/5 transition-all duration-300">
-        <div className="flex justify-between items-center w-full gap-1.5">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white p-2 shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+        <div className="flex justify-between items-center w-full gap-1">
           {navItems.map((item) => {
             const Icon = item.icon
             return (
@@ -92,20 +92,20 @@ const NavigationbarDoc = () => {
                 end={item.end}
                 className={({ isActive }) => {
                   return [
-                    'flex h-12 items-center justify-center gap-2 rounded-full text-xs font-bold transition-all duration-300 ease-out transform active:scale-95',
+                    'flex flex-1 flex-col items-center justify-center gap-1 py-2 text-xs font-bold transition-all duration-300',
                     isActive
-                      ? 'flex-1 bg-gradient-to-r from-[#2459ff] to-[#5b5ff7] text-white shadow-[0_8px_20px_rgba(36,89,255,0.22)] px-4'
-                      : 'text-[#5b6478] hover:bg-[#f4f7ff] hover:text-[#2459ff] w-12 sm:w-auto sm:flex-1 sm:px-4',
+                      ? 'text-[#2459ff]'
+                      : 'text-slate-400 hover:text-slate-600',
                   ].join(' ')
                 }}
               >
                 {({ isActive }) => (
                   <>
-                    <Icon className={`h-5 w-5 transition-transform duration-300 ${isActive ? 'scale-110' : ''}`} />
+                    <Icon className={`h-6 w-6 ${isActive ? 'fill-[#2459ff]/10' : ''}`} />
                     <span
                       className={[
                         'transition-all duration-300 font-bold tracking-wide truncate',
-                        isActive ? 'inline-block' : 'hidden sm:inline-block',
+                        'inline-block',
                       ].join(' ')}
                     >
                       {item.shortLabel || item.label}

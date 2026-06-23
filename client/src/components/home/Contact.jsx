@@ -69,7 +69,7 @@ const Contact = () => {
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.6 }}
             className="lg:col-span-5 flex flex-col justify-between space-y-6"
           >
@@ -223,8 +223,8 @@ const Contact = () => {
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6 }}
             className="hidden lg:flex lg:col-span-7 relative items-end justify-center min-h-[520px] overflow-visible select-none z-10"
           >
             
@@ -284,9 +284,9 @@ const Contact = () => {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.2 }}
             whileHover={{ y: -6, transition: { duration: 0.3 } }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            transition={{ duration: 0.5 }}
             className="bg-white rounded-[28px] p-7 border border-slate-100 shadow-xs flex flex-col gap-4 text-left transition-shadow duration-300 hover:shadow-lg hover:border-blue-500/10 cursor-pointer min-h-[180px] justify-between"
           >
             <span className="size-11 rounded-2xl bg-blue-50 text-[#315cf0] flex items-center justify-center shrink-0 border border-blue-100/30">
@@ -303,9 +303,9 @@ const Contact = () => {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.2 }}
             whileHover={{ y: -6, transition: { duration: 0.3 } }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.5 }}
             className="bg-white rounded-[28px] p-7 border border-slate-100 shadow-xs flex flex-col gap-4 text-left transition-shadow duration-300 hover:shadow-lg hover:border-blue-500/10 cursor-pointer min-h-[180px] justify-between"
           >
             <span className="size-11 rounded-2xl bg-blue-50 text-[#315cf0] flex items-center justify-center shrink-0 border border-blue-100/30">
@@ -322,9 +322,9 @@ const Contact = () => {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.2 }}
             whileHover={{ y: -6, transition: { duration: 0.3 } }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            transition={{ duration: 0.5 }}
             className="bg-white rounded-[28px] p-7 border border-slate-100 shadow-xs flex flex-col gap-4 text-left transition-shadow duration-300 hover:shadow-lg hover:border-blue-500/10 cursor-pointer min-h-[180px] justify-between"
           >
             <span className="size-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100/30">
@@ -341,9 +341,9 @@ const Contact = () => {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.2 }}
             whileHover={{ y: -6, transition: { duration: 0.3 } }}
-            transition={{ duration: 0.5, delay: 0.4 }}
+            transition={{ duration: 0.5 }}
             className="bg-white rounded-[28px] p-7 border border-slate-100 shadow-xs flex flex-col gap-4 text-left transition-shadow duration-300 hover:shadow-lg hover:border-blue-500/10 cursor-pointer min-h-[180px] justify-between"
           >
             <span className="size-11 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0 border border-orange-100/30">
@@ -361,8 +361,8 @@ const Contact = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.5 }}
           className="md:hidden bg-white rounded-2xl p-3 border border-slate-100 shadow-xs grid grid-cols-4 gap-2 text-center"
         >
           

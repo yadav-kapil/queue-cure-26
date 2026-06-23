@@ -11,6 +11,7 @@ export const formatUserResponse = (user) => {
   if (!user) return null;
   return {
     id: user._id || user.id,
+    _id: user._id || user.id,
     fullName: user.fullName,
     username: user.username,
     email: user.email,
@@ -21,6 +22,8 @@ export const formatUserResponse = (user) => {
     associatedDoctorId: user.associatedDoctorId,
     associatedReceptionistId: user.associatedReceptionistId,
     associationStatus: user.associationStatus,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
   };
 };
 

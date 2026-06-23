@@ -24,6 +24,10 @@ export const useDoc = () => {
   const [hireLoading, setHireLoading] = useState(false);
   const [removeLoading, setRemoveLoading] = useState(false);
 
+  // Session loading state
+  const [sessionLoading, setSessionLoading] = useState(false);
+  const [sessionLoadingMessage, setSessionLoadingMessage] = useState("");
+
   const hasHired = user?.associatedReceptionistId && user?.associationStatus === "active";
   const hasPendingSent = user?.associatedReceptionistId && user?.associationStatus === "pending";
 
@@ -46,7 +50,7 @@ export const useDoc = () => {
 
   const handleAction = async (receptionistId, action) => {
     try {
-      setActionLoading(receptionistId);
+      setActionLoading({ id: receptionistId, action });
       const res = await fetch("/api/auth/handle-association-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -56,9 +60,8 @@ export const useDoc = () => {
       const data = await res.json();
       if (data.success) {
         authDispatch({ type: "LOGIN", payload: { user: data.user } });
-        if (action === "reject") {
-          setRequests((prev) => prev.filter((r) => r._id !== receptionistId && r.id !== receptionistId));
-        }
+        // Remove the request from the list regardless of accept or reject
+        setRequests((prev) => prev.filter((r) => r._id !== receptionistId && r.id !== receptionistId));
       } else {
         throw new Error(data.message || "Action failed");
       }
@@ -179,6 +182,8 @@ export const useDoc = () => {
 
   const goLive = async () => {
     try {
+      setSessionLoading(true);
+      setSessionLoadingMessage("Starting your live session...");
       const res = await fetch("/api/session/start", {
         method: "POST",
         credentials: "include",
@@ -196,6 +201,9 @@ export const useDoc = () => {
     } catch (err) {
       console.error("Error starting session:", err);
       alert("Error starting session. Please try again.");
+    } finally {
+      setSessionLoading(false);
+      setSessionLoadingMessage("");
     }
   };
 
@@ -264,6 +272,8 @@ export const useDoc = () => {
 
   const endSession = async () => {
     try {
+      setSessionLoading(true);
+      setSessionLoadingMessage("Ending your session. Please wait...");
       const res = await fetch("/api/session/end", {
         method: "PATCH",
         credentials: "include",
@@ -278,6 +288,9 @@ export const useDoc = () => {
     } catch (err) {
       console.error(err);
       alert("Error ending session.");
+    } finally {
+      setSessionLoading(false);
+      setSessionLoadingMessage("");
     }
   };
 
@@ -300,6 +313,8 @@ export const useDoc = () => {
     isCancelling,
     hireLoading,
     removeLoading,
+    sessionLoading,
+    sessionLoadingMessage,
     fetchIncomingRequests,
     handleAction,
     handleSearch,

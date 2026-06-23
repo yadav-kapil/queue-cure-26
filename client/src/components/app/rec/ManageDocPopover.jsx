@@ -11,7 +11,7 @@ import {
   FiAlertCircle
 } from "react-icons/fi";
 
-const ManageDocPopover = ({ setIsPopoverOpen }) => {
+const ManageDocPopover = ({ setIsPopoverOpen, isInline = false }) => {
   const {
     user,
     hasHired,
@@ -93,6 +93,235 @@ const ManageDocPopover = ({ setIsPopoverOpen }) => {
       setLocalError(err.message || "Action failed");
     }
   };
+
+  if (isInline) {
+    return (
+      <>
+        {hireLoading && <Loading message="Sending connection request..." />}
+        {removeLoading && <Loading message="Removing associated doctor..." />}
+        {isCancelling && <Loading message="Cancelling connection request..." />}
+        {actionLoading && <Loading message="Processing association request..." />}
+        <div className="space-y-6">
+          {localError && (
+            <div className="p-3 rounded-xl bg-red-50 text-red-600 text-xs font-bold flex items-center gap-2">
+              <FiAlertCircle className="shrink-0" />
+              {localError}
+            </div>
+          )}
+
+          {/* Current Doctor Section */}
+          <section>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Current Doctor</h3>
+            {hasHired && activeDoc ? (
+              <div className="rounded-2xl border border-emerald-100 bg-emerald-50/30 p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                     <span className="grid size-10 place-items-center rounded-xl bg-emerald-100 text-emerald-600">
+                       <FiActivity className="text-lg" />
+                     </span>
+                     <div>
+                       <p className="text-sm font-bold text-[#07122f]">{activeDoc.fullName}</p>
+                       <p className="text-[10px] text-slate-500">{activeDoc.clinicName || `@${activeDoc.username}`}</p>
+                     </div>
+                  </div>
+                  <button
+                    onClick={() => setShowRemoveConfirm(true)}
+                    className="text-[10px] font-bold text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-lg transition cursor-pointer"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 text-center">
+                <p className="text-xs text-slate-500 font-medium">You don't have an active doctor.</p>
+              </div>
+            )}
+
+            {/* Remove Confirmation Inline */}
+            {showRemoveConfirm && (
+              <div className="mt-2 p-3 rounded-xl bg-red-50 border border-red-100 flex flex-col gap-3">
+                <p className="text-xs text-red-700 font-medium">Are you sure you want to remove your current doctor? You will immediately lose access to their queue.</p>
+                <div className="flex gap-2 justify-end">
+                  <button onClick={() => setShowRemoveConfirm(false)} className="px-3 py-1.5 text-xs font-bold text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">Cancel</button>
+                  <button onClick={async () => {
+                    setLocalError("");
+                    try {
+                      await removeReceptionist();
+                      setShowRemoveConfirm(false);
+                    } catch (err) {
+                      setLocalError(err.message || "Failed to remove doctor");
+                    }
+                  }} disabled={removeLoading} className="px-3 py-1.5 text-xs font-bold text-white bg-red-500 rounded-lg hover:bg-red-600 disabled:opacity-50 cursor-pointer">
+                    {removeLoading ? "Removing..." : "Yes, Remove"}
+                  </button>
+                </div>
+              </div>
+            )}
+          </section>
+
+          {/* Requests Section */}
+          <section>
+            <div className="flex items-center border-b border-slate-100 mb-4">
+              <button
+                className={`pb-2 text-xs font-bold px-4 transition-colors relative cursor-pointer ${activeTab === 'received' ? 'text-[#315cf0]' : 'text-slate-400 hover:text-slate-600'}`}
+                onClick={() => setActiveTab('received')}
+              >
+                Received Requests
+                {requests.length > 0 && <span className="ml-1.5 inline-flex items-center justify-center bg-red-500 text-white text-[9px] h-4 w-4 rounded-full">{requests.length}</span>}
+                {activeTab === 'received' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#315cf0] rounded-t-full"></span>}
+              </button>
+              <button
+                className={`pb-2 text-xs font-bold px-4 transition-colors relative cursor-pointer ${activeTab === 'sent' ? 'text-[#315cf0]' : 'text-slate-400 hover:text-slate-600'}`}
+                onClick={() => setActiveTab('sent')}
+              >
+                Sent Requests
+                {hasPendingSent && <span className="ml-1.5 inline-block w-1.5 h-1.5 bg-amber-400 rounded-full"></span>}
+                {activeTab === 'sent' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#315cf0] rounded-t-full"></span>}
+              </button>
+              <button
+                className={`pb-2 text-xs font-bold px-4 transition-colors relative cursor-pointer ${activeTab === 'search' ? 'text-[#315cf0]' : 'text-slate-400 hover:text-slate-600'}`}
+                onClick={() => setActiveTab('search')}
+              >
+                Search
+                {activeTab === 'search' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#315cf0] rounded-t-full"></span>}
+              </button>
+            </div>
+
+            <div className="h-[260px] overflow-y-auto pr-2">
+              {/* Received Tab */}
+              {activeTab === 'received' && (
+                <div className="space-y-2">
+                {loading ? (
+                  <div className="flex flex-col items-center justify-center py-8 gap-2.5">
+                    <div className="size-6 border-2 border-slate-200 border-t-[#315cf0] rounded-full animate-spin"></div>
+                    <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Loading requests...</p>
+                  </div>
+                ) : requests.length > 0 ? (
+                  <div className="space-y-2">
+                    {requests.map(req => (
+                      <div key={req._id} className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-white shadow-sm">
+                        <div className="flex items-center gap-3">
+                          <span className="grid size-8 place-items-center rounded-lg bg-slate-50 text-slate-500">
+                            <FiActivity />
+                          </span>
+                          <div>
+                            <p className="text-xs font-bold text-[#07122f]">{req.fullName}</p>
+                            <p className="text-[10px] text-slate-400">{req.clinicName || `@${req.username}`}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-1.5">
+                          <button onClick={() => handleActionClick(req._id, "accept")} disabled={actionLoading?.id === req._id} className="size-7 grid place-items-center rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition cursor-pointer disabled:cursor-not-allowed">
+                            {actionLoading?.id === req._id && actionLoading?.action === 'accept'
+                              ? <span className="size-3.5 rounded-full border-2 border-emerald-200 border-t-emerald-600 animate-spin" />
+                              : <FiCheck className="text-sm stroke-[3]" />}
+                          </button>
+                          <button onClick={() => handleActionClick(req._id, "reject")} disabled={actionLoading?.id === req._id} className="size-7 grid place-items-center rounded-lg bg-red-50 text-red-600 hover:bg-red-500 hover:text-white transition cursor-pointer disabled:cursor-not-allowed">
+                            {actionLoading?.id === req._id && actionLoading?.action === 'reject'
+                              ? <span className="size-3.5 rounded-full border-2 border-red-200 border-t-red-600 animate-spin" />
+                              : <FiX className="text-sm stroke-[3]" />}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-center text-xs text-slate-400 py-8">No received requests.</p>
+                )}
+              </div>
+            )}
+
+            {/* Sent Tab */}
+            {activeTab === 'sent' && (
+              <div className="min-h-[100px]">
+                {hasPendingSent && pendingDoc ? (
+                   <div className="p-4 rounded-2xl border border-amber-100 bg-amber-50/30">
+                     <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <span className="grid size-10 place-items-center rounded-xl bg-amber-100 text-amber-600">
+                            <FiClock className="text-lg" />
+                          </span>
+                          <div>
+                            <p className="text-sm font-bold text-[#07122f]">{pendingDoc.fullName}</p>
+                            <p className="text-[10px] text-slate-500">{pendingDoc.clinicName || `@${pendingDoc.username}`}</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={cancelSentRequest}
+                          disabled={isCancelling}
+                          className="text-[10px] font-bold text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-lg transition cursor-pointer disabled:opacity-50"
+                        >
+                          {isCancelling ? "Cancelling..." : "Cancel Request"}
+                        </button>
+                     </div>
+                   </div>
+                ) : (
+                  <p className="text-center text-xs text-slate-400 py-8">No sent requests.</p>
+                )}
+              </div>
+            )}
+
+            {/* Search Tab */}
+            {activeTab === 'search' && (
+              <div className="space-y-4">
+                <form onSubmit={handleSearch} className="flex gap-2">
+                  <div className="relative flex-1">
+                    <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Search doctor by exact username..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#315cf0] focus:ring-2 focus:ring-[#315cf0]/20 transition"
+                    />
+                  </div>
+                  <button type="submit" disabled={searchLoading} className="px-4 py-2 bg-[#315cf0] text-white text-sm font-bold rounded-xl hover:bg-[#2546c4] disabled:opacity-50 transition shadow-sm cursor-pointer">
+                    Search
+                  </button>
+                </form>
+
+                {searchError && <p className="text-xs text-red-500 font-medium px-2">{searchError}</p>}
+
+                {searchResults.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider px-1">Results</p>
+                    {searchResults.map((doc) => (
+                      <div key={doc._id} className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-white shadow-sm">
+                        <div className="flex items-center gap-3">
+                          <span className="grid size-8 place-items-center rounded-lg bg-slate-50 text-slate-500">
+                            <FiUser />
+                          </span>
+                          <div>
+                            <p className="text-xs font-bold text-[#07122f]">{doc.fullName}</p>
+                            <p className="text-[10px] text-slate-400">{doc.clinicName || `@${doc.username}`}</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleHireClick(doc._id)}
+                          disabled={hasHired || hireLoading}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#eef2ff] text-[#315cf0] text-[10px] font-bold rounded-lg hover:bg-[#e0e7ff] transition disabled:opacity-50 cursor-pointer"
+                        >
+                          <FiPlus /> Send Request
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {searchLoading && (
+                  <div className="flex flex-col items-center justify-center py-8 gap-2.5">
+                    <div className="size-6 border-2 border-slate-200 border-t-[#315cf0] rounded-full animate-spin"></div>
+                    <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Searching doctors...</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          </section>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -222,11 +451,15 @@ const ManageDocPopover = ({ setIsPopoverOpen }) => {
                             </div>
                           </div>
                           <div className="flex gap-1.5">
-                            <button onClick={() => handleActionClick(req._id, "accept")} disabled={actionLoading === req._id} className="size-7 grid place-items-center rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition cursor-pointer">
-                              <FiCheck className="text-sm stroke-[3]" />
+                            <button onClick={() => handleActionClick(req._id, "accept")} disabled={actionLoading?.id === req._id} className="size-7 grid place-items-center rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition cursor-pointer disabled:cursor-not-allowed">
+                              {actionLoading?.id === req._id && actionLoading?.action === 'accept'
+                                ? <span className="size-3.5 rounded-full border-2 border-emerald-200 border-t-emerald-600 animate-spin" />
+                                : <FiCheck className="text-sm stroke-[3]" />}
                             </button>
-                            <button onClick={() => handleActionClick(req._id, "reject")} disabled={actionLoading === req._id} className="size-7 grid place-items-center rounded-lg bg-red-50 text-red-600 hover:bg-red-500 hover:text-white transition cursor-pointer">
-                              <FiX className="text-sm stroke-[3]" />
+                            <button onClick={() => handleActionClick(req._id, "reject")} disabled={actionLoading?.id === req._id} className="size-7 grid place-items-center rounded-lg bg-red-50 text-red-600 hover:bg-red-500 hover:text-white transition cursor-pointer disabled:cursor-not-allowed">
+                              {actionLoading?.id === req._id && actionLoading?.action === 'reject'
+                                ? <span className="size-3.5 rounded-full border-2 border-red-200 border-t-red-600 animate-spin" />
+                                : <FiX className="text-sm stroke-[3]" />}
                             </button>
                           </div>
                         </div>

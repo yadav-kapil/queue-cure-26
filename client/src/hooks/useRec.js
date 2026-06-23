@@ -10,6 +10,8 @@ export const useRec = () => {
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [sessionLoading, setSessionLoading] = useState(false);
+  const [sessionLoadingMessage, setSessionLoadingMessage] = useState("");
   
   // Search state
   const [searchQuery, setSearchQuery] = useState("");
@@ -47,7 +49,7 @@ export const useRec = () => {
 
   const handleAction = async (doctorId, action) => {
     try {
-      setActionLoading(doctorId);
+      setActionLoading({ id: doctorId, action });
       const res = await fetch("/api/auth/handle-association-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -57,9 +59,7 @@ export const useRec = () => {
       const data = await res.json();
       if (data.success) {
         authDispatch({ type: "LOGIN", payload: { user: data.user } });
-        if (action === "reject") {
-          setRequests((prev) => prev.filter((r) => r._id !== doctorId && r.id !== doctorId));
-        }
+        setRequests((prev) => prev.filter((r) => r._id !== doctorId && r.id !== doctorId));
       } else {
         throw new Error(data.message || "Action failed");
       }
@@ -180,7 +180,8 @@ export const useRec = () => {
 
   const leaveSession = async () => {
     try {
-      setRemoveLoading(true);
+      setSessionLoadingMessage("Leaving session. Please wait...");
+      setSessionLoading(true);
       const res = await fetch("/api/rec/leave-session", {
         method: "POST",
         credentials: "include",
@@ -196,7 +197,8 @@ export const useRec = () => {
       console.error(err);
       throw err;
     } finally {
-      setRemoveLoading(false);
+      setSessionLoading(false);
+      setSessionLoadingMessage("");
     }
   };
 
@@ -247,6 +249,8 @@ export const useRec = () => {
     hireLoading,
     removeLoading,
     addPatientLoading,
+    sessionLoading,
+    sessionLoadingMessage,
     fetchIncomingRequests,
     handleAction,
     handleSearch,

@@ -207,7 +207,7 @@ const Features = () => {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.5 }}
         className="text-center"
       >
@@ -234,9 +234,9 @@ const Features = () => {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.3 }}
             whileHover={{ y: -4, transition: { duration: 0.5 } }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            transition={{ duration: 0.5 }}
             className="group relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#dbeafe] via-[#c2d7ff] to-[#93c5fd] p-6 text-slate-800 shadow-md lg:col-span-3 lg:p-8 flex flex-col justify-between min-h-[340px] transition-shadow duration-500 hover:shadow-[0_22px_50px_rgba(31,92,240,0.1)] cursor-pointer"
           >
             
@@ -318,9 +318,9 @@ const Features = () => {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.3 }}
             whileHover={{ y: -4, transition: { duration: 0.5 } }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.5 }}
             className="group rounded-[28px] bg-[#f3f7ff] p-6 text-[#0d1321] shadow-xs lg:col-span-2 lg:p-8 flex flex-col justify-between min-h-[340px] transition-shadow duration-500 hover:shadow-md cursor-pointer"
           >
             <div>
@@ -438,9 +438,9 @@ const Features = () => {
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.3 }}
             whileHover={{ y: -4, transition: { duration: 0.5 } }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            transition={{ duration: 0.5 }}
             className="group rounded-[28px] bg-[#f0faf7] p-6 text-[#0d1321] shadow-xs flex flex-col justify-between min-h-[300px] transition-shadow duration-500 hover:shadow-md cursor-pointer border border-transparent"
           >
             <div>
@@ -531,9 +531,9 @@ const Features = () => {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.3 }}
             whileHover={{ y: -4, transition: { duration: 0.5 } }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.5 }}
             className="group rounded-[28px] bg-[#fffcf3] p-6 text-[#0d1321] shadow-xs flex flex-col justify-between min-h-[300px] transition-shadow duration-500 hover:shadow-md cursor-pointer"
           >
             <div>
@@ -568,9 +568,9 @@ const Features = () => {
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.3 }}
             whileHover={{ y: -4, transition: { duration: 0.5 } }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            transition={{ duration: 0.5 }}
             className="group rounded-[28px] bg-[#fbf7ff] p-6 text-[#0d1321] shadow-xs flex flex-col justify-between min-h-[300px] transition-shadow duration-500 hover:shadow-md cursor-pointer"
           >
             <div>
@@ -624,9 +624,9 @@ const Features = () => {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.3 }}
             whileHover={{ y: -4, transition: { duration: 0.5 } }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            transition={{ duration: 0.5 }}
             className="group rounded-[28px] bg-[#f3f7ff] p-6 text-[#0d1321] shadow-xs lg:p-8 transition-shadow duration-500 hover:shadow-md cursor-pointer"
           >
             
@@ -705,9 +705,9 @@ const Features = () => {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.3 }}
             whileHover={{ y: -4, transition: { duration: 0.5 } }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.5 }}
             className="group rounded-[28px] bg-[#fff5f6] p-6 text-[#0d1321] shadow-xs lg:p-8 transition-shadow duration-500 hover:shadow-md cursor-pointer"
           >
             

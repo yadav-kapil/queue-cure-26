@@ -17,8 +17,8 @@ const CTA = () => {
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
             style={{ willChange: "transform, opacity" }}
             className="lg:col-span-7 text-left space-y-6"
           >
@@ -54,8 +54,8 @@ const CTA = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.85 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay:0.2 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, delay:0.1 }}
             style={{ willChange: "transform, opacity" }}
             className="lg:col-span-5 relative h-[360px] sm:h-[400px] w-full flex items-center justify-center overflow-visible select-none"
           >

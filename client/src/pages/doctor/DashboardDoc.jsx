@@ -16,11 +16,12 @@ import { useAuth } from '../../context/auth/AuthContext'
 import { useSession } from '../../context/session/SessionContext'
 import { useDoc } from '../../hooks/useDoc'
 import DocHandleRec from '../../components/app/doctor/DocHandleRec'
+import Loading from '../../components/common/Loading'
 
 const DashboardDoc = () => {
   const { user } = useAuth()
   const { session, queue, isSessionActive } = useSession()
-  const { goLive } = useDoc()
+  const { goLive, sessionLoading, sessionLoadingMessage } = useDoc()
   const navigate = useNavigate()
 
   const activity = useMemo(() => {
@@ -192,6 +193,7 @@ const DashboardDoc = () => {
 
   return (
     <section className="space-y-5">
+      {sessionLoading && <Loading message={sessionLoadingMessage} />}
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
         <article className="relative min-h-[280px] overflow-hidden rounded-[24px] bg-gradient-to-br from-[#5b5ff7] via-[#346dff] to-[#5ab7ff] p-6 text-white shadow-[0_16px_38px_rgba(77,124,254,0.22)] sm:p-8">
           <div className="absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.22),transparent_62%)]" />
