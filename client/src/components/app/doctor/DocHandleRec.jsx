@@ -1,7 +1,63 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../../context/auth/AuthContext";
 import ManageRecPopover from "./ManageRecPopover";
-import { FiUser, FiUserPlus, FiSearch, FiCheck, FiRefreshCw } from "react-icons/fi";
+import { FiUser, FiUserPlus, FiSearch, FiCheck, FiRefreshCw, FiClock } from "react-icons/fi";
+
+const LiveClock = () => {
+  const [liveTime, setLiveTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setLiveTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Format time parts
+  const timeString = liveTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+  const [time, ampm] = timeString.split(' ');
+  const [hh, mm, ss] = time.split(':');
+
+  return (
+    <article className="rounded-[24px] border border-[#e5eaf4] bg-gradient-to-b from-white to-[#fcfdfe] p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)] flex flex-col justify-between h-full flex-1">
+      {/* Top: Header & pulsing icon */}
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+          Live Clock
+        </span>
+        <span className="grid h-7 w-7 place-items-center rounded-lg bg-[#eef4ff] text-[#2459ff]">
+          <FiClock className="h-4 w-4 animate-pulse" />
+        </span>
+      </div>
+
+      {/* Middle: Big digital time */}
+      <div className="my-auto py-2">
+        <div className="flex items-baseline justify-start">
+          <span className="text-3xl font-black tracking-tight text-[#07122f] tabular-nums">
+            {hh}:{mm}
+          </span>
+          <span className="text-[10px] font-black text-slate-400 ml-1 uppercase">
+            {ampm}
+          </span>
+        </div>
+        <div className="flex items-center gap-1.5 mt-1 text-[9px] font-bold text-slate-400 uppercase tracking-wider">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#2459ff] animate-ping" />
+          Ticking: {ss}s
+        </div>
+      </div>
+
+      {/* Bottom: Date */}
+      <div className="border-t border-slate-100/80 pt-3 text-left">
+        <p className="text-[9px] font-black uppercase tracking-wider text-[#2459ff]">
+          {liveTime.toLocaleDateString([], { weekday: 'long' })}
+        </p>
+        <p className="text-xs font-black text-[#07122f] mt-0.5">
+          {liveTime.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
+        </p>
+      </div>
+    </article>
+  );
+};
 
 const DocHandleRec = () => {
   const { user } = useAuth();
@@ -12,102 +68,117 @@ const DocHandleRec = () => {
 
   const activeRec = hasHired ? user.associatedReceptionistId : null;
 
-  // CTA Text logic
-  let ctaText = "Manage Receptionist";
-  if (!hasHired && !hasPendingSent) {
-    ctaText = "Search For Receptionist";
-  }
-
   return (
     <>
-      {/* Main Dashboard Card */}
-      <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)] relative overflow-hidden flex flex-col justify-between h-full min-h-[280px]">
-        {hasHired && activeRec && (
-          <div className="absolute top-5 right-5">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#eef4ff] px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-[#2459ff] border border-[#dbeafe] shadow-xs">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#2459ff]" />
-              Linked
-            </span>
-          </div>
-        )}
-        
-        <div>
-          <p className="text-xs font-bold uppercase tracking-wider text-[#2459ff] mb-4">
-            {hasHired && activeRec ? "Receptionist Status" : "Receptionist Connection"}
-          </p>
-        </div>
-        
-        {hasHired && activeRec ? (
-          <div className="flex-1 flex flex-col items-center justify-center text-center my-3 p-5 rounded-2xl bg-gradient-to-b from-[#f8fbff] to-[#f4f7ff]/70 border border-[#e8efff]">
-            <div className="relative mb-3">
-              <span className="grid h-16 w-16 place-items-center rounded-2xl bg-white text-[#2459ff] shadow-[0_8px_20px_rgba(77,124,254,0.1)] border border-[#e8efff]">
-                <FiUser className="h-8 w-8" />
-              </span>
-              <div className="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-[#2459ff] border-2 border-white" />
+      <div className="flex flex-col gap-4 h-full">
+        {/* Card 1: Receptionist Status */}
+        <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)] relative overflow-hidden flex flex-col justify-between h-full flex-1 h-0">
+          {hasHired && activeRec ? (
+            <div className="flex flex-col justify-between h-full w-full">
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] font-black uppercase tracking-wider text-[#2459ff]">
+                  Receptionist
+                </p>
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#eef4ff] px-2 py-0.5 text-[8px] font-black uppercase tracking-wider text-[#2459ff] border border-[#e8efff] shadow-xs">
+                  <span className="h-1 w-1 rounded-full bg-[#2459ff]" />
+                  Linked
+                </span>
+              </div>
+
+              {/* Horizontal Rec Bar */}
+              <div className="flex items-center gap-3 text-left my-auto py-2">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#eef4ff] text-[#2459ff] border border-[#e8efff] shadow-xs shrink-0">
+                  <FiUser className="h-5 w-5" />
+                </span>
+                <div className="min-w-0">
+                  <h3 className="text-xs font-black text-[#07122f] truncate max-w-[150px]">
+                    {activeRec.fullName}
+                  </h3>
+                  <p className="text-[9px] font-bold text-slate-400 mt-0.5 truncate max-w-[150px]">
+                    @{activeRec.username}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsPopoverOpen(true)}
+                className="w-full justify-center inline-flex items-center gap-1.5 rounded-full bg-[#f1f5ff] py-2 text-[10px] font-black text-[#2459ff] transition hover:bg-[#eef4ff] cursor-pointer shrink-0"
+              >
+                Manage
+              </button>
             </div>
-            <h3 className="text-base font-extrabold text-[#07122f] truncate max-w-full px-2">
-              {activeRec.fullName}
-            </h3>
-            <p className="text-[11px] font-bold text-slate-400 mt-1 truncate max-w-full px-2">
-              @{activeRec.username}
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-3 mb-3 flex-1 flex flex-col justify-center">
-            <p className="text-[11px] text-slate-500 font-semibold leading-relaxed">
-              No active receptionist has been assigned to your account.
-            </p>
-
-            {/* Premium Info Panel */}
-            <div className="space-y-3 bg-[#f8fafc] rounded-2xl p-4 border border-slate-100">
-              <div className="flex items-start gap-2.5">
-                <span className="mt-0.5 grid size-5 place-items-center rounded-md bg-blue-50 text-blue-600">
-                  <FiSearch className="text-[10px]" />
-                </span>
-                <p className="text-[11px] font-medium text-slate-600 leading-normal">
-                  Search available receptionists.
+          ) : hasPendingSent ? (
+            <div className="flex flex-col justify-between h-full w-full">
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] font-black uppercase tracking-wider text-amber-500">
+                  Connection
                 </p>
+                <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[8px] font-black uppercase tracking-wider text-amber-600 border border-amber-200 shadow-xs animate-pulse">
+                  Pending
+                </span>
               </div>
 
-              <div className="flex items-start gap-2.5">
-                <span className="mt-0.5 grid size-5 place-items-center rounded-md bg-amber-50 text-amber-600">
-                  <FiUserPlus className="text-[10px]" />
+              {/* Horizontal Rec Bar */}
+              <div className="flex items-center gap-3 text-left my-auto py-2">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-amber-50 text-amber-650 border border-amber-100/50 shadow-xs shrink-0">
+                  <FiUser className="h-5 w-5 animate-pulse text-amber-500" />
                 </span>
-                <p className="text-[11px] font-medium text-slate-600 leading-normal">
-                  Send and manage hire requests.
-                </p>
+                <div className="min-w-0">
+                  <h3 className="text-xs font-black text-[#07122f] truncate max-w-[150px]">
+                    @{user.associatedReceptionistId.username}
+                  </h3>
+                  <p className="text-[9px] font-bold text-slate-400 mt-0.5">
+                    Waiting to accept
+                  </p>
+                </div>
               </div>
 
-              <div className="flex items-start gap-2.5">
-                <span className="mt-0.5 grid size-5 place-items-center rounded-md bg-emerald-50 text-emerald-600">
-                  <FiCheck className="text-[10px]" />
-                </span>
-                <p className="text-[11px] font-medium text-slate-600 leading-normal">
-                  Accept incoming connection requests.
-                </p>
-              </div>
-
-              <div className="flex items-start gap-2.5">
-                <span className="mt-0.5 grid size-5 place-items-center rounded-md bg-purple-50 text-purple-600">
-                  <FiRefreshCw className="text-[10px]" />
-                </span>
-                <p className="text-[11px] font-medium text-slate-600 leading-normal">
-                  Replace or remove existing associations anytime.
-                </p>
-              </div>
+              <button
+                type="button"
+                onClick={() => setIsPopoverOpen(true)}
+                className="w-full justify-center inline-flex items-center gap-1.5 rounded-full bg-amber-50 py-2 text-[10px] font-black text-amber-700 transition hover:bg-amber-100 cursor-pointer shrink-0 border border-amber-200"
+              >
+                Manage
+              </button>
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="flex flex-col justify-between h-full w-full">
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                  Receptionist
+                </p>
+                <span className="inline-flex items-center gap-1 rounded-full bg-slate-50 px-2.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-slate-400 border border-slate-200/50 shadow-xs">
+                  Not Linked
+                </span>
+              </div>
 
-        <button
-          type="button"
-          onClick={() => setIsPopoverOpen(true)}
-          className="w-full inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#315cf0] text-white hover:bg-[#204ad0] transition text-xs font-bold cursor-pointer mt-2"
-        >
-          {ctaText === "Search For Receptionist" ? <FiUserPlus className="text-base" /> : <FiUser className="text-base" />}
-          {ctaText}
-        </button>
-      </article>
+              {/* Horizontal Rec Bar */}
+              <div className="flex items-center gap-3 text-left my-auto py-2">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-slate-50 text-slate-400 border border-slate-100 shadow-xs shrink-0">
+                  <FiUserPlus className="h-5 w-5" />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-[9px] text-slate-400 font-bold leading-normal">
+                    Link a receptionist.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsPopoverOpen(true)}
+                className="w-full justify-center inline-flex items-center gap-1.5 rounded-full bg-[#2459ff] py-2 text-[10px] font-black text-white transition hover:bg-[#1a44cc] cursor-pointer shrink-0 shadow-sm"
+              >
+                Search
+              </button>
+            </div>
+          )}
+        </article>
+
+        {/* Card 2: Clock Bar */}
+        <LiveClock />
+      </div>
 
       {/* Popover Modal */}
       {isPopoverOpen && (

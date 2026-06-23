@@ -20,15 +20,37 @@ const Contact = () => {
     message: "",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setIsSubmitted(false);
+    setIsLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/form", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formState),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to submit message.");
+      }
+
+      setIsSubmitted(true);
       setFormState({ name: "", email: "", phone: "", message: "" });
-    }, 3000);
+      setTimeout(() => {
+        setIsSubmitted(false);
+      }, 5000);
+    } catch (err) {
+      setError(err.message || "An unexpected error occurred.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -161,15 +183,23 @@ const Contact = () => {
               
               <button
                 type="submit"
-                className="flex items-center justify-center relative w-full py-3.5 text-white bg-[#315cf0] hover:bg-[#204ad0] font-bold rounded-2xl text-sm transition duration-205 shadow-md shadow-blue-500/10 cursor-pointer"
+                disabled={isLoading}
+                className={`flex items-center justify-center relative w-full py-3.5 text-white bg-[#315cf0] hover:bg-[#204ad0] font-bold rounded-2xl text-sm transition duration-205 shadow-md shadow-blue-500/10 cursor-pointer ${
+                  isLoading ? "opacity-75 cursor-not-allowed" : ""
+                }`}
               >
-                Send Message
+                {isLoading ? "Sending..." : "Send Message"}
                 <span className="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-[#315cf0] rounded-full size-8 flex items-center justify-center shadow-xs text-sm">
                   <FiArrowRight />
                 </span>
               </button>
 
-              
+              {error && (
+                <div className="bg-rose-50 border border-rose-100 rounded-2xl p-3 text-rose-800 text-xs font-bold text-center animate-scale-fade-in">
+                  ⚠️ {error}
+                </div>
+              )}
+
               {isSubmitted && (
                 <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-3 text-emerald-800 text-xs font-bold text-center animate-scale-fade-in">
                   Thanks for reaching out! We will contact you shortly.

@@ -9,6 +9,7 @@ export const usePatient = (trackingId) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSessionFound, setIsSessionFound] = useState(true);
   const [isSessionEnded, setIsSessionEnded] = useState(false);
+  const [isSessionCompleted, setIsSessionCompleted] = useState(false);
   const [socket, setSocket] = useState(null);
 
   const fetchPatientSession = useCallback(async () => {
@@ -28,6 +29,20 @@ export const usePatient = (trackingId) => {
       setSession(data.session);
       setQueue(data.queue);
       setIsSessionFound(true);
+      if (data.session && data.session.status === "ended") {
+        setIsSessionEnded(true);
+        setIsSessionCompleted(false);
+      } else if (data.patient && data.patient.consultationEndedAt) {
+        setIsSessionCompleted(true);
+        setIsSessionEnded(false);
+      } else if (data.queue && data.patient && data.queue.currentToken > data.patient.tokenNumber) {
+        setIsSessionEnded(true);
+        setIsSessionCompleted(false);
+      } else {
+        setIsSessionEnded(false);
+        setIsSessionCompleted(false);
+      }
+      setIsLoading(false);
       return data;
     } catch (err) {
       console.error("Failed to fetch patient session", err);
@@ -39,7 +54,7 @@ export const usePatient = (trackingId) => {
 
   const connectSocket = useCallback(
     (sessionId) => {
-      const newSocket = io('http://localhost:3003', {
+      const newSocket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:3003", {
         withCredentials: true,
       });
 
@@ -71,6 +86,7 @@ export const usePatient = (trackingId) => {
     setIsLoading,
     isSessionFound,
     isSessionEnded,
+    isSessionCompleted,
     fetchPatientSession,
     connectSocket,
     socket,

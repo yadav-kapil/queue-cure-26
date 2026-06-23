@@ -7,6 +7,7 @@ import sessionRouter from './routes/session.routes.js';
 import recRouter from './routes/rec.routes.js';
 import doctorRouter from './routes/doctor.routes.js';
 import patientRouter from './routes/patient.routes.js';
+import formRouter from './routes/form.routes.js';
 import config from './config/config.js';
 
 const app = express();
@@ -26,6 +27,8 @@ app.use('/api/session', sessionRouter);
 app.use('/api/rec', recRouter);
 app.use('/api/doctor', doctorRouter);
 app.use('/api/patient', patientRouter);
+app.use('/api/form', formRouter);
+app.use('/form', formRouter);
 
 // error handlers
 app.use((req, res, next) => {

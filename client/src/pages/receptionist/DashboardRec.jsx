@@ -208,49 +208,49 @@ const DashboardRec = () => {
           onClose={() => setErrorMsg(null)}
         />
       )}
-      <section className="space-y-6">
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+      <section className="space-y-5 sm:space-y-6">
+      <div className="grid gap-5 sm:gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
         {/* Welcome Hero Banner */}
-        <article className="relative min-h-[280px] overflow-hidden rounded-[32px] bg-gradient-to-br from-[#5b5ff7] via-[#346dff] to-[#5ab7ff] p-6 text-white shadow-[0_16px_38px_rgba(77,124,254,0.18)] sm:p-8">
+        <article className="relative min-h-[240px] sm:min-h-[280px] overflow-hidden rounded-[28px] sm:rounded-[32px] bg-gradient-to-br from-[#5b5ff7] via-[#346dff] to-[#5ab7ff] p-5 sm:p-8 text-white shadow-[0_16px_38px_rgba(77,124,254,0.18)]">
           <div className="absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.22),transparent_62%)]" />
-          <div className="relative z-10 max-w-[640px] sm:max-w-[58%]">
-            <p className="text-sm font-semibold text-white/80">Queue Management Console</p>
-            <h1 className="mt-4 text-3xl font-extrabold leading-tight sm:text-4xl">
+          <div className="relative z-10 sm:max-w-[58%]">
+            <p className="text-xs sm:text-sm font-semibold text-white/80">Queue Management Console</p>
+            <h1 className="mt-3 sm:mt-4 text-2xl sm:text-4xl font-extrabold leading-tight">
               Good Morning,
-              <span className="block mt-1">
-                Receptionist {user?.fullName || 'Riya'}
+              <span className="block mt-1 truncate pr-2">
+                {user?.fullName ? `Rec. ${user.fullName.split(' ')[0]}` : 'Receptionist'}
               </span>
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-white/90">
+            <p className="mt-2 sm:mt-3 text-xs sm:text-sm leading-relaxed text-white/90 hidden sm:block">
               Ready to manage today&apos;s appointments and guide patients smoothly through their consultation journey.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-4 sm:mt-6 flex flex-wrap gap-2 sm:gap-3">
               {!isSessionActive ? (
                 <button
                   type="button"
                   onClick={handleConnectSession}
-                  className="inline-flex h-12 items-center gap-3 rounded-full bg-white px-6 text-sm font-bold text-[#2459ff] shadow-[0_12px_25px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(15,23,42,0.15)] cursor-pointer"
+                  className="inline-flex h-10 sm:h-12 items-center gap-2 sm:gap-3 rounded-full bg-white px-4 sm:px-6 text-xs sm:text-sm font-bold text-[#2459ff] shadow-[0_12px_25px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(15,23,42,0.15)] cursor-pointer"
                 >
-                  <FiRadio className="h-5 w-5" />
+                  <FiRadio className="h-4 w-4 sm:h-5 sm:w-5" />
                   Connect Session
                 </button>
               ) : (
                 <button
                   type="button"
                   onClick={() => navigate('/rec/manage-patient')}
-                  className="inline-flex h-12 items-center gap-3 rounded-full bg-white px-6 text-sm font-bold text-[#2459ff] shadow-[0_12px_25px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(15,23,42,0.15)] cursor-pointer"
+                  className="inline-flex h-10 sm:h-12 items-center gap-2 sm:gap-3 rounded-full bg-white px-4 sm:px-6 text-xs sm:text-sm font-bold text-[#2459ff] shadow-[0_12px_25px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(15,23,42,0.15)] cursor-pointer"
                 >
-                  <FiUsers className="h-5 w-5" />
+                  <FiUsers className="h-4 w-4 sm:h-5 sm:w-5" />
                   Manage Patients
                 </button>
               )}
               <button
                 type="button"
                 onClick={() => navigate('/rec/history')}
-                className="inline-flex h-12 items-center gap-3 rounded-full bg-white/15 px-6 text-sm font-bold text-white ring-1 ring-white/30 transition hover:bg-white/20 cursor-pointer"
+                className="inline-flex h-10 sm:h-12 items-center gap-2 sm:gap-3 rounded-full bg-white/15 px-4 sm:px-6 text-xs sm:text-sm font-bold text-white ring-1 ring-white/30 transition hover:bg-white/20 cursor-pointer"
               >
-                View History
-                <FiArrowRight className="h-5 w-5" />
+                History
+                <FiArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
               </button>
             </div>
           </div>
@@ -266,22 +266,22 @@ const DashboardRec = () => {
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         {statCards.map((card) => {
           const Icon = card.icon
           return (
             <article
               key={card.title}
-              className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.04)]"
+              className="rounded-[20px] sm:rounded-[24px] border border-[#e5eaf4] bg-white p-4 sm:p-5 shadow-[0_8px_30px_rgba(15,23,42,0.04)]"
             >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-sm font-bold text-[#5b6478]">{card.title}</p>
-                  <p className="mt-3 text-3xl font-extrabold text-[#07122f]">{card.value}</p>
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="text-xs sm:text-sm font-bold text-[#5b6478] truncate">{card.title}</p>
+                  <p className="mt-2 sm:mt-3 text-2xl sm:text-3xl font-extrabold text-[#07122f]">{card.value}</p>
                   <p className="mt-1 text-xs font-semibold text-slate-400">{card.helper}</p>
                 </div>
-                <span className={`grid h-12 w-12 place-items-center rounded-2xl ${card.bg} ${card.color} shadow-xs`}>
-                  <Icon className="h-6 w-6" />
+                <span className={`grid h-10 w-10 sm:h-12 sm:w-12 shrink-0 place-items-center rounded-xl sm:rounded-2xl ${card.bg} ${card.color} shadow-xs`}>
+                  <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                 </span>
               </div>
             </article>
@@ -290,7 +290,7 @@ const DashboardRec = () => {
       </div>
 
       {/* Main Content Layout */}
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="grid gap-5 sm:gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
         {/* Left Column: Current Queue Table */}
         <article className="rounded-[28px] border border-[#e5eaf4] bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,0.05)]">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
@@ -337,74 +337,99 @@ const DashboardRec = () => {
               </button>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-100 text-xs font-extrabold uppercase tracking-wider text-slate-400">
-                    <th className="py-3.5 px-4">Token</th>
-                    <th className="py-3.5 px-4">Patient Name</th>
-                    <th className="py-3.5 px-4">OTP</th>
-                    <th className="py-3.5 px-4">Age / Gender</th>
-                    <th className="py-3.5 px-4">Wait Time</th>
-                    <th className="py-3.5 px-4">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100/60">
-                  {activeQueuePatients.map((patient, index) => {
-                    const avgTimeForCalc = averageConsultationTime !== null && averageConsultationTime > 0 ? averageConsultationTime : 5
-                    const isCurrent = patient.tokenNumber === queue.currentToken
-                    const waitTimeEst = isCurrent 
-                      ? '0 min' 
-                      : `${Math.round((index) * avgTimeForCalc)} min`
+            <div>
+              {/* Mobile: Card layout */}
+              <div className="space-y-3 md:hidden">
+                {activeQueuePatients.map((patient, index) => {
+                  const avgTimeForCalc = averageConsultationTime !== null && averageConsultationTime > 0 ? averageConsultationTime : 5
+                  const isCurrent = patient.tokenNumber === queue.currentToken
+                  const waitTimeEst = isCurrent ? '0 min' : `${Math.round(index * avgTimeForCalc)} min`
+                  let statusText = isCurrent ? 'Next' : patient.skipped ? 'Skipped' : 'Waiting'
+                  let statusClass = isCurrent ? 'bg-[#ecfdf5] text-[#16a34a]' : patient.skipped ? 'bg-red-50 text-red-600' : 'bg-[#fff7ed] text-[#f59e0b]'
 
-                    let statusText = 'Waiting'
-                    let statusClass = 'bg-[#fff7ed] text-[#f59e0b]'
-                    
-                    if (isCurrent) {
-                      statusText = 'Next' // Green status representing next or active patient
-                      statusClass = 'bg-[#ecfdf5] text-[#16a34a]'
-                    } else if (patient.skipped) {
-                      statusText = 'Skipped'
-                      statusClass = 'bg-red-50 text-red-600'
-                    }
-
-                    return (
-                      <tr 
-                        key={patient.tokenNumber} 
-                        className={`transition hover:bg-slate-50/70 ${isCurrent ? 'bg-[#f4f7ff]/40 font-bold' : ''}`}
-                      >
-                        <td className="py-3.5 px-4">
-                          <span className={`text-sm font-extrabold ${isCurrent ? 'text-[#2459ff]' : 'text-slate-500'}`}>
+                  return (
+                    <div
+                      key={patient.tokenNumber}
+                      className={`rounded-2xl border p-3.5 transition ${
+                        isCurrent ? 'border-[#c7d8ff] bg-[#f4f7ff]' : 'border-slate-100 bg-slate-50/50'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span className={`text-sm font-black shrink-0 ${isCurrent ? 'text-[#2459ff]' : 'text-slate-400'}`}>
                             #{patient.tokenNumber}
                           </span>
-                        </td>
-                        <td className="py-3.5 px-4">
-                          <span className="text-sm font-extrabold text-[#07122f]">{patient.name}</span>
-                        </td>
-                        <td className="py-3.5 px-4 text-sm font-semibold text-slate-600">
-                          {patient.code || '--'}
-                        </td>
-                        <td className="py-3.5 px-4">
-                          <span className="text-sm font-semibold text-slate-500">
-                            {patient.age ? `${patient.age} / ` : ''}{patient.gender ? (patient.gender.charAt(0).toUpperCase() + patient.gender.slice(1)) : '--'}
-                          </span>
-                        </td>
-                        <td className="py-3.5 px-4">
-                          <span className={`text-sm font-semibold ${isCurrent ? 'text-[#16a34a] font-bold' : 'text-slate-500'}`}>
-                            {waitTimeEst}
-                          </span>
-                        </td>
-                        <td className="py-3.5 px-4">
-                          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-bold ${statusClass}`}>
-                            <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                            {statusText}
-                          </span>
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
+                          <span className="text-sm font-extrabold text-[#07122f] truncate">{patient.name}</span>
+                        </div>
+                        <span className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold ${statusClass}`}>
+                          <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                          {statusText}
+                        </span>
+                      </div>
+                      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-semibold text-slate-500">
+                        {patient.code && <span>OTP: <span className="text-[#07122f] font-bold">{patient.code}</span></span>}
+                        {(patient.age || patient.gender) && <span>{patient.age ? `${patient.age}y` : ''}{patient.age && patient.gender ? ' / ' : ''}{patient.gender ? patient.gender.charAt(0).toUpperCase() + patient.gender.slice(1) : ''}</span>}
+                        <span className={isCurrent ? 'text-[#16a34a] font-bold' : ''}>Wait: {waitTimeEst}</span>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Desktop: Table layout */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-slate-100 text-xs font-extrabold uppercase tracking-wider text-slate-400">
+                      <th className="py-3.5 px-4">Token</th>
+                      <th className="py-3.5 px-4">Patient Name</th>
+                      <th className="py-3.5 px-4">OTP</th>
+                      <th className="py-3.5 px-4">Age / Gender</th>
+                      <th className="py-3.5 px-4">Wait Time</th>
+                      <th className="py-3.5 px-4">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100/60">
+                    {activeQueuePatients.map((patient, index) => {
+                      const avgTimeForCalc = averageConsultationTime !== null && averageConsultationTime > 0 ? averageConsultationTime : 5
+                      const isCurrent = patient.tokenNumber === queue.currentToken
+                      const waitTimeEst = isCurrent ? '0 min' : `${Math.round(index * avgTimeForCalc)} min`
+                      let statusText = isCurrent ? 'Next' : patient.skipped ? 'Skipped' : 'Waiting'
+                      let statusClass = isCurrent ? 'bg-[#ecfdf5] text-[#16a34a]' : patient.skipped ? 'bg-red-50 text-red-600' : 'bg-[#fff7ed] text-[#f59e0b]'
+
+                      return (
+                        <tr
+                          key={patient.tokenNumber}
+                          className={`transition hover:bg-slate-50/70 ${isCurrent ? 'bg-[#f4f7ff]/40 font-bold' : ''}`}
+                        >
+                          <td className="py-3.5 px-4">
+                            <span className={`text-sm font-extrabold ${isCurrent ? 'text-[#2459ff]' : 'text-slate-500'}`}>#{patient.tokenNumber}</span>
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <span className="text-sm font-extrabold text-[#07122f]">{patient.name}</span>
+                          </td>
+                          <td className="py-3.5 px-4 text-sm font-semibold text-slate-600">{patient.code || '--'}</td>
+                          <td className="py-3.5 px-4">
+                            <span className="text-sm font-semibold text-slate-500">
+                              {patient.age ? `${patient.age} / ` : ''}{patient.gender ? (patient.gender.charAt(0).toUpperCase() + patient.gender.slice(1)) : '--'}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <span className={`text-sm font-semibold ${isCurrent ? 'text-[#16a34a] font-bold' : 'text-slate-500'}`}>{waitTimeEst}</span>
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-bold ${statusClass}`}>
+                              <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                              {statusText}
+                            </span>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
               <div className="mt-5 text-center border-t border-slate-100 pt-4">
                 <button
                   onClick={() => navigate('/rec/manage-patient')}

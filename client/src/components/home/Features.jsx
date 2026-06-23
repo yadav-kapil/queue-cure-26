@@ -224,31 +224,31 @@ const Features = () => {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           
           
-          <div className="group relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#779dfc] via-[#3d6bf7] to-[#1f3fba] p-6 text-white shadow-lg lg:col-span-3 lg:p-8 flex flex-col justify-between min-h-[340px] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_50px_rgba(31,92,240,0.18)] cursor-pointer">
+          <div className="group relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#dbeafe] via-[#c2d7ff] to-[#93c5fd] p-6 text-slate-800 shadow-md lg:col-span-3 lg:p-8 flex flex-col justify-between min-h-[340px] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_50px_rgba(31,92,240,0.1)] cursor-pointer">
             
             <div className="absolute bottom-0 left-0 right-0 z-0 opacity-20 pointer-events-none select-none">
-              <svg viewBox="0 0 400 100" className="w-full fill-none stroke-white stroke-[2.5]">
+              <svg viewBox="0 0 400 100" className="w-full fill-none stroke-[#315cf0]/40 stroke-[2.5]">
                 <path d="M 0 50 C 60 20, 100 80, 160 30 C 220 -20, 260 70, 320 40 C 360 20, 380 40, 400 35" />
-                <circle cx="320" cy="40" r="5" className="fill-white" />
-                <circle cx="320" cy="40" r="10" className="fill-white/30 animate-ping" />
+                <circle cx="320" cy="40" r="5" className="fill-[#315cf0]" />
+                <circle cx="320" cy="40" r="10" className="fill-[#315cf0]/30 animate-ping" />
               </svg>
             </div>
 
             <div className="relative z-10 grid grid-cols-1 md:grid-cols-[1.1fr_0.9fr] gap-6 items-center h-full">
               
               <div>
-                <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-white/20 text-white shadow-inner transition-transform duration-300 group-hover:scale-110">
+                <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-[#315cf0]/15 text-[#315cf0] transition-transform duration-300 group-hover:scale-110">
                   <FiActivity className="text-xl" />
                 </span>
                 
-                <h3 className="mt-5 text-xl font-bold lg:text-2xl flex items-center gap-2">
+                <h3 className="mt-5 text-xl font-bold lg:text-2xl text-[#0d1321] flex items-center gap-2">
                   Live Queue Tracking
                   <span className="relative flex size-2 shrink-0">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full size-2 bg-emerald-500"></span>
                   </span>
                 </h3>
-                <p className="mt-3 text-xs lg:text-sm leading-relaxed text-white/90 font-medium">
+                <p className="mt-3 text-xs lg:text-sm leading-relaxed text-slate-600 font-medium">
                   Track token movement instantly across all connected devices without refreshing the page.
                 </p>
               </div>

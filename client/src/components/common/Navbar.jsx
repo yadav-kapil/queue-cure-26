@@ -20,11 +20,11 @@ const Navbar = () => {
   const dashboardPath = user?.role === "doctor" ? "/doctor" : "/rec";
 
   const navLinks = [
-    { label: "Home", href: "#home", icon: FiHome, isRoute: false },
-    { label: "Track", href: "/patient/track", icon: FiSearch, isRoute: true },
-    { label: "Features", href: "#features", icon: FiGrid, isRoute: false },
-    { label: "How It Works", href: "#how-it-works", icon: FiCalendar, isRoute: false },
-    { label: "Contact", href: "#contact", icon: FiArrowRight, isRoute: false },
+    { label: "Home", href: "/#home", icon: FiHome },
+    { label: "Track", href: "/patient/track", icon: FiSearch },
+    { label: "Features", href: "/#features", icon: FiGrid },
+    { label: "How It Works", href: "/#how-it-works", icon: FiCalendar },
+    { label: "Contact", href: "/#contact", icon: FiArrowRight },
   ];
 
   useEffect(() => {
@@ -43,19 +43,19 @@ const Navbar = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-30 transition-all duration-300 ${
         isScrolled
-          ? "px-0 pt-0"
-          : "px-4 pt-3 sm:px-6 lg:px-8"
+          ? "px-4 pt-3 sm:px-6 lg:px-8"
+          : "px-0 pt-0"
       }`}
     >
       <nav
         className={`mx-auto flex items-center justify-between transition-all duration-300 ${
           isScrolled
-            ? "max-w-full rounded-none bg-white/95 px-6 py-3.5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] border-b border-slate-100/80 backdrop-blur-md md:px-12"
-            : "max-w-7xl rounded-[24px] bg-white/92 px-5 py-3 shadow-[0_20px_60px_rgba(15,23,42,0.06)] backdrop-blur-md md:px-7"
+            ? "max-w-7xl rounded-[24px] bg-white/92 px-5 py-3 shadow-[0_20px_60px_rgba(15,23,42,0.06)] backdrop-blur-md md:px-7"
+            : "max-w-full rounded-none bg-white/95 px-6 py-3.5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] border-b border-slate-100/80 backdrop-blur-md md:px-12"
         }`}
       >
-        <a
-          href="/"
+        <NavLink
+          to="/"
           className="flex items-center gap-2.5"
           aria-label="Queue Cure home"
         >
@@ -65,27 +65,17 @@ const Navbar = () => {
           <span className="text-lg font-extrabold tracking-normal sm:text-xl">
             Queue <span className="text-[#2f75ff]">Cure</span>
           </span>
-        </a>
+        </NavLink>
 
         <div className="hidden items-center gap-9 text-sm font-semibold text-[#080b13] lg:flex">
           {navLinks.map((link) => (
-            link.isRoute ? (
-              <NavLink
-                key={link.label}
-                to={link.href}
-                className="transition hover:text-[#2f75ff]"
-              >
-                {link.label}
-              </NavLink>
-            ) : (
-              <a
-                key={link.label}
-                href={window.location.pathname === '/' ? link.href : `/${link.href}`}
-                className="transition hover:text-[#2f75ff]"
-              >
-                {link.label}
-              </a>
-            )
+            <NavLink
+              key={link.label}
+              to={link.href}
+              className="transition hover:text-[#2f75ff]"
+            >
+              {link.label}
+            </NavLink>
           ))}
         </div>
 
@@ -140,7 +130,7 @@ const Navbar = () => {
               {navLinks.map((link) => {
                 const Icon = link.icon;
 
-                return link.isRoute ? (
+                return (
                   <NavLink
                     key={link.label}
                     to={link.href}
@@ -152,18 +142,6 @@ const Navbar = () => {
                     </span>
                     {link.label}
                   </NavLink>
-                ) : (
-                  <a
-                    key={link.label}
-                    href={window.location.pathname === '/' ? link.href : `/${link.href}`}
-                    className="flex items-center gap-4 rounded-2xl px-4 py-3.5 text-[15px] font-semibold text-slate-800 transition hover:bg-slate-50 active:bg-slate-100"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    <span className="grid size-9 place-items-center rounded-xl bg-slate-100 text-slate-600">
-                      <Icon className="text-lg" />
-                    </span>
-                    {link.label}
-                  </a>
                 );
               })}
             </div>

@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router'
 import {
-  FiBell,
   FiChevronDown,
   FiChevronUp,
   FiClock,
   FiGrid,
   FiPlus,
   FiRadio,
+  FiSettings,
 } from 'react-icons/fi'
 import { useAuth } from '../../../context/auth/AuthContext'
 import Profile from '../Profile'
@@ -17,9 +17,9 @@ const NavigationbarDoc = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
 
   const navItems = [
-    { label: 'Dashboard', to: '/doctor/dashboard', icon: FiGrid, end: true },
-    { label: 'Live Session', to: '/doctor/live-session', icon: FiRadio },
-    { label: 'History', to: '/doctor/history', icon: FiClock },
+    { label: 'Dashboard', shortLabel: 'Dashboard', to: '/doctor/dashboard', icon: FiGrid, end: true },
+    { label: 'Live Session', shortLabel: 'Live Session', to: '/doctor/live-session', icon: FiRadio },
+    { label: 'History', shortLabel: 'History', to: '/doctor/history', icon: FiClock },
   ]
 
   const getInitials = (name) => {
@@ -29,8 +29,8 @@ const NavigationbarDoc = () => {
 
   return (
     <>
-      <header className="fixed left-0 right-0 top-0 z-40 px-4 pt-3 sm:px-6">
-        <div className="mx-auto flex h-16 max-w-[1480px] items-center justify-between rounded-[24px] border border-white/80 bg-white/90 px-4 shadow-[0_8px_30px_rgba(0,0,0,0.06)] backdrop-blur-xl sm:px-6">
+      <header className="fixed left-0 right-0 top-0 z-40 border-b border-slate-100 bg-white/90 shadow-sm backdrop-blur-xl">
+        <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
           <NavLink to="/doctor/dashboard" className="flex items-center gap-3" aria-label="Queue Cure doctor dashboard">
             <span className="grid h-10 w-10 place-items-center rounded-xl border-2 border-[#4d7cfe] text-[#2459ff] shadow-[0_8px_18px_rgba(77,124,254,0.16)]">
               <FiPlus className="h-6 w-6 stroke-[3]" />
@@ -40,22 +40,20 @@ const NavigationbarDoc = () => {
             </span>
           </NavLink>
 
-          <div className="flex items-center gap-2 sm:gap-4">
-            <button
-              type="button"
-              className="relative grid h-11 w-11 place-items-center rounded-2xl text-[#07122f] transition hover:bg-[#f1f5ff]"
-              aria-label="Notifications"
+          <div className="flex items-center gap-2 sm:gap-3">
+            <NavLink
+              to="/doctor/settings"
+              className={({ isActive }) =>
+                `grid h-9.5 w-9.5 place-items-center rounded-2xl border transition cursor-pointer ${
+                  isActive
+                    ? 'border-[#2459ff] bg-[#eef4ff] text-[#2459ff]'
+                    : 'border-slate-200/60 bg-white text-slate-500 hover:bg-slate-50'
+                }`
+              }
+              aria-label="Doctor Settings"
             >
-              <FiBell className="h-6 w-6" />
-              <span className="absolute right-2 top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#ef4444] px-1 text-[11px] font-bold text-white">
-                0
-              </span>
-            </button>
-
-            <div className="hidden items-center gap-2 rounded-full bg-[#ecfdf5] px-4 py-2 text-sm font-semibold text-[#16a34a] sm:flex">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#22c55e]" />
-              Ready
-            </div>
+              <FiSettings className="h-5 w-5" />
+            </NavLink>
 
             {/* Profile Dropdown Wrapper */}
             <div className="relative">
@@ -83,8 +81,8 @@ const NavigationbarDoc = () => {
         </div>
       </header>
 
-      <nav className="fixed bottom-5 left-1/2 z-40 w-[calc(100%-2rem)] max-w-[760px] -translate-x-1/2 rounded-full border border-white/80 bg-white/92 p-2 shadow-[0_12px_40px_rgba(15,23,42,0.12)] backdrop-blur-xl">
-        <div className="grid grid-cols-3 gap-2">
+      <nav className="fixed bottom-6 left-1/2 z-40 w-[calc(100%-2rem)] max-w-[420px] -translate-x-1/2 rounded-full border border-slate-200/50 bg-white/80 p-1.5 shadow-[0_16px_36px_rgba(15,23,42,0.08),0_4px_12px_rgba(15,23,42,0.03)] backdrop-blur-xl ring-1 ring-black/5 transition-all duration-300">
+        <div className="flex justify-between items-center w-full gap-1.5">
           {navItems.map((item) => {
             const Icon = item.icon
             return (
@@ -94,15 +92,26 @@ const NavigationbarDoc = () => {
                 end={item.end}
                 className={({ isActive }) => {
                   return [
-                    'flex h-14 items-center justify-center gap-2 rounded-full text-sm font-semibold transition sm:text-base',
+                    'flex h-12 items-center justify-center gap-2 rounded-full text-xs font-bold transition-all duration-300 ease-out transform active:scale-95',
                     isActive
-                      ? 'bg-gradient-to-r from-[#5b5ff7] to-[#4d7cfe] text-white shadow-[0_12px_25px_rgba(77,124,254,0.26)]'
-                      : 'text-[#4b5563] hover:bg-[#f1f5ff] hover:text-[#2459ff]',
+                      ? 'flex-1 bg-gradient-to-r from-[#2459ff] to-[#5b5ff7] text-white shadow-[0_8px_20px_rgba(36,89,255,0.22)] px-4'
+                      : 'text-[#5b6478] hover:bg-[#f4f7ff] hover:text-[#2459ff] w-12 sm:w-auto sm:flex-1 sm:px-4',
                   ].join(' ')
                 }}
               >
-                <Icon className="h-5 w-5" />
-                <span className="hidden sm:inline">{item.label}</span>
+                {({ isActive }) => (
+                  <>
+                    <Icon className={`h-5 w-5 transition-transform duration-300 ${isActive ? 'scale-110' : ''}`} />
+                    <span
+                      className={[
+                        'transition-all duration-300 font-bold tracking-wide truncate',
+                        isActive ? 'inline-block' : 'hidden sm:inline-block',
+                      ].join(' ')}
+                    >
+                      {item.shortLabel || item.label}
+                    </span>
+                  </>
+                )}
               </NavLink>
             )
           })}

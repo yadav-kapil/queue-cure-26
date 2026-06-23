@@ -77,6 +77,33 @@ const LiveSessionDoc = () => {
       }))
   }, [queue])
 
+  // Combine current patient and waiting patients for the main queue list
+  const patientsQueue = useMemo(() => {
+    const list = []
+    
+    // Add current patient at the top of the queue if active
+    if (currentPatient) {
+      list.push({
+        id: currentPatient.token,
+        token: currentPatient.token,
+        name: currentPatient.name,
+        arrivalTime: currentPatient.arrivalTime,
+        status: 'Serving',
+        isCurrent: true,
+      })
+    }
+    
+    // Add waiting patients
+    waitingPatients.forEach((p) => {
+      list.push({
+        ...p,
+        isCurrent: false,
+      })
+    })
+    
+    return list
+  }, [currentPatient, waitingPatients])
+
   // Map skipped patients
   const skippedPatients = useMemo(() => {
     if (!queue || !queue.patients) return []
@@ -87,6 +114,20 @@ const LiveSessionDoc = () => {
   const completedPatients = useMemo(() => {
     if (!queue || !queue.patients) return []
     return queue.patients.filter((p) => p.consultationEndedAt && !p.skipped)
+  }, [queue])
+
+  // Map completed patients with time details for listing
+  const completedPatientsList = useMemo(() => {
+    if (!queue || !queue.patients) return []
+    return queue.patients
+      .filter((p) => p.consultationEndedAt && !p.skipped)
+      .map((p) => ({
+        id: p.tokenNumber,
+        token: p.tokenNumber,
+        name: p.name,
+        completedTime: formatTime(p.consultationEndedAt),
+        status: 'Completed',
+      }))
   }, [queue])
 
   const averageConsultationTime = useMemo(() => {
@@ -153,135 +194,293 @@ const LiveSessionDoc = () => {
   }
 
   return (
-    <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
-      <div className="space-y-5">
-        <div className="grid gap-5 lg:grid-cols-2">
-          {/* Active Session Info */}
-          <article className="rounded-[24px] border border-[#dff7e9] bg-[#f4fbf8] p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2 text-xl font-extrabold text-[#07122f]">
-                  <span className="h-3 w-3 rounded-full bg-[#22c55e]" />
-                  Online
-                </div>
-                <p className="mt-2 text-sm font-semibold text-[#5b6478]">
-                  Started {formatTime(session?.startedAt)} <span className="px-2">.</span> Duration {formatDuration(elapsedMinutes)}
-                </p>
-              </div>
-              <FiWifi className="h-8 w-8 text-[#22c55e]" />
-            </div>
-          </article>
-
-          {/* Active Receptionist Connection info */}
-          <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
-            {receptionist ? (
-              <div className="flex items-center gap-4">
-                <span className="grid h-16 w-16 place-items-center rounded-2xl bg-[#eef4ff] text-[#2459ff]">
-                  <FiUser className="h-8 w-8" />
-                </span>
+    <section className="space-y-6">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="space-y-5">
+          {/* Top Row: Active Session & Receptionist Status */}
+          <div className="grid gap-5 sm:grid-cols-2">
+            {/* Active Session Info */}
+            <article className="flex flex-col justify-center rounded-[24px] border border-[#dff7e9] bg-[#f4fbf8] p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
+              <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="text-sm font-bold text-[#5b6478]">Receptionist</p>
-                  <h2 className="mt-1 text-lg font-extrabold text-[#07122f]">{receptionist.name}</h2>
-                  <p className="mt-1 text-sm font-semibold text-[#16a34a]">Online . Connected {receptionist.connectedAt}</p>
+                  <div className="flex items-center gap-2 text-xl font-extrabold text-[#07122f]">
+                    <span className="h-3 w-3 rounded-full bg-[#22c55e]" />
+                    Online
+                  </div>
+                  <p className="mt-2 text-xs font-bold text-[#5b6478]">
+                    Started {formatTime(session?.startedAt)} <span className="px-2">.</span> Duration {formatDuration(elapsedMinutes)}
+                  </p>
                 </div>
+                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#dff7e9] text-[#22c55e] shadow-[0_8px_16px_rgba(34,197,94,0.12)]">
+                  <FiWifi className="h-6 w-6" />
+                </span>
               </div>
-            ) : (
-              <EmptyState
-                compact
-                icon={FiUser}
-                title="Waiting for receptionist..."
-                text="Connection details will appear here once a receptionist joins the session."
-              />
-            )}
-          </article>
-        </div>
+            </article>
 
-        {/* Current Patient Banner */}
-        <article className="rounded-[28px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
-          <div className="rounded-[24px] bg-gradient-to-br from-[#5b5ff7] to-[#4d9eff] p-6 text-white">
-            <span className="rounded-full bg-white/18 px-3 py-1 text-xs font-bold">Current Patient</span>
-            <div className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h1 className="text-3xl font-extrabold">{currentPatient ? `Token #${currentPatient.token}` : 'No active patient'}</h1>
-                <p className="mt-2 text-xl font-semibold text-white/90">{currentPatient?.name || 'Call next patient when queue has arrivals'}</p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <InfoPill label={currentPatient?.age ? `Age ${currentPatient.age}` : 'Age --'} />
-                  <InfoPill label={currentPatient?.gender ? (currentPatient.gender.charAt(0).toUpperCase() + currentPatient.gender.slice(1)) : 'Gender --'} />
-                  <InfoPill label={currentPatient?.arrivalTime ? `Arrived ${currentPatient.arrivalTime}` : 'Arrival --'} />
-                  <InfoPill label={currentPatient?.queuePosition ? `Position ${currentPatient.queuePosition}` : 'Position --'} />
+            {/* Active Receptionist Connection info */}
+            <article className="flex flex-col justify-center rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
+              {receptionist ? (
+                <div className="flex items-center gap-4 text-left">
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#eef4ff] text-[#2459ff] shadow-xs">
+                    <FiUser className="h-8 w-8" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-bold text-[#5b6478]">Receptionist</p>
+                    <h2 className="mt-1 text-lg font-extrabold text-[#07122f]">{receptionist.name}</h2>
+                    <p className="mt-1 text-sm font-semibold text-[#16a34a]">Online . Connected {receptionist.connectedAt}</p>
+                  </div>
                 </div>
+              ) : (
+                <EmptyState
+                  compact
+                  icon={FiUser}
+                  title="Waiting for receptionist..."
+                  text="Connection details will appear here once a receptionist joins the session."
+                />
+              )}
+            </article>
+          </div>
+
+          {/* Current Patient Banner */}
+          <article className="rounded-[28px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
+            <div className="rounded-[24px] bg-gradient-to-br from-[#5b5ff7] to-[#4d9eff] p-6 text-white">
+              <span className="rounded-full bg-white/18 px-3 py-1 text-xs font-bold">Current Patient</span>
+              <div className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h1 className="text-3xl font-extrabold">{currentPatient ? `Token #${currentPatient.token}` : 'No active patient'}</h1>
+                  <p className="mt-2 text-xl font-semibold text-white/90">{currentPatient?.name || 'Call next patient when queue has arrivals'}</p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <InfoPill label={currentPatient?.age ? `Age ${currentPatient.age}` : 'Age --'} />
+                    <InfoPill label={currentPatient?.gender ? (currentPatient.gender.charAt(0).toUpperCase() + currentPatient.gender.slice(1)) : 'Gender --'} />
+                    <InfoPill label={currentPatient?.arrivalTime ? `Arrived ${currentPatient.arrivalTime}` : 'Arrival --'} />
+                    <InfoPill label={currentPatient?.queuePosition ? `Position ${currentPatient.queuePosition}` : 'Position --'} />
+                  </div>
+                </div>
+                <span className="grid h-24 w-24 shrink-0 place-items-center rounded-full bg-white/92 text-[#4d7cfe]">
+                  <FiUser className="h-12 w-12" />
+                </span>
               </div>
-              <span className="grid h-24 w-24 shrink-0 place-items-center rounded-full bg-white/92 text-[#4d7cfe]">
-                <FiUser className="h-12 w-12" />
-              </span>
             </div>
-          </div>
 
-          <div className="mt-5 grid gap-3 md:grid-cols-4">
-            <ActionButton label="Call Next" icon={FiPhoneCall} onClick={callNextPatient} disabled={!waitingPatients.length} primary />
-            <ActionButton label="Mark Completed" icon={FiCheckCircle} onClick={completeCurrentPatient} disabled={!currentPatient} />
-            <ActionButton label="Skip Patient" icon={FiSkipForward} onClick={skipCurrentPatient} disabled={!currentPatient} />
-            <ActionButton label="End Session" icon={FiStopCircle} onClick={endSession} danger />
-          </div>
-        </article>
+            <div className="mt-5 grid gap-3 md:grid-cols-4">
+              <ActionButton label="Call Next" icon={FiPhoneCall} onClick={callNextPatient} disabled={!waitingPatients.length} primary />
+              <ActionButton label="Mark Completed" icon={FiCheckCircle} onClick={completeCurrentPatient} disabled={!currentPatient} />
+              <ActionButton label="Skip Patient" icon={FiSkipForward} onClick={skipCurrentPatient} disabled={!currentPatient} />
+              <ActionButton label="End Session" icon={FiStopCircle} onClick={endSession} danger />
+            </div>
+          </article>
 
-        {/* Mini Metrics list */}
-        <div className="grid gap-4 sm:grid-cols-3">
-          <MiniMetric label="Patients Waiting" value={waitingPatients.length} icon={FiUsers} tone="green" />
-          <MiniMetric label="Average Wait Time" value={completedPatients.length === 0 ? '--' : `${averageConsultationTime} min`} icon={FiClock} tone="blue" />
-          <MiniMetric label="Estimated Finish Time" value={queueSummary.finishBy} icon={FiFlag} tone="orange" />
+          {/* Mini Metrics list */}
+          <div className="grid gap-4 sm:grid-cols-3">
+            <MiniMetric label="Patients Waiting" value={waitingPatients.length} icon={FiUsers} tone="green" />
+            <MiniMetric label="Average Wait Time" value={completedPatients.length === 0 ? '--' : `${averageConsultationTime} min`} icon={FiClock} tone="blue" />
+            <MiniMetric label="Estimated Finish Time" value={queueSummary.finishBy} icon={FiFlag} tone="orange" />
+          </div>
         </div>
 
-        {/* Upcoming Patients Queue List */}
-        <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
-          <div className="flex items-center justify-between gap-4">
-            <h2 className="text-lg font-extrabold text-[#07122f]">Upcoming Patients Queue</h2>
-            <span className="rounded-full bg-[#eef4ff] px-3 py-1 text-xs font-bold text-[#2459ff]">{waitingPatients.length} waiting</span>
+        <aside className="space-y-5">
+          {/* Session Records */}
+          <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
+            <h2 className="text-lg font-extrabold text-[#07122f]">Session Records</h2>
+            <div className="mt-4 grid gap-3">
+              <RecordLine label="Completed" value={completedPatients.length} tone="green" />
+              <RecordLine label="Skipped" value={skippedPatients.length} tone="orange" />
+              <RecordLine label="Remaining" value={queueSummary.estimatedRemainingMinutes ? `${queueSummary.estimatedRemainingMinutes} min` : '--'} tone="blue" />
+            </div>
+          </article>
+
+          {/* Up Next & Queue Progress Card */}
+          <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
+            <h2 className="text-lg font-extrabold text-[#07122f]">Up Next</h2>
+            
+            {/* Next Patient Info */}
+            <div className="mt-4">
+              {waitingPatients.length > 0 ? (
+                <div className="flex items-center justify-between rounded-2xl bg-[#f8fbff] p-4 border border-[#eef4ff]">
+                  <div className="flex items-center gap-3">
+                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-blue-50 font-black text-blue-600 text-sm">
+                      #{waitingPatients[0].token}
+                    </span>
+                    <div className="text-left">
+                      <h3 className="text-sm font-extrabold text-[#07122f]">{waitingPatients[0].name}</h3>
+                      <p className="text-[11px] font-semibold text-slate-400 mt-0.5">Arrived {waitingPatients[0].arrivalTime}</p>
+                    </div>
+                  </div>
+                  <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-bold text-amber-600 border border-amber-100/40">
+                    Next
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3 rounded-2xl bg-emerald-50/50 p-4 border border-emerald-100/40 text-left">
+                  <span className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-100 text-emerald-600">
+                    <FiCheckCircle className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <h3 className="text-sm font-extrabold text-emerald-800">Queue is Clear</h3>
+                    <p className="text-[11px] font-semibold text-emerald-600 mt-0.5">No patients waiting</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Queue Progress Bar */}
+            <div className="mt-6 pt-5 border-t border-slate-100">
+              {(() => {
+                const total = queue?.patients ? queue.patients.length : 0;
+                
+                // Find highest token that has started or completed consultation
+                const servedPatients = queue?.patients 
+                  ? queue.patients.filter((p) => p.consultationStartedAt || p.consultationEndedAt)
+                  : [];
+                const lastActiveOrCompletedToken = servedPatients.length > 0
+                  ? Math.max(...servedPatients.map((p) => p.tokenNumber))
+                  : 0;
+
+                const current = Math.max(queue?.currentToken || 0, lastActiveOrCompletedToken);
+                const allCalled = total > 0 && waitingPatients.length === 0;
+                const pct = allCalled
+                  ? 100
+                  : total > 0
+                    ? Math.min(100, Math.round((current / total) * 100))
+                    : 0;
+                return (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs font-bold text-left">
+                      <span className="text-slate-500">Queue Progress</span>
+                      <span className="text-[#07122f]">{allCalled ? "100%" : `Token #${current} of ${total} (${pct}%)`}</span>
+                    </div>
+                    {/* The small progress bar */}
+                    <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+                      <div 
+                        className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-500"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          </article>
+        </aside>
+      </div>
+
+      {/* Enhanced Viewport Full-Width (divided equally) Patients Lists */}
+      <div className="grid gap-5 md:grid-cols-2">
+        {/* Patients Queue List (including Current Patient) */}
+        <article className="flex flex-col h-[400px] rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
+          <div className="flex items-center justify-between gap-4 shrink-0 border-b border-slate-100 pb-4 mb-4">
+            <div className="flex items-center gap-2">
+              <span className="grid size-8 place-items-center rounded-xl bg-blue-50 text-blue-600">
+                <FiUsers className="h-4.5 w-4.5" />
+              </span>
+              <h2 className="text-lg font-extrabold text-[#07122f]">Patients Queue</h2>
+            </div>
+            <span className="rounded-full bg-[#eef4ff] px-3 py-1 text-xs font-bold text-[#2459ff]">
+              {patientsQueue.length} total
+            </span>
           </div>
 
-          {waitingPatients.length === 0 ? (
-            <EmptyState
-              icon={FiUsers}
-              title="Queue is empty"
-              text="Patients added by the receptionist will appear here with token, arrival time, and status."
-            />
+          {patientsQueue.length === 0 ? (
+            <div className="flex-1 overflow-y-auto">
+              <EmptyState
+                icon={FiUsers}
+                title="Queue is empty"
+                text="Patients added by the receptionist will appear here with token, arrival time, and status."
+              />
+            </div>
           ) : (
-            <div className="mt-4 max-h-[360px] space-y-3 overflow-y-auto pr-1">
-              {waitingPatients.map((patient) => (
-                <div key={patient.token} className="grid gap-3 rounded-2xl border border-[#e5eaf4] px-4 py-3 sm:grid-cols-[90px_minmax(0,1fr)_100px_90px] sm:items-center">
-                  <span className="font-extrabold text-[#2459ff]">#{patient.token}</span>
-                  <span className="font-bold text-[#111827]">{patient.name}</span>
-                  <span className="text-sm font-semibold text-[#6b7280]">{patient.arrivalTime}</span>
-                  <span className="rounded-full bg-[#fff7ed] px-3 py-1 text-center text-xs font-bold text-[#f59e0b]">{patient.status}</span>
+            <div className="flex-1 overflow-y-auto space-y-2.5 pr-1 scrollbar-thin scrollbar-thumb-slate-200">
+              {patientsQueue.map((patient) => {
+                const isCurrent = patient.isCurrent;
+                return (
+                  <div
+                    key={patient.token}
+                    className={`grid grid-cols-[40px_minmax(0,1fr)_75px_70px] sm:grid-cols-[60px_minmax(0,1fr)_90px_90px] gap-2 sm:gap-3 rounded-2xl px-3 sm:px-4 py-3 items-center transition duration-200 ${
+                      isCurrent
+                        ? "bg-blue-50/70 border-l-4 border-l-blue-600 shadow-xs"
+                        : "bg-white hover:bg-slate-50/80 border-l-4 border-l-transparent"
+                    }`}
+                  >
+                    <span className={`font-extrabold text-xs sm:text-sm ${isCurrent ? "text-blue-600" : "text-slate-400"}`}>
+                      #{patient.token}
+                    </span>
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className={`text-sm sm:text-[15px] font-bold truncate ${isCurrent ? "text-blue-900" : "text-slate-700"}`}>
+                        {patient.name}
+                      </span>
+                      {isCurrent && (
+                        <span className="animate-pulse inline-block size-1.5 rounded-full bg-blue-500 shrink-0" />
+                      )}
+                    </div>
+                    <span className="text-[10px] sm:text-xs font-semibold text-[#6b7280] text-right sm:text-left">
+                      {patient.arrivalTime}
+                    </span>
+                    <span
+                      className={`rounded-full px-2 py-0.5 sm:px-3 sm:py-1 text-center text-[10px] sm:text-[11px] font-bold ${
+                        isCurrent
+                           ? "bg-blue-100 text-blue-700 border border-blue-200/40"
+                           : "bg-amber-50 text-amber-600 border border-amber-100/40"
+                      }`}
+                    >
+                      {patient.status}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </article>
+ 
+        {/* Completed Patients Queue List */}
+        <article className="flex flex-col h-[400px] rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
+          <div className="flex items-center justify-between gap-4 shrink-0 border-b border-slate-100 pb-4 mb-4">
+            <div className="flex items-center gap-2">
+              <span className="grid size-8 place-items-center rounded-xl bg-emerald-50 text-emerald-600">
+                <FiCheckCircle className="h-4.5 w-4.5" />
+              </span>
+              <h2 className="text-lg font-extrabold text-[#07122f]">Completed Patients</h2>
+            </div>
+            <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-[#10b981]">
+              {completedPatientsList.length} completed
+            </span>
+          </div>
+ 
+          {completedPatientsList.length === 0 ? (
+            <div className="flex-1 overflow-y-auto">
+              <EmptyState
+                icon={FiCheckCircle}
+                title="No completed patients yet"
+                text="Completed patient consultations will be listed here with token, completion time, and status."
+              />
+            </div>
+          ) : (
+            <div className="flex-1 overflow-y-auto space-y-2.5 pr-1 scrollbar-thin scrollbar-thumb-slate-200">
+              {completedPatientsList.map((patient) => (
+                <div
+                  key={patient.token}
+                  className="grid grid-cols-[40px_minmax(0,1fr)_70px_24px] sm:grid-cols-[60px_minmax(0,1fr)_90px_90px] gap-2 sm:gap-3 rounded-2xl bg-white hover:bg-slate-50/80 border-l-4 border-l-transparent px-3 sm:px-4 py-3 items-center transition duration-200"
+                >
+                  <span className="font-extrabold text-xs sm:text-sm text-emerald-600">
+                    #{patient.token}
+                  </span>
+                  <span className="text-sm sm:text-[15px] font-bold text-slate-700 truncate">
+                    {patient.name}
+                  </span>
+                  <span className="text-[10px] sm:text-xs font-semibold text-[#6b7280] text-right sm:text-left">
+                    {patient.completedTime}
+                  </span>
+                  <span className="hidden sm:block rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100/40 px-3 py-1 text-center text-[11px] font-bold">
+                    {patient.status}
+                  </span>
+                  <span className="sm:hidden flex items-center justify-center text-emerald-650 shrink-0">
+                    <FiCheckCircle className="h-5 w-5 text-emerald-600" />
+                  </span>
                 </div>
               ))}
             </div>
           )}
         </article>
       </div>
-
-      <aside className="space-y-5">
-        {/* Session Records */}
-        <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
-          <h2 className="text-lg font-extrabold text-[#07122f]">Session Records</h2>
-          <div className="mt-4 grid gap-3">
-            <RecordLine label="Completed" value={completedPatients.length} tone="green" />
-            <RecordLine label="Skipped" value={skippedPatients.length} tone="orange" />
-            <RecordLine label="Remaining" value={queueSummary.estimatedRemainingMinutes ? `${queueSummary.estimatedRemainingMinutes} min` : '--'} tone="blue" />
-          </div>
-        </article>
-
-        {/* Permissions / Status Info */}
-        <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
-          <h2 className="text-lg font-extrabold text-[#07122f]">Allowed Here</h2>
-          <div className="mt-4 space-y-3">
-            <StatusLine label="Call next patient" />
-            <StatusLine label="Mark consultation complete" />
-            <StatusLine label="Skip patient" />
-            <StatusLine label="End active session" />
-          </div>
-        </article>
-      </aside>
     </section>
   )
 }

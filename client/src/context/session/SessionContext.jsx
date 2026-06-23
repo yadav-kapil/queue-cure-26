@@ -6,7 +6,7 @@ import { useAuth } from "../auth/AuthContext";
 import { io } from "socket.io-client";
 
 // Define and export the socket instance globally to avoid recreating it on renders
-export const socket = io("http://localhost:3003", {
+export const socket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:3003", {
   withCredentials: true,
   autoConnect: false, // Manage connection explicitly on component mount
 });

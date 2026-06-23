@@ -22,7 +22,61 @@ const DashboardDoc = () => {
   const { session, queue, isSessionActive } = useSession()
   const { goLive } = useDoc()
   const navigate = useNavigate()
-  const [activity] = useState([])
+
+  const activity = useMemo(() => {
+    if (!queue || !queue.patients) return []
+
+    const list = []
+    queue.patients.forEach((p) => {
+      if (p.joinedAt) {
+        list.push({
+          id: `${p.tokenNumber}-joined`,
+          label: `Token #${p.tokenNumber} Joined`,
+          rawTime: new Date(p.joinedAt).getTime(),
+          time: new Date(p.joinedAt).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+          type: 'joined',
+        })
+      }
+      if (p.consultationStartedAt) {
+        list.push({
+          id: `${p.tokenNumber}-called`,
+          label: `Token #${p.tokenNumber} Called`,
+          rawTime: new Date(p.consultationStartedAt).getTime(),
+          time: new Date(p.consultationStartedAt).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+          type: 'called',
+        })
+      }
+      if (p.consultationEndedAt) {
+        list.push({
+          id: `${p.tokenNumber}-completed`,
+          label: `Token #${p.tokenNumber} Completed`,
+          rawTime: new Date(p.consultationEndedAt).getTime(),
+          time: new Date(p.consultationEndedAt).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+          type: 'completed',
+        })
+      }
+    })
+
+    // Sort in reverse chronological order (newest first)
+    list.sort((a, b) => {
+      if (a.rawTime !== b.rawTime) {
+        return b.rawTime - a.rawTime
+      }
+      const priority = { completed: 3, called: 2, joined: 1 }
+      return (priority[b.type] || 0) - (priority[a.type] || 0)
+    })
+
+    return list
+  }, [queue])
 
   const currentPatient = useMemo(() => {
     if (!queue || !queue.patients) return null
@@ -77,12 +131,14 @@ const DashboardDoc = () => {
     const estimatedRemainingMinutes = remainingPatientsCount * avgTimeForCalc
     
     // Calculate estimated finish time relative to the current actual time
-    const finishBy = estimatedRemainingMinutes
-      ? new Date(Date.now() + estimatedRemainingMinutes * 60000).toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-      : '--:--'
+    const finishBy = remainingPatientsCount === 0
+      ? 'NA(All done)'
+      : estimatedRemainingMinutes
+        ? new Date(Date.now() + estimatedRemainingMinutes * 60000).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          })
+        : '--:--'
 
     return {
       estimatedRemainingMinutes,
@@ -99,30 +155,38 @@ const DashboardDoc = () => {
       icon: FiUser,
       color: 'text-[#2459ff]',
       bg: 'bg-[#eef4ff]',
+      cardBg: 'bg-gradient-to-br from-white to-[#fcfdfe]',
+      cardBorder: 'border-[#f1f3f7]',
     },
     {
       title: 'Patients Waiting',
       value: !isSessionActive ? '--' : `${waitingPatients.length} Waiting`,
       helper: !isSessionActive ? 'No active session' : 'Total in queue',
       icon: FiUsers,
-      color: 'text-[#22c55e]',
-      bg: 'bg-[#ecfdf5]',
+      color: 'text-[#f59e0b]',
+      bg: 'bg-[#fffbeb]',
+      cardBg: 'bg-gradient-to-br from-white to-[#fffdf9]',
+      cardBorder: 'border-[#fff5e6]',
     },
     {
       title: 'Patients Completed',
       value: !isSessionActive ? '--' : `${completedPatients.length} Completed`,
       helper: !isSessionActive ? 'No active session' : 'Today',
       icon: FiCheckCircle,
-      color: 'text-[#22c55e]',
+      color: 'text-[#10b981]',
       bg: 'bg-[#ecfdf5]',
+      cardBg: 'bg-gradient-to-br from-white to-[#f9fdfb]',
+      cardBorder: 'border-[#e6f7ef]',
     },
     {
       title: 'Average Consultation Time',
       value: !isSessionActive || averageConsultationTime === null ? '--' : `${averageConsultationTime} Minutes`,
       helper: !isSessionActive ? 'No active session' : 'Current estimate',
       icon: FiClock,
-      color: 'text-[#5b5ff7]',
-      bg: 'bg-[#f2f0ff]',
+      color: 'text-[#8b5cf6]',
+      bg: 'bg-[#f5f3ff]',
+      cardBg: 'bg-gradient-to-br from-white to-[#fbfaff]',
+      cardBorder: 'border-[#f3f0ff]',
     },
   ]
 
@@ -189,7 +253,7 @@ const DashboardDoc = () => {
           return (
             <article
               key={card.title}
-              className="rounded-[18px] border border-[#e5eaf4] bg-white p-4 shadow-[0_8px_26px_rgba(15,23,42,0.05)]"
+              className={`rounded-[18px] border ${card.cardBorder} ${card.cardBg} p-4 shadow-[0_8px_26px_rgba(15,23,42,0.03)] transition-all duration-300 hover:shadow-[0_12px_30px_rgba(15,23,42,0.06)] hover:-translate-y-0.5`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -197,7 +261,7 @@ const DashboardDoc = () => {
                   <p className="mt-4 text-2xl font-extrabold text-[#07122f]">{card.value}</p>
                   <p className="mt-1 text-sm text-[#5b6478]">{card.helper}</p>
                 </div>
-                <span className={`grid h-12 w-12 place-items-center rounded-2xl ${card.bg} ${card.color}`}>
+                <span className={`grid h-12 w-12 place-items-center rounded-2xl ${card.bg} ${card.color} shrink-0`}>
                   <Icon className="h-6 w-6" />
                 </span>
               </div>
@@ -207,12 +271,12 @@ const DashboardDoc = () => {
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-        <article className="rounded-[20px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_26px_rgba(15,23,42,0.05)]">
-          <div className="flex items-center justify-between gap-4">
+        <article className="flex flex-col h-[280px] rounded-[20px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_26px_rgba(15,23,42,0.05)]">
+          <div className="flex items-center justify-between gap-4 shrink-0">
             <h2 className="text-lg font-extrabold text-[#07122f]">Queue Insights</h2>
             <FiActivity className="h-5 w-5 text-[#2459ff]" />
           </div>
-          <div className="mt-4 grid gap-3">
+          <div className="mt-4 grid gap-3 flex-1">
             <SummaryRow
               icon={FiUsers}
               label="Total Patients Today"
@@ -228,27 +292,38 @@ const DashboardDoc = () => {
           </div>
         </article>
 
-        <article className="rounded-[20px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_26px_rgba(15,23,42,0.05)]">
-          <div className="flex items-center justify-between gap-4">
+        <article className="flex flex-col h-[280px] rounded-[20px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_26px_rgba(15,23,42,0.05)]">
+          <div className="flex items-center justify-between gap-4 shrink-0">
             <h2 className="text-lg font-extrabold text-[#07122f]">Recent Activity Timeline</h2>
             <span className="rounded-full bg-[#eef4ff] px-3 py-1 text-xs font-bold text-[#2459ff]">{activity.length} updates</span>
           </div>
 
           {activity.length === 0 ? (
-            <EmptyState
-              icon={FiActivity}
-              title="No activity yet"
-              text="Session started, receptionist joined, token called, and completed patient events will appear here."
-            />
+            <div className="flex-1 overflow-y-auto">
+              <EmptyState
+                icon={FiActivity}
+                title="No activity yet"
+                text="Session started, receptionist joined, token called, and completed patient events will appear here."
+              />
+            </div>
           ) : (
-            <div className="mt-4 space-y-3">
-              {activity.map((item) => (
-                <div key={item.id} className="flex items-center gap-3 rounded-2xl bg-[#f8fbff] px-4 py-3">
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#2459ff]" />
-                  <span className="flex-1 text-sm font-semibold text-[#111827]">{item.label}</span>
-                  <span className="text-xs font-semibold text-[#6b7280]">{item.time}</span>
-                </div>
-              ))}
+            <div className="flex-1 overflow-y-auto mt-4 space-y-3 pr-1 scrollbar-thin scrollbar-thumb-slate-200">
+              {activity.map((item) => {
+                const dotColor =
+                  item.type === 'completed'
+                    ? 'bg-[#22c55e]'
+                    : item.type === 'called'
+                      ? 'bg-[#2459ff]'
+                      : 'bg-slate-400'
+
+                return (
+                  <div key={item.id} className="flex items-center gap-3 rounded-2xl bg-[#f8fbff] px-4 py-3">
+                    <span className={`h-2.5 w-2.5 rounded-full ${dotColor}`} />
+                    <span className="flex-1 text-sm font-semibold text-[#111827]">{item.label}</span>
+                    <span className="text-xs font-semibold text-[#6b7280]">{item.time}</span>
+                  </div>
+                )
+              })}
             </div>
           )}
         </article>

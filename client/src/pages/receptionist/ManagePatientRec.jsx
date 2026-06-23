@@ -209,11 +209,11 @@ const ManagePatientRec = () => {
 
         {/* Right Column: Active Queue List */}
         <article className="rounded-[28px] border border-[#e5eaf4] bg-white p-5 shadow-[0_12px_40px_rgba(15,23,42,0.05)]">
-          <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center justify-between gap-3 mb-4">
             <h2 className="text-lg font-extrabold text-[#07122f]">Patients in Queue</h2>
             
             {/* Search Input */}
-            <div className="relative w-full max-w-[280px]">
+            <div className="relative w-full sm:max-w-[280px]">
               <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
               <input
                 type="text"
@@ -246,71 +246,111 @@ const ManagePatientRec = () => {
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-100 text-xs font-extrabold uppercase tracking-wider text-slate-400">
-                    <th className="py-3 px-4">Token</th>
-                    <th className="py-3 px-4">Name</th>
-                    <th className="py-3 px-4">OTP</th>
-                    <th className="py-3 px-4">Mobile</th>
-                    <th className="py-3 px-4">Age / Gender</th>
-                    <th className="py-3 px-4">Wait Time</th>
-                    <th className="py-3 px-4">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100/60">
-                  {filteredPatients.map((patient, index) => {
-                    const isCurrent = patient.tokenNumber === queue.currentToken
-                    const waitTimeEst = isCurrent 
-                      ? '0 min' 
-                      : `${(index) * 5} min`
+            <div>
+              {/* Mobile: Card layout */}
+              <div className="space-y-3 md:hidden">
+                {filteredPatients.map((patient, index) => {
+                  const isCurrent = patient.tokenNumber === queue.currentToken
+                  const waitTimeEst = isCurrent ? '0 min' : `${index * 5} min`
+                  let statusText = isCurrent ? 'Next' : patient.skipped ? 'Skipped' : 'Waiting'
+                  let statusClass = isCurrent
+                    ? 'bg-[#ecfdf5] text-[#16a34a]'
+                    : patient.skipped
+                    ? 'bg-red-50 text-red-600'
+                    : 'bg-[#fff7ed] text-[#f59e0b]'
 
-                    let statusText = 'Waiting'
-                    let statusClass = 'bg-[#fff7ed] text-[#f59e0b]'
-                    
-                    if (isCurrent) {
-                      statusText = 'Next'
-                      statusClass = 'bg-[#ecfdf5] text-[#16a34a]'
-                    } else if (patient.skipped) {
-                      statusText = 'Skipped'
-                      statusClass = 'bg-red-50 text-red-600'
-                    }
-
-                    return (
-                      <tr 
-                        key={patient.tokenNumber} 
-                        className={`transition hover:bg-slate-50/70 ${isCurrent ? 'bg-[#f4f7ff]/40 font-semibold' : ''}`}
-                      >
-                        <td className="py-3.5 px-4 font-extrabold text-[#2459ff]">
-                          #{patient.tokenNumber}
-                        </td>
-                        <td className="py-3.5 px-4">
-                          <span className="text-sm font-extrabold text-[#07122f]">{patient.name}</span>
-                        </td>
-                        <td className="py-3.5 px-4 text-sm font-semibold text-slate-600">
-                          {patient.code || '--'}
-                        </td>
-                        <td className="py-3.5 px-4">
-                          <span className="text-sm font-semibold text-slate-500">{patient.mobile}</span>
-                        </td>
-                        <td className="py-3.5 px-4 text-sm font-semibold text-slate-500">
-                          {patient.age ? `${patient.age} / ` : ''}{patient.gender ? (patient.gender.charAt(0).toUpperCase() + patient.gender.slice(1)) : '--'}
-                        </td>
-                        <td className="py-3.5 px-4 text-sm font-semibold text-slate-500">
-                          {waitTimeEst}
-                        </td>
-                        <td className="py-3.5 px-4">
-                          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-bold ${statusClass}`}>
-                            <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                            {statusText}
+                  return (
+                    <div
+                      key={patient.tokenNumber}
+                      className={`rounded-2xl border p-3.5 transition ${
+                        isCurrent ? 'border-[#c7d8ff] bg-[#f4f7ff]' : 'border-slate-100 bg-slate-50/40'
+                      }`}
+                    >
+                      {/* Row 1: Token + Name + Status */}
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span className={`text-sm font-black shrink-0 ${isCurrent ? 'text-[#2459ff]' : 'text-slate-400'}`}>
+                            #{patient.tokenNumber}
                           </span>
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
+                          <span className="text-sm font-extrabold text-[#07122f] truncate">{patient.name}</span>
+                        </div>
+                        <span className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold ${statusClass}`}>
+                          <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                          {statusText}
+                        </span>
+                      </div>
+                      {/* Row 2: Meta info */}
+                      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-semibold text-slate-500">
+                        <span>📱 {patient.mobile}</span>
+                        {patient.code && <span>OTP: <span className="text-[#07122f] font-bold">{patient.code}</span></span>}
+                        {(patient.age || patient.gender) && (
+                          <span>
+                            {patient.age ? `${patient.age}y` : ''}
+                            {patient.age && patient.gender ? ' / ' : ''}
+                            {patient.gender ? patient.gender.charAt(0).toUpperCase() + patient.gender.slice(1) : ''}
+                          </span>
+                        )}
+                        <span className={isCurrent ? 'text-[#16a34a] font-bold' : ''}>Wait: {waitTimeEst}</span>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Desktop: Table layout */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-slate-100 text-xs font-extrabold uppercase tracking-wider text-slate-400">
+                      <th className="py-3 px-4">Token</th>
+                      <th className="py-3 px-4">Name</th>
+                      <th className="py-3 px-4">OTP</th>
+                      <th className="py-3 px-4">Mobile</th>
+                      <th className="py-3 px-4">Age / Gender</th>
+                      <th className="py-3 px-4">Wait Time</th>
+                      <th className="py-3 px-4">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100/60">
+                    {filteredPatients.map((patient, index) => {
+                      const isCurrent = patient.tokenNumber === queue.currentToken
+                      const waitTimeEst = isCurrent ? '0 min' : `${index * 5} min`
+                      let statusText = isCurrent ? 'Next' : patient.skipped ? 'Skipped' : 'Waiting'
+                      let statusClass = isCurrent
+                        ? 'bg-[#ecfdf5] text-[#16a34a]'
+                        : patient.skipped
+                        ? 'bg-red-50 text-red-600'
+                        : 'bg-[#fff7ed] text-[#f59e0b]'
+
+                      return (
+                        <tr
+                          key={patient.tokenNumber}
+                          className={`transition hover:bg-slate-50/70 ${isCurrent ? 'bg-[#f4f7ff]/40 font-semibold' : ''}`}
+                        >
+                          <td className="py-3.5 px-4 font-extrabold text-[#2459ff]">#{patient.tokenNumber}</td>
+                          <td className="py-3.5 px-4">
+                            <span className="text-sm font-extrabold text-[#07122f]">{patient.name}</span>
+                          </td>
+                          <td className="py-3.5 px-4 text-sm font-semibold text-slate-600">{patient.code || '--'}</td>
+                          <td className="py-3.5 px-4">
+                            <span className="text-sm font-semibold text-slate-500">{patient.mobile}</span>
+                          </td>
+                          <td className="py-3.5 px-4 text-sm font-semibold text-slate-500">
+                            {patient.age ? `${patient.age} / ` : ''}{patient.gender ? (patient.gender.charAt(0).toUpperCase() + patient.gender.slice(1)) : '--'}
+                          </td>
+                          <td className="py-3.5 px-4 text-sm font-semibold text-slate-500">{waitTimeEst}</td>
+                          <td className="py-3.5 px-4">
+                            <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-bold ${statusClass}`}>
+                              <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                              {statusText}
+                            </span>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </article>

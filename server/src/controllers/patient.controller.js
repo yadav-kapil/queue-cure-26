@@ -55,7 +55,7 @@ export const getPatientSession = wrapAsync(async (req, res, next) => {
     path: "sessionId",
     populate: {
       path: "doctorId",
-      select: "name clinicName specialization address",
+      select: "fullName clinicName profileImage",
     },
   });
 
@@ -81,6 +81,7 @@ export const getPatientSession = wrapAsync(async (req, res, next) => {
         _id: p._id,
         tokenNumber: p.tokenNumber,
         skipped: p.skipped,
+        joinedAt: p.joinedAt,
         consultationStartedAt: p.consultationStartedAt,
         consultationEndedAt: p.consultationEndedAt,
       })),

@@ -2,6 +2,7 @@ import { Navigate } from "react-router";
 import DashboardDoc from "../pages/doctor/DashboardDoc";
 import HistoryDoc from "../pages/doctor/HistoryDoc";
 import LiveSessionDoc from "../pages/doctor/LiveSessionDoc";
+import SettingDoc from "../pages/doctor/SettingDoc";
 import ProtectedLayout from "../layouts/ProtectedLayout";
 
 export const doctorRoutes = {
@@ -23,6 +24,10 @@ export const doctorRoutes = {
     {
       path: "history",
       element: <HistoryDoc />,
+    },
+    {
+      path: "settings",
+      element: <SettingDoc />,
     },
   ],
 };

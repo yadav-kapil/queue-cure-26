@@ -266,7 +266,7 @@ const HistoryRec = () => {
 
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
           {/* Left Table Panel */}
-          <article className="rounded-[28px] border border-[#e5eaf4] bg-white p-5 shadow-[0_12px_40px_rgba(15,23,42,0.05)] h-[680px] flex flex-col">
+          <article className="rounded-[28px] border border-[#e5eaf4] bg-white p-4 sm:p-5 shadow-[0_12px_40px_rgba(15,23,42,0.05)] h-[550px] md:h-[680px] flex flex-col">
             <div className="flex flex-col gap-3 md:flex-row mb-5">
               <label className="relative flex-1">
                 <FiSearch className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
@@ -278,7 +278,7 @@ const HistoryRec = () => {
                   className="h-12 w-full rounded-2xl border border-slate-200 bg-[#f8fbff] pl-12 pr-4 text-sm font-semibold text-[#111827] outline-none transition placeholder:text-slate-400 focus:border-[#2459ff] focus:bg-white"
                 />
               </label>
-              <div className="flex gap-3 relative">
+              <div className="flex gap-2 relative w-full md:w-auto">
                 <div className="relative">
                   <button
                     type="button"
@@ -298,7 +298,7 @@ const HistoryRec = () => {
                   {showStatusDropdown && (
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setShowStatusDropdown(false)} />
-                      <div className="absolute right-0 mt-2 w-48 rounded-2xl border border-[#e5eaf4] bg-white p-2 shadow-[0_12px_30px_rgba(15,23,42,0.08)] z-50">
+                      <div className="absolute left-0 md:left-auto md:right-0 mt-2 w-48 rounded-2xl border border-[#e5eaf4] bg-white p-2 shadow-[0_12px_30px_rgba(15,23,42,0.08)] z-50">
                         <p className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400">Status Filter</p>
                         <div className="space-y-0.5">
                           <button
@@ -368,7 +368,7 @@ const HistoryRec = () => {
                   {showDateDropdown && (
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setShowDateDropdown(false)} />
-                      <div className="absolute right-0 mt-2 w-48 rounded-2xl border border-[#e5eaf4] bg-white p-2 shadow-[0_12px_30px_rgba(15,23,42,0.08)] z-50">
+                      <div className="absolute left-0 md:left-auto md:right-0 mt-2 w-48 rounded-2xl border border-[#e5eaf4] bg-white p-2 shadow-[0_12px_30px_rgba(15,23,42,0.08)] z-50">
                         <p className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400">Date Filter</p>
                         <div className="space-y-0.5">
                           <button
@@ -467,7 +467,7 @@ const HistoryRec = () => {
                       setDateFilter('all')
                       setCustomDate('')
                     }}
-                    className="flex items-center justify-center px-4 h-12 rounded-2xl border border-red-100 bg-red-50 text-xs font-black uppercase tracking-wider text-red-600 hover:bg-red-100 hover:border-red-200 transition"
+                    className="flex-1 md:flex-initial flex items-center justify-center px-4 h-12 rounded-2xl border border-red-100 bg-red-50 text-xs font-black uppercase tracking-wider text-red-600 hover:bg-red-100 hover:border-red-200 transition"
                   >
                     Reset
                   </button>
@@ -516,7 +516,7 @@ const HistoryRec = () => {
                   const doctorName = session.doctorId ? `Dr. ${session.doctorId.fullName.replace(/^Dr\.\s*/i, "")}` : "Doctor"
 
                   return (
-                    <div key={session._id} className="rounded-[20px] border border-[#e5eaf4] bg-white p-5 shadow-[0_4px_20px_rgba(15,23,42,0.03)] space-y-4">
+                    <div key={session._id} className="rounded-[20px] border border-[#e5eaf4] bg-white p-4 sm:p-5 shadow-[0_4px_20px_rgba(15,23,42,0.03)] space-y-4">
                       {/* Session Header */}
                       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-3">
                         <div className="space-y-1">
@@ -530,7 +530,7 @@ const HistoryRec = () => {
                             Started: {formatTime(session.startedAt)} • Ended: {formatTime(session.endedAt)} ({durationStr})
                           </p>
                         </div>
-                        <div className="text-right">
+                        <div className="text-left md:text-right">
                           <span className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Doctor</span>
                           <span className="text-xs font-extrabold text-[#2459ff]">
                             {doctorName}
@@ -566,23 +566,47 @@ const HistoryRec = () => {
                               }
 
                               return (
-                                <div key={p.tokenNumber} className="grid grid-cols-[100px_minmax(160px,1fr)_120px_120px_120px] px-4 py-3.5 text-xs font-semibold text-[#111827] items-center hover:bg-slate-50/50 transition max-md:grid-cols-1 max-md:gap-1.5">
-                                  <span className="font-extrabold text-[#2459ff]">#{p.tokenNumber}</span>
-                                  <div>
+                                <div key={p.tokenNumber} className="flex flex-col gap-2.5 md:grid md:grid-cols-[100px_minmax(160px,1fr)_120px_120px_120px] px-4 py-3.5 text-xs font-semibold text-[#111827] hover:bg-slate-50/50 transition border-b border-slate-100 last:border-0">
+                                  
+                                  {/* Row 1 (Mobile): Token, Name, Status Badge */}
+                                  <div className="flex items-center justify-between w-full md:hidden">
+                                    <div className="flex items-center gap-2">
+                                      <span className="font-extrabold text-[#2459ff]">#{p.tokenNumber}</span>
+                                      <span className="font-extrabold text-[#07122f]">{p.name}</span>
+                                    </div>
+                                    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold ${statusClass}`}>
+                                      {statusLabel}
+                                    </span>
+                                  </div>
+
+                                  {/* Row 2 (Mobile): Finished time, Duration, Mobile, OTP */}
+                                  <div className="flex items-center justify-between w-full md:hidden text-[10px] text-slate-400 font-bold">
+                                    <div>
+                                      Finished: {finishedTime} {hasEnded && `• ${getDuration(p.consultationStartedAt, p.consultationEndedAt)}`}
+                                    </div>
+                                    <div>
+                                      Mob: {p.mobile || '--'} {p.code && `• OTP: ${p.code}`}
+                                    </div>
+                                  </div>
+
+                                  {/* Desktop Columns */}
+                                  <span className="hidden md:inline font-extrabold text-[#2459ff]">#{p.tokenNumber}</span>
+                                  <div className="hidden md:block">
                                     <div className="font-extrabold text-[#07122f]">{p.name}</div>
                                     <div className="text-[10px] text-slate-400 font-semibold mt-0.5">
                                       Mobile: {p.mobile || '--'} • OTP: {p.code || '--'}
                                     </div>
                                   </div>
-                                  <span className="text-slate-500 font-semibold max-md:before:content-['Duration:_'] max-md:before:text-slate-400">
+                                  <span className="hidden md:inline text-slate-500 font-semibold">
                                     {hasEnded ? getDuration(p.consultationStartedAt, p.consultationEndedAt) : '--'}
                                   </span>
-                                  <div>
+                                  <div className="hidden md:block">
                                     <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${statusClass}`}>
                                       {statusLabel}
                                     </span>
                                   </div>
-                                  <span className="text-slate-500 font-semibold max-md:before:content-['Finished:_'] max-md:before:text-slate-400">{finishedTime}</span>
+                                  <span className="hidden md:inline text-slate-500 font-semibold">{finishedTime}</span>
+
                                 </div>
                               )
                             })}
