@@ -37,7 +37,7 @@ const useSignup = () => {
         },
       });
 
-      const redirectPath = data.user.role === "doctor" ? "/doctor" : "/receptionist";
+      const redirectPath = data.user.role === "doctor" ? "/doctor" : "/rec";
       navigate(redirectPath, { replace: true });
 
       return { success: true, user: data.user };

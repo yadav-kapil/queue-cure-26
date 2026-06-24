@@ -40,7 +40,7 @@ const Signup = () => {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      const redirectPath = user.role === "doctor" ? "/doctor" : "/receptionist";
+      const redirectPath = user.role === "doctor" ? "/doctor" : "/rec";
       navigate(redirectPath, { replace: true });
     }
   }, [isAuthenticated, user, navigate]);

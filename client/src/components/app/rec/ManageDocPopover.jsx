@@ -8,7 +8,8 @@ import {
   FiCheck,
   FiX,
   FiClock,
-  FiAlertCircle
+  FiAlertCircle,
+  FiUser
 } from "react-icons/fi";
 
 const ManageDocPopover = ({ setIsPopoverOpen, isInline = false }) => {
