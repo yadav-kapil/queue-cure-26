@@ -127,24 +127,12 @@ const DashboardRec = () => {
   }, [queue])
 
   const averageConsultationTime = useMemo(() => {
-    if (!queue || !queue.patients || queue.patients.length === 0) return null
+    if (!queue || !queue.averageConsultationTimeArray || queue.averageConsultationTimeArray.length === 0) return 5
 
-    const completed = queue.patients.filter(
-      (p) => p.consultationStartedAt && p.consultationEndedAt
-    )
-
-    if (completed.length === 0) return null
-
-    const totalMs = completed.reduce((sum, p) => {
-      const start = new Date(p.consultationStartedAt).getTime()
-      const end = new Date(p.consultationEndedAt).getTime()
-      return sum + Math.max(0, end - start)
-    }, 0)
-
-    const averageMs = totalMs / completed.length
-    const averageMinutes = averageMs / 60000 // Convert milliseconds to minutes
-
-    return Number(averageMinutes.toFixed(1))
+    const arr = queue.averageConsultationTimeArray;
+    const sum = arr.reduce((a, b) => a + b, 0);
+    const avg = sum / arr.length;
+    return Number(avg.toFixed(1));
   }, [queue])
 
   const statCards = [
@@ -165,9 +153,9 @@ const DashboardRec = () => {
       bg: 'bg-[#ecfdf5]',
     },
     {
-      title: 'Avg. Wait Time',
-      value: !isSessionActive || averageConsultationTime === null ? '--' : `${averageConsultationTime} min`,
-      helper: 'Today',
+      title: 'Estimated Wait',
+      value: !isSessionActive ? '--' : `${Math.round((waitingPatientsCount + (currentPatient && !currentPatient.consultationEndedAt ? 1 : 0)) * averageConsultationTime)}m`,
+      helper: 'Remaining',
       icon: FiClock,
       color: 'text-[#f59e0b]',
       bg: 'bg-[#fff7ed]',
@@ -341,11 +329,28 @@ const DashboardRec = () => {
               {/* Mobile: Card layout */}
               <div className="space-y-3 md:hidden">
                 {activeQueuePatients.map((patient, index) => {
-                  const avgTimeForCalc = averageConsultationTime !== null && averageConsultationTime > 0 ? averageConsultationTime : 5
+                  const avgTimeForCalc = averageConsultationTime
                   const isCurrent = patient.tokenNumber === queue.currentToken
+                  const isCompleted = !!patient.consultationEndedAt
+                  const isSkipped = patient.skipped
+                  const isNext = patient.tokenNumber === nextPatient?.tokenNumber
                   const waitTimeEst = isCurrent ? '0 min' : `${Math.round(index * avgTimeForCalc)} min`
-                  let statusText = isCurrent ? 'Next' : patient.skipped ? 'Skipped' : 'Waiting'
-                  let statusClass = isCurrent ? 'bg-[#ecfdf5] text-[#16a34a]' : patient.skipped ? 'bg-red-50 text-red-600' : 'bg-[#fff7ed] text-[#f59e0b]'
+                  
+                  let statusText = 'Waiting'
+                  let statusClass = 'bg-[#fff7ed] text-[#f59e0b]'
+                  if (isCompleted) {
+                    statusText = 'Completed'
+                    statusClass = 'bg-[#f0fdf4] text-[#16a34a]'
+                  } else if (isSkipped) {
+                    statusText = 'Skipped'
+                    statusClass = 'bg-red-50 text-red-600'
+                  } else if (isCurrent) {
+                    statusText = 'Serving'
+                    statusClass = 'bg-[#eef4ff] text-[#2459ff]'
+                  } else if (isNext) {
+                    statusText = 'Next'
+                    statusClass = 'bg-[#fdf4ff] text-[#c026d3]'
+                  }
 
                   return (
                     <div
@@ -391,16 +396,33 @@ const DashboardRec = () => {
                   </thead>
                   <tbody className="divide-y divide-slate-100/60">
                     {activeQueuePatients.map((patient, index) => {
-                      const avgTimeForCalc = averageConsultationTime !== null && averageConsultationTime > 0 ? averageConsultationTime : 5
+                      const avgTimeForCalc = averageConsultationTime
                       const isCurrent = patient.tokenNumber === queue.currentToken
+                      const isCompleted = !!patient.consultationEndedAt
+                      const isSkipped = patient.skipped
+                      const isNext = patient.tokenNumber === nextPatient?.tokenNumber
                       const waitTimeEst = isCurrent ? '0 min' : `${Math.round(index * avgTimeForCalc)} min`
-                      let statusText = isCurrent ? 'Next' : patient.skipped ? 'Skipped' : 'Waiting'
-                      let statusClass = isCurrent ? 'bg-[#ecfdf5] text-[#16a34a]' : patient.skipped ? 'bg-red-50 text-red-600' : 'bg-[#fff7ed] text-[#f59e0b]'
+                      
+                      let statusText = 'Waiting'
+                      let statusClass = 'bg-[#fff7ed] text-[#f59e0b]'
+                      if (isCompleted) {
+                        statusText = 'Completed'
+                        statusClass = 'bg-[#f0fdf4] text-[#16a34a]'
+                      } else if (isSkipped) {
+                        statusText = 'Skipped'
+                        statusClass = 'bg-red-50 text-red-600'
+                      } else if (isCurrent) {
+                        statusText = 'Serving'
+                        statusClass = 'bg-[#eef4ff] text-[#2459ff]'
+                      } else if (isNext) {
+                        statusText = 'Next'
+                        statusClass = 'bg-[#fdf4ff] text-[#c026d3]'
+                      }
 
                       return (
                         <tr
                           key={patient.tokenNumber}
-                          className={`transition hover:bg-slate-50/70 ${isCurrent ? 'bg-[#f4f7ff]/40 font-bold' : ''}`}
+                          className={`transition-colors border-b border-slate-50 ${isCurrent ? 'bg-[#f4f7ff]' : 'hover:bg-slate-50/50'}`}
                         >
                           <td className="py-3.5 px-4">
                             <span className={`text-sm font-extrabold ${isCurrent ? 'text-[#2459ff]' : 'text-slate-500'}`}>#{patient.tokenNumber}</span>

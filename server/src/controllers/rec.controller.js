@@ -31,7 +31,7 @@ export const addPatient = wrapAsync(async (req, res, next) => {
     throw new ExpressError(404, "Queue not found for this session.");
   }
 
-  const { name, mobile, age, gender } = req.body;
+  const { name, mobile, age, gender, initialAvgTime } = req.body;
   if (!name || !mobile) {
     throw new ExpressError(400, "Patient name and mobile number are required.");
   }
@@ -57,6 +57,12 @@ export const addPatient = wrapAsync(async (req, res, next) => {
   };
 
   queue.patients.push(newPatient);
+
+  // If this is the first patient being added, push the initialAvgTime to the array
+  if (queue.patients.length === 1 && initialAvgTime) {
+    queue.averageConsultationTimeArray.push(Number(initialAvgTime));
+  }
+
   await queue.save();
 
   // Broadcast to all clients in the session room using socket.io

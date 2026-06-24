@@ -125,6 +125,15 @@ export const completePatient = wrapAsync(async (req, res, next) => {
   if (activePatient) {
     activePatient.consultationEndedAt = new Date();
     activePatient.skipped = false;
+
+    if (activePatient.consultationStartedAt) {
+      // Calculate duration in minutes, with a minimum of 1 minute to prevent skew
+      const durationMs = activePatient.consultationEndedAt.getTime() - activePatient.consultationStartedAt.getTime();
+      let durationMins = Number((durationMs / 60000).toFixed(1));
+      if (durationMins < 1) durationMins = 1;
+      
+      queue.averageConsultationTimeArray.push(durationMins);
+    }
   }
 
   queue.currentToken = 0;

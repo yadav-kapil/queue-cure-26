@@ -202,13 +202,13 @@ export const useRec = () => {
     }
   };
 
-  const addPatientToQueue = async ({ name, mobile, age, gender }) => {
+  const addPatientToQueue = async ({ name, mobile, age, gender, initialAvgTime }) => {
     try {
       setAddPatientLoading(true);
       const res = await fetch("/api/rec/add-patient", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, mobile, age, gender }),
+        body: JSON.stringify({ name, mobile, age, gender, initialAvgTime }),
         credentials: "include",
       });
       const data = await res.json();

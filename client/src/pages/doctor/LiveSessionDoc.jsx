@@ -132,29 +132,17 @@ const LiveSessionDoc = () => {
   }, [queue])
 
   const averageConsultationTime = useMemo(() => {
-    if (!queue || !queue.patients || queue.patients.length === 0) return null
+    if (!queue || !queue.averageConsultationTimeArray || queue.averageConsultationTimeArray.length === 0) return 5
 
-    const completed = queue.patients.filter(
-      (p) => p.consultationStartedAt && p.consultationEndedAt
-    )
-
-    if (completed.length === 0) return null
-
-    const totalMs = completed.reduce((sum, p) => {
-      const start = new Date(p.consultationStartedAt).getTime()
-      const end = new Date(p.consultationEndedAt).getTime()
-      return sum + Math.max(0, end - start)
-    }, 0)
-
-    const averageMs = totalMs / completed.length
-    const averageMinutes = averageMs / 60000 // Convert milliseconds to minutes
-
-    return Number(averageMinutes.toFixed(1))
+    const arr = queue.averageConsultationTimeArray;
+    const sum = arr.reduce((a, b) => a + b, 0);
+    const avg = sum / arr.length;
+    return Number(avg.toFixed(1));
   }, [queue])
 
   const queueSummary = useMemo(() => {
-    const avgTimeForCalc = averageConsultationTime !== null && averageConsultationTime > 0 ? averageConsultationTime : 5
-    const estimatedRemainingMinutes = Math.round(waitingPatients.length * avgTimeForCalc)
+    const avgTimeForCalc = averageConsultationTime
+    const estimatedRemainingMinutes = Math.round((waitingPatients.length + (currentPatient && !currentPatient.consultationEndedAt ? 1 : 0)) * avgTimeForCalc)
     const finishBy = estimatedRemainingMinutes
       ? new Date(Date.now() + estimatedRemainingMinutes * 60000).toLocaleTimeString([], {
           hour: '2-digit',
@@ -166,7 +154,7 @@ const LiveSessionDoc = () => {
       estimatedRemainingMinutes,
       finishBy,
     }
-  }, [waitingPatients.length, averageConsultationTime])
+  }, [waitingPatients.length, currentPatient, averageConsultationTime])
 
   if (!isSessionActive) {
     return (

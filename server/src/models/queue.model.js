@@ -63,6 +63,10 @@ const queueSchema = new mongoose.Schema(
     currentTokenStartedAt: {
       type: Date,
     },
+    averageConsultationTimeArray: {
+      type: [Number],
+      default: [],
+    },
     patients: [patientSubSchema],
   },
   {

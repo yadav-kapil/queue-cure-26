@@ -23,6 +23,7 @@ const ManagePatientRec = () => {
   const [mobile, setMobile] = useState('')
   const [age, setAge] = useState('')
   const [gender, setGender] = useState('male')
+  const [initialAvgTime, setInitialAvgTime] = useState('')
   const [formError, setFormError] = useState('')
   const [formSuccess, setFormSuccess] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
@@ -51,12 +52,18 @@ const ManagePatientRec = () => {
       return
     }
 
+    if (queue?.patients?.length === 0 && !initialAvgTime) {
+      setFormError('Initial average time is required for the first patient.')
+      return
+    }
+
     try {
       const data = await addPatientToQueue({
         name: name.trim(),
         mobile: mobile.trim(),
         age: age ? Number(age) : undefined,
-        gender
+        gender,
+        initialAvgTime: initialAvgTime ? Number(initialAvgTime) : undefined
       })
 
       const patientCode = data?.patient?.code ? ` (OTP: ${data.patient.code})` : ''
@@ -66,6 +73,7 @@ const ManagePatientRec = () => {
       setMobile('')
       setAge('')
       setGender('male')
+      setInitialAvgTime('')
     } catch (err) {
       setFormError(err.message || 'Failed to add patient to queue.')
     }
@@ -93,6 +101,21 @@ const ManagePatientRec = () => {
         p.mobile.includes(q)
     )
   }, [queue, searchQuery])
+
+  const nextPatientToken = useMemo(() => {
+    if (!queue?.patients) return null
+    const waiting = queue.patients.filter(p => !p.consultationEndedAt && !p.skipped && p.tokenNumber > (queue.currentToken || 0))
+    return waiting.length > 0 ? waiting[0].tokenNumber : null
+  }, [queue])
+
+  const averageConsultationTime = useMemo(() => {
+    if (!queue || !queue.averageConsultationTimeArray || queue.averageConsultationTimeArray.length === 0) return 5
+
+    const arr = queue.averageConsultationTimeArray;
+    const sum = arr.reduce((a, b) => a + b, 0);
+    const avg = sum / arr.length;
+    return Number(avg.toFixed(1));
+  }, [queue])
 
   return (
     <>
@@ -134,6 +157,33 @@ const ManagePatientRec = () => {
               {formSuccess && (
                 <div className="rounded-2xl bg-emerald-50 p-3.5 text-xs font-bold text-emerald-600 border border-emerald-100">
                   {formSuccess}
+                </div>
+              )}
+
+              {queue?.patients?.length === 0 && (
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-[#5b6478] flex items-center gap-1.5">
+                    Initial Avg Time (mins) *
+                    <div className="relative group cursor-help">
+                      <FiInfo className="text-slate-400 hover:text-slate-600 transition" />
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-[10px] font-medium leading-relaxed rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 shadow-lg text-center pointer-events-none">
+                        This is set only once. After this, wait times are calculated dynamically based on actual patient consultation times.
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+                      </div>
+                    </div>
+                  </label>
+                  <div className="relative">
+                    <FiClock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 h-4.5 w-4.5" />
+                    <input
+                      type="number"
+                      value={initialAvgTime}
+                      onChange={(e) => setInitialAvgTime(e.target.value)}
+                      placeholder="e.g. 10"
+                      min={1}
+                      className="w-full h-11 pl-10 pr-4 rounded-xl border border-slate-200 bg-[#f8fbff]/60 text-sm font-semibold text-[#07122f] focus:outline-none focus:border-[#2459ff] focus:bg-white transition"
+                      required
+                    />
+                  </div>
                 </div>
               )}
 
@@ -250,14 +300,28 @@ const ManagePatientRec = () => {
               {/* Mobile: Card layout */}
               <div className="space-y-3 md:hidden">
                 {filteredPatients.map((patient, index) => {
+                  const avgTimeForCalc = averageConsultationTime
                   const isCurrent = patient.tokenNumber === queue.currentToken
-                  const waitTimeEst = isCurrent ? '0 min' : `${index * 5} min`
-                  let statusText = isCurrent ? 'Next' : patient.skipped ? 'Skipped' : 'Waiting'
-                  let statusClass = isCurrent
-                    ? 'bg-[#ecfdf5] text-[#16a34a]'
-                    : patient.skipped
-                    ? 'bg-red-50 text-red-600'
-                    : 'bg-[#fff7ed] text-[#f59e0b]'
+                  const isCompleted = !!patient.consultationEndedAt
+                  const isSkipped = patient.skipped
+                  const isNext = patient.tokenNumber === nextPatientToken
+                  const waitTimeEst = isCurrent ? '0 min' : `${Math.round(index * avgTimeForCalc)} min`
+                  
+                  let statusText = 'Waiting'
+                  let statusClass = 'bg-[#fff7ed] text-[#f59e0b]'
+                  if (isCompleted) {
+                    statusText = 'Completed'
+                    statusClass = 'bg-[#f0fdf4] text-[#16a34a]'
+                  } else if (isSkipped) {
+                    statusText = 'Skipped'
+                    statusClass = 'bg-red-50 text-red-600'
+                  } else if (isCurrent) {
+                    statusText = 'Serving'
+                    statusClass = 'bg-[#eef4ff] text-[#2459ff]'
+                  } else if (isNext) {
+                    statusText = 'Next'
+                    statusClass = 'bg-[#fdf4ff] text-[#c026d3]'
+                  }
 
                   return (
                     <div
@@ -313,14 +377,28 @@ const ManagePatientRec = () => {
                   </thead>
                   <tbody className="divide-y divide-slate-100/60">
                     {filteredPatients.map((patient, index) => {
+                      const avgTimeForCalc = averageConsultationTime
                       const isCurrent = patient.tokenNumber === queue.currentToken
-                      const waitTimeEst = isCurrent ? '0 min' : `${index * 5} min`
-                      let statusText = isCurrent ? 'Next' : patient.skipped ? 'Skipped' : 'Waiting'
-                      let statusClass = isCurrent
-                        ? 'bg-[#ecfdf5] text-[#16a34a]'
-                        : patient.skipped
-                        ? 'bg-red-50 text-red-600'
-                        : 'bg-[#fff7ed] text-[#f59e0b]'
+                      const isCompleted = !!patient.consultationEndedAt
+                      const isSkipped = patient.skipped
+                      const isNext = patient.tokenNumber === nextPatientToken
+                      const waitTimeEst = isCurrent ? '0 min' : `${Math.round(index * avgTimeForCalc)} min`
+                      
+                      let statusText = 'Waiting'
+                      let statusClass = 'bg-[#fff7ed] text-[#f59e0b]'
+                      if (isCompleted) {
+                        statusText = 'Completed'
+                        statusClass = 'bg-[#f0fdf4] text-[#16a34a]'
+                      } else if (isSkipped) {
+                        statusText = 'Skipped'
+                        statusClass = 'bg-red-50 text-red-600'
+                      } else if (isCurrent) {
+                        statusText = 'Serving'
+                        statusClass = 'bg-[#eef4ff] text-[#2459ff]'
+                      } else if (isNext) {
+                        statusText = 'Next'
+                        statusClass = 'bg-[#fdf4ff] text-[#c026d3]'
+                      }
 
                       return (
                         <tr

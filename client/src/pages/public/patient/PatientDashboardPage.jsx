@@ -84,24 +84,17 @@ const PatientDashboardPage = () => {
   const activeServingCount = (currentToken > 0 && currentToken < tokenNumber) ? 1 : 0;
   const totalPatientsAhead = patientsAheadNotCalled + activeServingCount;
 
-  // Calculate average consultation time today (same concept as Rec dashboard)
+  // Calculate average consultation time today
   const averageConsultationTime = (() => {
-    if (!queue || !queue.patients || queue.patients.length === 0) return null;
-    const completed = queue.patients.filter((p) => p.consultationStartedAt && p.consultationEndedAt);
-    if (completed.length === 0) return null;
-    
-    const totalMs = completed.reduce((sum, p) => {
-      const start = new Date(p.consultationStartedAt).getTime();
-      const end = new Date(p.consultationEndedAt).getTime();
-      return sum + Math.max(0, end - start);
-    }, 0);
-    
-    const averageMs = totalMs / completed.length;
-    const averageMinutes = averageMs / 60000; // Convert to minutes
-    return Number(averageMinutes.toFixed(1));
+    if (!queue || !queue.averageConsultationTimeArray || queue.averageConsultationTimeArray.length === 0) return 5;
+
+    const arr = queue.averageConsultationTimeArray;
+    const sum = arr.reduce((a, b) => a + b, 0);
+    const avg = sum / arr.length;
+    return Number(avg.toFixed(1));
   })();
 
-  const avgTimeForCalc = averageConsultationTime !== null && averageConsultationTime > 0 ? averageConsultationTime : 5;
+  const avgTimeForCalc = averageConsultationTime;
 
   const activeQueuePatients = (() => {
     if (!queue || !queue.patients) return [];
