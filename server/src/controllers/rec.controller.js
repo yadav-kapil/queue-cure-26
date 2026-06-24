@@ -36,14 +36,12 @@ export const addPatient = wrapAsync(async (req, res, next) => {
     throw new ExpressError(400, "Patient name and mobile number are required.");
   }
 
-  // Generate next token number starting at 1023 or incrementing the last token number in the queue
   let nextToken = 1;
   if (queue.patients && queue.patients.length > 0) {
     const lastPatient = queue.patients[queue.patients.length - 1];
     nextToken = lastPatient.tokenNumber + 1;
   }
 
-  // Generate 4-digit random OTP
   const code = Math.floor(1000 + Math.random() * 9000).toString();
 
   const newPatient = {
@@ -58,14 +56,12 @@ export const addPatient = wrapAsync(async (req, res, next) => {
 
   queue.patients.push(newPatient);
 
-  // If this is the first patient being added, push the initialAvgTime to the array
   if (queue.patients.length === 1 && initialAvgTime) {
     queue.averageConsultationTimeArray.push(Number(initialAvgTime));
   }
 
   await queue.save();
 
-  // Broadcast to all clients in the session room using socket.io
   const io = req.app.get("io");
   if (io) {
     io.to(session._id.toString()).emit("queue-updated", { queue });
@@ -100,7 +96,6 @@ export const leaveSession = wrapAsync(async (req, res, next) => {
   );
 
   if (session) {
-    // Broadcast receptionist left event to the room
     const io = req.app.get("io");
     if (io) {
       io.to(session._id.toString()).emit("receptionist-left", { receptionistId: req.user._id });

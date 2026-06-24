@@ -12,7 +12,6 @@ import config from './config/config.js';
 
 const app = express();
 
-// middlewares
 app.use(cors({
   origin: config.CLIENT_URI,
   credentials: true
@@ -21,7 +20,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(config.COOKIE_SECRET));
 
-// routes
 app.use('/api/auth', userRouter);
 app.use('/api/session', sessionRouter);
 app.use('/api/rec', recRouter);
@@ -30,7 +28,6 @@ app.use('/api/patient', patientRouter);
 app.use('/api/form', formRouter);
 app.use('/form', formRouter);
 
-// error handlers
 app.use((req, res, next) => {
   throw new ExpressError(404, "Page Not Found");
 });

@@ -26,7 +26,6 @@ const VideoDemo = ({ onClose }) => {
 
   const videoUrl = import.meta.env.VITE_DEMO_VIDEO_URL;
 
-  // Lock scroll + Escape key listener on mount
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
@@ -43,7 +42,6 @@ const VideoDemo = ({ onClose }) => {
     };
   }, [onClose]);
 
-  // Wire up native video events
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -99,7 +97,6 @@ const VideoDemo = ({ onClose }) => {
     };
   }, []);
 
-  // Playback Control Handlers
   const handlePlayPause = () => {
     const video = videoRef.current;
     if (!video) return;
@@ -171,7 +168,6 @@ const VideoDemo = ({ onClose }) => {
     setDownloading(false);
   };
 
-  // Helper to format seconds → "MM:SS"
   const formatTime = (timeInSecs) => {
     if (isNaN(timeInSecs) || timeInSecs === null) return "00:00";
     const minutes = Math.floor(timeInSecs / 60);
@@ -187,15 +183,12 @@ const VideoDemo = ({ onClose }) => {
       className="fixed inset-0 bg-black/60 backdrop-blur-md z-[999] flex items-center justify-center p-4"
       onClick={onClose}
     >
-      {/* Modal Box */}
       <div
         className="w-full max-w-3xl bg-white rounded-[32px] shadow-2xl p-5 sm:p-7 md:p-8 flex flex-col gap-6 relative animate-scale-fade-in border border-slate-100/50"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* 1. Header Section */}
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
-            {/* Play Badge */}
             <div className="size-11 rounded-full bg-gradient-to-tr from-blue-600 via-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/25 shrink-0">
               <FiPlay className="w-5 h-5 fill-current ml-0.5" />
             </div>
@@ -210,7 +203,6 @@ const VideoDemo = ({ onClose }) => {
             </div>
           </div>
 
-          {/* Close button */}
           <button
             type="button"
             onClick={onClose}
@@ -220,13 +212,11 @@ const VideoDemo = ({ onClose }) => {
           </button>
         </div>
 
-        {/* 2. Video Container Section */}
         <div
           ref={videoWrapperRef}
           onClick={handlePlayPause}
           className="relative w-full aspect-video rounded-[24px] overflow-hidden border border-slate-100 bg-slate-950 shadow-inner group cursor-pointer"
         >
-          {/* Native HTML5 Video — always rendered, sits behind thumbnail */}
           <video
             ref={videoRef}
             src={videoUrl}
@@ -235,7 +225,6 @@ const VideoDemo = ({ onClose }) => {
             playsInline
           />
 
-          {/* Custom Thumbnail Overlay — shown until first play */}
           {!isPlaying && (
             <div
               className="absolute inset-0 z-20 cursor-pointer overflow-hidden flex items-center justify-center select-none"
@@ -249,7 +238,6 @@ const VideoDemo = ({ onClose }) => {
                 alt="Video Thumbnail"
                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
               />
-              {/* Play / Loading Overlay */}
               <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
                 {isVideoLoading ? (
                   <div className="size-24 bg-gradient-to-tr from-blue-600 to-indigo-600 text-white rounded-full flex items-center justify-center shadow-[0_12px_32px_rgba(49,92,240,0.4)] border-[8px] border-white/30">
@@ -288,7 +276,6 @@ const VideoDemo = ({ onClose }) => {
             </div>
           )}
 
-          {/* Buffering spinner while playing */}
           {isPlaying && isVideoLoading && (
             <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/20">
               <div className="size-16 bg-gradient-to-tr from-blue-600 to-indigo-600 text-white rounded-full flex items-center justify-center shadow-[0_12px_32px_rgba(49,92,240,0.4)] border-[6px] border-white/30">
@@ -317,9 +304,7 @@ const VideoDemo = ({ onClose }) => {
           )}
         </div>
 
-        {/* 3. Controls Section */}
         <div className="flex flex-col gap-4">
-          {/* Progress Row */}
           <div className="flex items-center gap-3 w-full">
             <span className="text-[11px] font-semibold text-slate-500 font-mono w-10 text-left">
               {formatTime(currentTime)}
@@ -335,11 +320,8 @@ const VideoDemo = ({ onClose }) => {
             </span>
           </div>
 
-          {/* Controls Row — Mobile: 2 rows | Desktop: single row */}
 
-          {/* Mobile Row 1 + Desktop single row: Playback center, utilities on sides */}
           <div className="hidden sm:flex items-center justify-between gap-4 w-full">
-            {/* Left: Volume & Speed */}
             <div className="flex items-center gap-2">
               <button type="button" onClick={handleVolumeToggle}
                 className="size-10 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-800 transition-colors flex items-center justify-center cursor-pointer border border-slate-100/50">
@@ -351,7 +333,6 @@ const VideoDemo = ({ onClose }) => {
               </button>
             </div>
 
-            {/* Center: Rewind / Play / Forward */}
             <div className="flex items-center gap-4">
               <button type="button" onClick={(e) => { e.stopPropagation(); handleRewind(); }}
                 className="size-11 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-800 transition-all flex items-center justify-center cursor-pointer shadow-sm border border-slate-100/80 active:scale-95"
@@ -369,7 +350,6 @@ const VideoDemo = ({ onClose }) => {
               </button>
             </div>
 
-            {/* Right: Fullscreen & Download */}
             <div className="flex items-center gap-2">
               <button type="button" onClick={handleFullscreen}
                 className="size-10 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-800 transition-colors flex items-center justify-center cursor-pointer border border-slate-100/50"
@@ -384,9 +364,7 @@ const VideoDemo = ({ onClose }) => {
             </div>
           </div>
 
-          {/* Mobile-only: 2 rows */}
           <div className="flex sm:hidden flex-col items-center gap-3 w-full">
-            {/* Mobile Row 1: Rewind / Play / Forward — centered */}
             <div className="flex items-center justify-center gap-4">
               <button type="button" onClick={(e) => { e.stopPropagation(); handleRewind(); }}
                 className="size-10 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-800 transition-all flex items-center justify-center cursor-pointer shadow-sm border border-slate-100/80 active:scale-95"
@@ -404,9 +382,7 @@ const VideoDemo = ({ onClose }) => {
               </button>
             </div>
 
-            {/* Mobile Row 2: Volume+Speed left | Fullscreen+Download right */}
             <div className="flex items-center justify-between w-full">
-              {/* Left: Volume & Speed */}
               <div className="flex items-center gap-2">
                 <button type="button" onClick={handleVolumeToggle}
                   className="size-9 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-800 transition-colors flex items-center justify-center cursor-pointer border border-slate-100/50">
@@ -418,7 +394,6 @@ const VideoDemo = ({ onClose }) => {
                 </button>
               </div>
 
-              {/* Right: Fullscreen & Download */}
               <div className="flex items-center gap-2">
                 <button type="button" onClick={handleFullscreen}
                   className="size-9 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-800 transition-colors flex items-center justify-center cursor-pointer border border-slate-100/50"

@@ -80,9 +80,6 @@ const SiteLoading = () => {
       `}</style>
 
       {isMobile ? (
-        /* ==========================================
-           MOBILE PORTRAIT LAYOUT
-           ========================================== */
         <div
           className="relative @container flex-shrink-0 bg-cover bg-center overflow-hidden rounded-3xl shadow-xl border border-slate-100/30"
           style={{
@@ -93,7 +90,6 @@ const SiteLoading = () => {
             backgroundImage: `url(${loadingScreenMobile})`,
           }}
         >
-          {/* A. Mobile Logo — top center */}
           <div className="absolute top-[5%] left-1/2 -translate-x-1/2 flex flex-col items-center text-center z-10">
             <div className="flex items-center gap-[1.5cqw]">
               <span className="grid size-[6.5cqw] place-items-center rounded-[1.2cqw] border-[0.4cqw] border-[#2563eb] text-[#2563eb] bg-white shadow-xs font-black text-[4cqw] animate-pulse">
@@ -108,7 +104,6 @@ const SiteLoading = () => {
             </span>
           </div>
 
-          {/* B. Mobile Heart — centered, upper-mid area */}
           <div
             className="absolute animate-heart-pulse"
             style={{
@@ -144,7 +139,6 @@ const SiteLoading = () => {
               <path d="M50 88.5 L43.5 82.2 C20.4 61.2 5 47.3 5 30.5 C5 16.8 15.8 6 29.5 6 C37.2 6 44.6 9.6 50 15.2 C55.4 9.6 62.8 6 70.5 6 C84.2 6 95 16.8 95 30.5 C95 47.3 79.6 61.2 56.5 82.3 L50 88.5 Z" fill="none" stroke="#ff4d6d" strokeWidth="4" strokeLinejoin="round" />
             </svg>
 
-            {/* Small pulsing hearts around mobile heart */}
             <div
               className="absolute animate-heart-pulse text-[#ff4d6d]"
               style={{
@@ -186,7 +180,6 @@ const SiteLoading = () => {
             </div>
           </div>
 
-          {/* C. Mobile Status Text */}
           <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center text-center w-[85%]" style={{ top: '48%' }}>
             <span className="text-[4.5cqw] font-bold text-slate-700 tracking-wide">
               {statusMessage}
@@ -196,7 +189,6 @@ const SiteLoading = () => {
             </span>
           </div>
 
-          {/* D. Mobile Progress Bar */}
           <div
             className="absolute rounded-full bg-white/70 flex items-center"
             style={{
@@ -229,14 +221,12 @@ const SiteLoading = () => {
             />
           </div>
 
-          {/* E. Mobile Percentage */}
           <div className="absolute left-1/2 -translate-x-1/2 text-center" style={{ top: '70%' }}>
             <span className="text-[4.8cqw] font-black text-[#2563eb]">
               {Math.round(progress)}%
             </span>
           </div>
 
-          {/* F. Mobile Tagline */}
           <div className="absolute bottom-[6%] left-1/2 -translate-x-1/2 flex items-center gap-1.5">
             <span className="text-[3cqw] font-semibold text-[#2563eb] tracking-wide">
               Your health, our priority
@@ -244,7 +234,6 @@ const SiteLoading = () => {
             <span className="text-[3.2cqw]">💙</span>
           </div>
 
-          {/* G. Mobile Floating Plus Signs */}
           <div className="absolute top-[14%] left-[8%] w-[4cqw] h-[4cqw] text-[#2563eb]/35 animate-float-plus">
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full"><path d="M19 10.5h-5.5V5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v5.5H5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5h5.5V19c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-5.5H19c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5z" /></svg>
           </div>
@@ -253,9 +242,6 @@ const SiteLoading = () => {
           </div>
         </div>
       ) : (
-        /* ==========================================
-           DESKTOP / TABLET LANDSCAPE LAYOUT (3:2)
-           ========================================== */
         <div
           className="relative @container flex-shrink-0 bg-cover bg-center overflow-hidden rounded-2xl shadow-2xl border border-slate-100/40"
           style={{
@@ -266,7 +252,6 @@ const SiteLoading = () => {
             backgroundImage: `url(${loadingScreenBg})`,
           }}
         >
-          {/* 1. Doctor Speech Bubble (heartbeat) */}
           <div
             className="absolute bg-white rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-center border border-slate-100/50 animate-float-bubble"
             style={{
@@ -291,7 +276,6 @@ const SiteLoading = () => {
             />
           </div>
 
-          {/* 2. Nurse Speech Bubble (people queue) */}
           <div
             className="absolute bg-white rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-center border border-slate-100/50 animate-float-bubble"
             style={{
@@ -317,7 +301,6 @@ const SiteLoading = () => {
             />
           </div>
 
-          {/* 3. TV Screen Token Number overlay */}
           <div
             className="absolute flex flex-col items-center justify-center text-center select-none"
             style={{
@@ -335,7 +318,6 @@ const SiteLoading = () => {
             </span>
           </div>
 
-          {/* A. Desktop Logo — top center */}
           <div className="absolute top-[6%] left-1/2 -translate-x-1/2 flex flex-col items-center text-center z-10">
             <div className="flex items-center gap-[0.8cqw]">
               <span className="grid size-[3.2cqw] place-items-center rounded-[0.6cqw] border-[0.22cqw] border-[#2563eb] text-[#2563eb] bg-white shadow-sm font-black text-[2cqw] animate-pulse">
@@ -350,7 +332,6 @@ const SiteLoading = () => {
             </span>
           </div>
 
-          {/* B. Desktop Heart — centered, sits above the two characters */}
           <div
             className="absolute animate-heart-pulse"
             style={{
@@ -386,7 +367,6 @@ const SiteLoading = () => {
               <path d="M50 88.5 L43.5 82.2 C20.4 61.2 5 47.3 5 30.5 C5 16.8 15.8 6 29.5 6 C37.2 6 44.6 9.6 50 15.2 C55.4 9.6 62.8 6 70.5 6 C84.2 6 95 16.8 95 30.5 C95 47.3 79.6 61.2 56.5 82.3 L50 88.5 Z" fill="none" stroke="#ff4d6d" strokeWidth="4" strokeLinejoin="round" />
             </svg>
 
-            {/* Small decorative pulsing hearts around main heart */}
             <div
               className="absolute animate-heart-pulse text-[#ff4d6d]"
               style={{
@@ -428,7 +408,6 @@ const SiteLoading = () => {
             </div>
           </div>
 
-          {/* C. Desktop Loading Status text — below heart */}
           <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center text-center w-[60%]" style={{ top: '60.5%' }}>
             <span className="text-[1.8cqw] font-bold text-slate-700 tracking-wide">
               {statusMessage}
@@ -438,7 +417,6 @@ const SiteLoading = () => {
             </span>
           </div>
 
-          {/* D. Desktop Progress Bar — centered */}
           <div
             className="absolute rounded-full bg-white/80 flex items-center"
             style={{
@@ -471,14 +449,12 @@ const SiteLoading = () => {
             />
           </div>
 
-          {/* E. Desktop percentage */}
           <div className="absolute left-1/2 -translate-x-1/2 text-center" style={{ top: '78.5%' }}>
             <span className="text-[2cqw] font-black text-[#2563eb]">
               {Math.round(progress)}%
             </span>
           </div>
 
-          {/* F. Desktop footer tagline */}
           <div className="absolute bottom-[4.5%] left-1/2 -translate-x-1/2 flex items-center gap-[0.5cqw]">
             <span className="text-[1.1cqw] font-semibold text-[#2563eb] tracking-wide">
               Your health, our priority
@@ -486,7 +462,6 @@ const SiteLoading = () => {
             <span className="text-[1.2cqw]">💙</span>
           </div>
 
-          {/* G. Desktop Floating Medical Plus Signs */}
           <div className="absolute top-[10%] left-[14%] w-[1.8cqw] h-[1.8cqw] text-[#2563eb]/35 animate-float-plus">
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full"><path d="M19 10.5h-5.5V5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v5.5H5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5h5.5V19c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-5.5H19c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5z" /></svg>
           </div>

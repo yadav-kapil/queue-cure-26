@@ -14,7 +14,7 @@ export const usePatient = (trackingId) => {
 
   const fetchPatientSession = useCallback(async () => {
     try {
-      const res = await fetch(`/api/patient/track/${trackingId}`, {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/patient/track/${trackingId}`, {
         method: "GET",
       });
       const data = await res.json();

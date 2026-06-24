@@ -67,7 +67,6 @@ const DashboardDoc = () => {
       }
     })
 
-    // Sort in reverse chronological order (newest first)
     list.sort((a, b) => {
       if (a.rawTime !== b.rawTime) {
         return b.rawTime - a.rawTime
@@ -112,7 +111,7 @@ const DashboardDoc = () => {
     }, 0)
 
     const averageMs = totalMs / completed.length
-    const averageMinutes = averageMs / 60000 // Convert milliseconds to minutes
+    const averageMinutes = averageMs / 60000
 
     return Number(averageMinutes.toFixed(1))
   }, [queue])
@@ -126,12 +125,10 @@ const DashboardDoc = () => {
       }
     }
     
-    // Calculate remaining patients (waiting patients + 1 for the current patient being served)
     const remainingPatientsCount = waitingPatients.length + (currentPatient ? 1 : 0)
     const avgTimeForCalc = averageConsultationTime !== null ? averageConsultationTime : 5
     const estimatedRemainingMinutes = remainingPatientsCount * avgTimeForCalc
     
-    // Calculate estimated finish time relative to the current actual time
     const finishBy = remainingPatientsCount === 0
       ? 'NA(All done)'
       : estimatedRemainingMinutes

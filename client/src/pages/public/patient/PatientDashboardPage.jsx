@@ -65,7 +65,6 @@ const PatientDashboardPage = () => {
     return <SessionComplete />;
   }
 
-  // Calculate current queue statistics
   const currentToken = queue?.currentToken || 0;
   const tokenNumber = patient?.tokenNumber || 0;
   
@@ -84,7 +83,6 @@ const PatientDashboardPage = () => {
   const activeServingCount = (currentToken > 0 && currentToken < tokenNumber) ? 1 : 0;
   const totalPatientsAhead = patientsAheadNotCalled + activeServingCount;
 
-  // Calculate average consultation time today
   const averageConsultationTime = (() => {
     if (!queue || !queue.averageConsultationTimeArray || queue.averageConsultationTimeArray.length === 0) return 5;
 
@@ -130,7 +128,7 @@ const PatientDashboardPage = () => {
     const minutes = time.getMinutes();
     const ampm = hours >= 12 ? "PM" : "AM";
     hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
+    hours = hours ? hours : 12;
     const minutesStr = minutes < 10 ? "0" + minutes : minutes;
     return `${hours}:${minutesStr} ${ampm}`;
   };
@@ -154,12 +152,10 @@ const PatientDashboardPage = () => {
     if (!queue?.patients) return [];
 
     queue.patients.forEach((p) => {
-      // Show activity only till your token
       if (p.tokenNumber > tokenNumber) return;
 
       const isUser = p.tokenNumber === tokenNumber;
 
-      // Activity 1: Joined
       if (p.joinedAt) {
         list.push({
           tokenNumber: p.tokenNumber,
@@ -170,13 +166,11 @@ const PatientDashboardPage = () => {
         });
       }
 
-      // Special handling for the user's token - add the pinned "your-turn" star activity
       if (isUser) {
         let turnTime = null;
         if (p.consultationStartedAt) {
           turnTime = p.consultationStartedAt;
         } else {
-          // Estimate time of turn: current time + calculated wait time
           const waitMin = calculatedWaitTime;
           const estTime = new Date();
           estTime.setMinutes(estTime.getMinutes() + waitMin);
@@ -192,7 +186,6 @@ const PatientDashboardPage = () => {
         });
       }
 
-      // Activity 2: Called (for all patients, including user)
       if (p.consultationStartedAt) {
         list.push({
           tokenNumber: p.tokenNumber,
@@ -203,7 +196,6 @@ const PatientDashboardPage = () => {
         });
       }
 
-      // Activity 3: Completed (for all patients, including user)
       if (p.consultationEndedAt) {
         list.push({
           tokenNumber: p.tokenNumber,
@@ -215,8 +207,6 @@ const PatientDashboardPage = () => {
       }
     });
 
-    // Sort so that the user's star activity ("your-turn") is always pinned at the absolute top.
-    // Otherwise, sort in reverse chronological order (newest at the top, oldest at the bottom).
     list.sort((a, b) => {
       if (a.type === "your-turn") return -1;
       if (b.type === "your-turn") return 1;
@@ -225,7 +215,6 @@ const PatientDashboardPage = () => {
       const timeB = new Date(b.time).getTime();
       if (timeA !== timeB) return timeB - timeA;
 
-      // Tie-breaker: Completed > Called > Joined
       const priority = { "completed": 3, "called": 2, "joined": 1 };
       return (priority[b.type] || 0) - (priority[a.type] || 0);
     });
@@ -233,10 +222,8 @@ const PatientDashboardPage = () => {
     return list;
   };
 
-  // Start the progress bar when patient 1 is called
   const startToken = 1;
 
-  // Calculate progress bar percentage based on startToken to tokenNumber range
   let progressPercent = 0;
   if (tokenNumber > 0) {
     const isFinished = patient?.consultationEndedAt || currentToken >= tokenNumber || totalPatientsAhead === 0;
@@ -277,12 +264,9 @@ const PatientDashboardPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Left Column - Main Queue Tracking */}
           <div className="lg:col-span-8 xl:col-span-9 space-y-8">
             
-            {/* Hero Card */}
             <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 rounded-[28px] p-6 sm:p-8 text-white relative overflow-hidden flex flex-col md:flex-row items-center justify-between min-h-[290px] shadow-[0_20px_50px_rgba(37,99,235,0.15)]">
-              {/* Glow background circles */}
               <div className="absolute right-[-40px] top-[-40px] w-64 h-64 rounded-full bg-white/5 blur-3xl pointer-events-none"></div>
               <div className="absolute right-[120px] bottom-[-20px] w-36 h-36 rounded-full bg-indigo-400/20 blur-2xl pointer-events-none"></div>
 
@@ -297,7 +281,6 @@ const PatientDashboardPage = () => {
                 </div>
 
                 <div className="flex items-center gap-8">
-                  {/* Token Info */}
                   <div>
                     <span className="text-[10px] font-bold uppercase tracking-wider text-blue-200/70">
                       Your Token
@@ -309,7 +292,6 @@ const PatientDashboardPage = () => {
 
                   <div className="w-[1px] bg-white/20 h-14 self-end hidden sm:block"></div>
 
-                  {/* Estimated Wait */}
                   <div>
                     <span className="text-[10px] font-bold uppercase tracking-wider text-blue-200/70">
                       Estimated Wait
@@ -326,7 +308,6 @@ const PatientDashboardPage = () => {
                   </div>
                 </div>
 
-                {/* Badges */}
                 <div className="flex flex-wrap gap-2.5 pt-2">
                   <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm text-xs font-semibold text-white/90">
                     <span className={`h-2 w-2 rounded-full ${isCurrentlyServing ? "bg-emerald-400 animate-pulse" : "bg-blue-400"}`}></span>
@@ -343,7 +324,6 @@ const PatientDashboardPage = () => {
                 </div>
               </div>
 
-              {/* Illustration Image */}
               <div className="hidden md:block w-72 h-64 relative z-10 select-none">
                 <img 
                   src={patientDashboardImg} 
@@ -353,9 +333,7 @@ const PatientDashboardPage = () => {
               </div>
             </div>
 
-            {/* Key Metrics Cards (3 Columns) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {/* Card 1: Currently Serving */}
               <div className="bg-blue-50/50 border border-blue-100/50 rounded-2xl p-5 flex items-center gap-4 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-[0_8px_30px_rgba(37,99,235,0.04)] transition-all duration-300">
                 <div className="p-3 bg-blue-100/70 rounded-xl text-blue-600">
                   <FiUser className="text-xl stroke-[2.5]" />
@@ -369,7 +347,6 @@ const PatientDashboardPage = () => {
                 </div>
               </div>
 
-              {/* Card 2: Your Token */}
               <div className="bg-purple-50/50 border border-purple-100/50 rounded-2xl p-5 flex items-center gap-4 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-[0_8px_30px_rgba(124,58,237,0.04)] transition-all duration-300">
                 <div className="p-3 bg-purple-100/70 rounded-xl text-purple-600">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
@@ -383,7 +360,6 @@ const PatientDashboardPage = () => {
                 </div>
               </div>
 
-              {/* Card 3: Estimated Wait */}
               <div className="bg-indigo-50/50 border border-indigo-100/50 rounded-2xl p-5 flex items-center gap-4 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-[0_8px_30px_rgba(99,102,241,0.04)] transition-all duration-300">
                 <div className="p-3 bg-indigo-100/70 rounded-xl text-indigo-600">
                   <FiClock className="text-xl stroke-[2.5]" />
@@ -396,10 +372,8 @@ const PatientDashboardPage = () => {
               </div>
             </div>
 
-            {/* Bottom Row - Queue Progress and Live Activity */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               
-              {/* Queue Progress Card */}
               <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-[0_4px_25px_rgba(0,0,0,0.02)] flex flex-col justify-between min-h-[300px]">
                 <div className="w-full flex items-center gap-2 text-slate-800 font-bold border-b border-slate-50 pb-4 mb-4">
                   <svg className="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
@@ -409,7 +383,6 @@ const PatientDashboardPage = () => {
                 </div>
 
                 <div className="flex-1 flex flex-col items-center justify-center py-4">
-                  {/* Progress bar container */}
                   <div className="w-full mb-6">
                     <div className="w-full bg-slate-100 rounded-full h-3.5 overflow-hidden">
                       <div 
@@ -433,7 +406,6 @@ const PatientDashboardPage = () => {
                 </div>
               </div>
 
-              {/* Live Queue Activity Card */}
               <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-[0_4px_25px_rgba(0,0,0,0.02)] flex flex-col justify-between min-h-[300px]">
                 <div className="w-full flex items-center gap-2 text-slate-800 font-bold border-b border-slate-50 pb-4 mb-4">
                   <svg className="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
@@ -458,9 +430,7 @@ const PatientDashboardPage = () => {
                             : "hover:bg-slate-50/50"
                         }`}
                       >
-                        {/* Left Side: Token Details */}
                         <div className="flex items-center gap-3">
-                          {/* Dot / Line Icon */}
                           <div className={`h-7 w-7 rounded-full flex items-center justify-center border ${
                             isCompleted 
                               ? "bg-emerald-50 border-emerald-200 text-emerald-500" 
@@ -486,7 +456,6 @@ const PatientDashboardPage = () => {
                           </span>
                         </div>
 
-                        {/* Center/Right Details */}
                         <div className="flex items-center gap-4 text-xs font-semibold">
                           <span className={`${
                             isCompleted 
@@ -513,14 +482,12 @@ const PatientDashboardPage = () => {
 
           </div>
 
-          {/* Right Column - Your Doctor Panel */}
           <div className="lg:col-span-4 xl:col-span-3">
             <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-[0_4px_25px_rgba(0,0,0,0.02)] flex flex-col items-center">
               <h3 className="w-full text-left text-sm font-bold tracking-wide uppercase text-slate-400 border-b border-slate-50 pb-4 mb-6">
                 Your Doctor
               </h3>
 
-              {/* Profile Image */}
               <div className="relative group mb-4">
                 <div className="absolute inset-0 bg-blue-100 rounded-full blur-[8px] opacity-40 group-hover:opacity-70 transition-all duration-300"></div>
                 <div className="h-28 w-28 rounded-full border-4 border-slate-50 overflow-hidden shadow-md relative z-10">
@@ -535,26 +502,21 @@ const PatientDashboardPage = () => {
                 </div>
               </div>
 
-              {/* Doctor Info */}
               <h4 className="text-xl font-extrabold text-slate-800 tracking-tight text-center">{doctorName}</h4>
 
-              {/* Details List */}
               <div className="w-full mt-8 space-y-4">
-                {/* Doctor Name */}
                 <div className="flex justify-between items-center py-2.5 border-b border-slate-50 text-xs font-semibold">
                   <span className="text-slate-400">Doctor Name</span>
                   <span className="text-slate-800 font-bold text-right truncate max-w-[150px]">
                     {session?.doctorId?.fullName || "--"}
                   </span>
                 </div>
-                {/* Session Started At */}
                 <div className="flex justify-between items-center py-2.5 border-b border-slate-50 text-xs font-semibold">
                   <span className="text-slate-400">Session Started At</span>
                   <span className="text-slate-800 font-bold">
                     {formatTime(session?.startedAt)}
                   </span>
                 </div>
-                {/* Clinic Name */}
                 <div className="flex justify-between items-center py-2.5 text-xs font-semibold">
                   <span className="text-slate-400">Clinic Name</span>
                   <span className="text-slate-800 font-bold text-right truncate max-w-[150px]">
@@ -568,10 +530,8 @@ const PatientDashboardPage = () => {
         </div>
       </div>
 
-      {/* Floating Bottom Summary Bar */}
       <div className="fixed bottom-6 left-1/2 -translate-y-0 -translate-x-1/2 z-20 w-[90%] max-w-sm animate-fade-in-up">
         <div className="bg-white/95 backdrop-blur-md border border-slate-100/80 shadow-[0_15px_35px_rgba(0,0,0,0.12)] rounded-full py-3.5 px-6 sm:px-8 flex items-center justify-between gap-4">
-          {/* Token */}
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="h-8 w-8 rounded-full bg-purple-50 flex items-center justify-center text-purple-600">
               <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
@@ -586,7 +546,6 @@ const PatientDashboardPage = () => {
 
           <div className="h-8 w-[1px] bg-slate-100"></div>
 
-          {/* Est. Wait */}
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="h-8 w-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
               <FiClock className="text-sm stroke-[2.5]" />

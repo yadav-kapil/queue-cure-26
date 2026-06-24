@@ -23,9 +23,6 @@ import Loading from '../../components/common/Loading';
 import Error from '../../components/common/Error';
 import Success from '../../components/common/Success';
 
-/* ─────────────────────────────────────────────
-   Helpers
-───────────────────────────────────────────── */
 const getInitials = (name) => {
   if (!name) return 'U';
   return name.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase();
@@ -38,9 +35,6 @@ const formatDate = (dateStr) => {
   });
 };
 
-/* ─────────────────────────────────────────────
-   Shared card wrapper
-───────────────────────────────────────────── */
 const Card = ({ children, className = '' }) => (
   <div className={`rounded-[20px] border border-[#e5eaf4] bg-white p-6 shadow-[0_4px_20px_rgba(15,23,42,0.04)] ${className}`}>
     {children}
@@ -54,9 +48,6 @@ const SectionHeader = ({ title, subtitle }) => (
   </div>
 );
 
-/* ─────────────────────────────────────────────
-   Shared read-only field
-───────────────────────────────────────────── */
 const ReadOnlyField = ({ label, icon: Icon, value }) => (
   <div>
     <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">{label}</label>
@@ -71,9 +62,6 @@ const ReadOnlyField = ({ label, icon: Icon, value }) => (
   </div>
 );
 
-/* ─────────────────────────────────────────────
-   Shared editable field
-───────────────────────────────────────────── */
 const EditableField = ({ label, icon: Icon, value, onChange, type = 'text', placeholder }) => (
   <div>
     <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">{label}</label>
@@ -92,9 +80,6 @@ const EditableField = ({ label, icon: Icon, value, onChange, type = 'text', plac
   </div>
 );
 
-/* ─────────────────────────────────────────────
-   Shared password field
-───────────────────────────────────────────── */
 const PasswordInput = ({ label, value, show, onToggle, onChange, placeholder }) => (
   <div>
     <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">{label}</label>
@@ -121,9 +106,6 @@ const PasswordInput = ({ label, value, show, onToggle, onChange, placeholder }) 
   </div>
 );
 
-/* ─────────────────────────────────────────────
-   Tab 1 — Profile
-───────────────────────────────────────────── */
 const ProfileTab = () => {
   const { user, dispatch } = useAuth();
   const fileRef = useRef(null);
@@ -135,10 +117,9 @@ const ProfileTab = () => {
     clinicName: user?.clinicName || '',
   });
 
-  // Modal states
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);   // { heading, message }
-  const [success, setSuccess] = useState(null); // { heading, message }
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
@@ -158,7 +139,7 @@ const ProfileTab = () => {
     }
     setIsLoading(true);
     try {
-      const res = await fetch('/api/auth/profile', {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/profile`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -186,18 +167,15 @@ const ProfileTab = () => {
 
   return (
     <div className="space-y-5">
-      {/* Global modals */}
       {isLoading && <Loading message="Saving your profile..." />}
       {error && <Error heading={error.heading} message={error.message} onClose={() => setError(null)} />}
       {success && <Success heading={success.heading} message={success.message} onClose={() => setSuccess(null)} />}
 
-      {/* Page header */}
       <div>
         <h1 className="text-2xl font-extrabold text-[#07122f] tracking-tight">Profile</h1>
         <p className="mt-1 text-sm text-slate-400 font-medium">Manage your personal and clinic information.</p>
       </div>
 
-      {/* Avatar Card */}
       <Card>
         <SectionHeader title="Profile Picture" subtitle="Upload a photo to personalise your account." />
         <div className="flex items-center gap-5">
@@ -240,12 +218,10 @@ const ProfileTab = () => {
         </div>
       </Card>
 
-      {/* Personal Info */}
       <Card>
         <SectionHeader title="Personal Information" subtitle="Update your name, contact and clinic details." />
         <form onSubmit={handleSave}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Editable */}
             <EditableField
               label="Full Name"
               icon={FiUser}
@@ -269,7 +245,6 @@ const ProfileTab = () => {
               placeholder="Your clinic name"
             />
 
-            {/* Read-only */}
             <ReadOnlyField label="Email Address" icon={FiMail} value={user?.email} />
             <ReadOnlyField
               label="Username"
@@ -283,7 +258,6 @@ const ProfileTab = () => {
             />
           </div>
 
-          {/* Actions */}
           <div className="mt-6 pt-4 border-t border-[#f1f5f9] flex items-center justify-end gap-3">
             <button
               type="button"
@@ -305,9 +279,6 @@ const ProfileTab = () => {
   );
 };
 
-/* ─────────────────────────────────────────────
-   Tab 2 — Manage Receptionist
-───────────────────────────────────────────── */
 const ReceptionistTab = () => (
   <div className="space-y-5">
     <div>
@@ -320,9 +291,6 @@ const ReceptionistTab = () => (
   </div>
 );
 
-/* ─────────────────────────────────────────────
-   Tab 3 — Account
-───────────────────────────────────────────── */
 const AccountTab = () => {
   const { user, dispatch } = useAuth();
   const [showCurrent, setShowCurrent] = useState(false);
@@ -330,12 +298,10 @@ const AccountTab = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [pwForm, setPwForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
 
-  // Modal states — password
   const [pwLoading, setPwLoading] = useState(false);
   const [pwError, setPwError] = useState(null);
   const [pwSuccess, setPwSuccess] = useState(null);
 
-  // Modal states — logout
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [logoutError, setLogoutError] = useState(null);
 
@@ -351,7 +317,7 @@ const AccountTab = () => {
     }
     setPwLoading(true);
     try {
-      const res = await fetch('/api/auth/password', {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/password`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -371,7 +337,7 @@ const AccountTab = () => {
   const handleLogout = async () => {
     setLogoutLoading(true);
     try {
-      const res = await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/logout`, { method: 'POST', credentials: 'include' });
       if (res.ok) {
         dispatch({ type: 'LOGOUT' });
       } else {
@@ -386,7 +352,6 @@ const AccountTab = () => {
 
   return (
     <div className="space-y-5">
-      {/* Modals */}
       {pwLoading && <Loading message="Updating your password..." />}
       {pwError && <Error heading={pwError.heading} message={pwError.message} onClose={() => setPwError(null)} />}
       {pwSuccess && <Success heading={pwSuccess.heading} message={pwSuccess.message} onClose={() => setPwSuccess(null)} />}
@@ -398,7 +363,6 @@ const AccountTab = () => {
         <p className="mt-1 text-sm text-slate-400 font-medium">Manage your security settings and account details.</p>
       </div>
 
-      {/* Change Password */}
       <Card>
         <SectionHeader title="Change Password" subtitle="Update your login credentials." />
         <form onSubmit={handlePasswordChange} className="space-y-4">
@@ -440,7 +404,6 @@ const AccountTab = () => {
         </form>
       </Card>
 
-      {/* Account Information */}
       <Card>
         <SectionHeader title="Account Information" subtitle="Your account metadata." />
         <div className="divide-y divide-[#f1f5f9]">
@@ -461,7 +424,6 @@ const AccountTab = () => {
         </div>
       </Card>
 
-      {/* Danger Zone */}
       <div className="rounded-[20px] border border-red-100 bg-white p-6 shadow-[0_4px_20px_rgba(15,23,42,0.04)]">
         <div className="flex items-center gap-2 mb-1">
           <FiAlertTriangle className="h-4 w-4 text-red-500" />
@@ -488,9 +450,6 @@ const AccountTab = () => {
   );
 };
 
-/* ─────────────────────────────────────────────
-   Main Settings Page
-───────────────────────────────────────────── */
 const TABS = [
   { id: 'profile', label: 'Profile', icon: FiUser },
   { id: 'receptionist', label: 'Manage Receptionist', icon: FiUsers },
@@ -511,7 +470,6 @@ const SettingDoc = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Mobile Tab Bar */}
       <div className="lg:hidden mb-5 overflow-x-auto scrollbar-none">
         <div className="flex gap-1 bg-white border border-[#e5eaf4] rounded-2xl p-1.5 w-max min-w-full shadow-[0_2px_8px_rgba(15,23,42,0.04)]">
           {TABS.map(({ id, label, icon: Icon }) => (
@@ -531,9 +489,7 @@ const SettingDoc = () => {
         </div>
       </div>
 
-      {/* Desktop Layout */}
       <div className="lg:grid lg:grid-cols-[220px_1fr] lg:gap-8">
-        {/* Sidebar — desktop only */}
         <aside className="hidden lg:block">
           <div className="sticky top-24 rounded-[20px] border border-[#e5eaf4] bg-white p-2 shadow-[0_4px_20px_rgba(15,23,42,0.04)]">
             <div className="px-3 pt-3 pb-2">
@@ -558,7 +514,6 @@ const SettingDoc = () => {
           </div>
         </aside>
 
-        {/* Content area */}
         <div className="min-w-0">
           {renderContent()}
         </div>

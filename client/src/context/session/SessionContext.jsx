@@ -5,10 +5,9 @@ import { registerSocketHandlers } from "../../services/socketHandlers";
 import { useAuth } from "../auth/AuthContext";
 import { io } from "socket.io-client";
 
-// Define and export the socket instance globally to avoid recreating it on renders
 export const socket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:3003", {
   withCredentials: true,
-  autoConnect: false, // Manage connection explicitly on component mount
+  autoConnect: false,
 });
 
 const SessionContext = createContext(null);
@@ -17,12 +16,10 @@ export const SessionContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(sessionReducer, initialState);
   const { user } = useAuth();
 
-  // Fetch session on mount
   useEffect(() => {
     fetchSession(dispatch);
   }, []);
 
-  // Effect 1: Handle joining room when session becomes active/changes, or on socket connection/reconnection
   useEffect(() => {
     if (!state.session || !state.session?._id) return;
 
@@ -40,21 +37,17 @@ export const SessionContextProvider = ({ children }) => {
       );
     };
 
-    // 1. Join immediately if socket is already connected
     if (socket.connected) {
       joinRoom();
     }
 
-    // 2. Listen to the 'connect' event to handle automatic reconnects (e.g. after WiFi drop)
     socket.on("connect", joinRoom);
 
-    // Cleanup connect listener when session changes or provider unmounts
     return () => {
       socket.off("connect", joinRoom);
     };
   }, [state.session?._id]);
 
-  // Effect 2: Connect socket and register event listeners on mount, disconnect on unmount
   useEffect(() => {
     socket.connect();
     const cleanup = registerSocketHandlers(socket, dispatch, user);

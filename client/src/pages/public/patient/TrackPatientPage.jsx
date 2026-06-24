@@ -27,7 +27,6 @@ const TrackPatientPage = () => {
     const finalCode = updatedCodeArray.join("");
     setCode(finalCode);
 
-    // Auto-focus next input if we typed a digit and it's not the last input
     if (index < 3 && digit) {
       inputRefs[index + 1].current.focus();
     }
@@ -54,7 +53,6 @@ const TrackPatientPage = () => {
     const pastedData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 4);
     setCode(pastedData);
     
-    // Focus the appropriate input based on length of pasted data
     const focusIndex = Math.min(pastedData.length, 3);
     if (inputRefs[focusIndex]?.current) {
       inputRefs[focusIndex].current.focus();
@@ -76,7 +74,7 @@ const TrackPatientPage = () => {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/patient/verify-otp", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/patient/verify-otp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -100,56 +98,44 @@ const TrackPatientPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-tr from-[#f1f5f9] via-white to-[#eff6ff] flex items-center justify-center p-4 sm:p-6 pt-20 sm:pt-24 pb-8 md:pb-12 relative overflow-hidden font-sans">
-      {/* Decorative background glows */}
       <div className="absolute top-0 -left-4 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
       <div className="absolute bottom-0 -right-4 w-96 h-96 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
 
-      {/* Main card container */}
       <div className="w-full max-w-4xl bg-white/95 backdrop-blur-md border border-slate-100 shadow-[0_24px_50px_-12px_rgba(0,0,0,0.06)] rounded-[24px] sm:rounded-[32px] overflow-hidden relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12">
           
-          {/* Left Column: Graphic & Brand Info */}
           <div className="lg:col-span-7 p-5 sm:p-10 md:p-12 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-100 bg-[#fafcff]/50">
             
-            {/* Token Illustration */}
             <div className="relative flex items-center justify-center w-full max-w-[180px] sm:max-w-[260px] aspect-square mx-auto mb-4 sm:mb-8">
-              {/* Soft background glow circles */}
               <div className="absolute w-36 h-36 sm:w-56 sm:h-56 rounded-full bg-blue-100/50 filter blur-xl"></div>
               <div className="absolute w-28 h-28 sm:w-40 sm:h-40 rounded-full bg-indigo-50/70 filter blur-md"></div>
 
-              {/* Floating plus icons */}
               <div className="absolute top-2 left-6 text-emerald-400 text-xl font-light select-none animate-pulse">+</div>
               <div className="absolute top-12 right-2 text-indigo-400 text-lg font-light select-none animate-pulse">+</div>
               <div className="absolute bottom-10 left-0 text-indigo-300 text-xl font-light select-none animate-pulse">+</div>
               <div className="absolute bottom-16 right-4 text-emerald-300 text-lg font-light select-none animate-pulse">+</div>
 
-              {/* The 3D Token */}
               <div className="relative w-28 h-40 sm:w-36 sm:h-52 bg-gradient-to-b from-[#b4c6ff] to-[#8da2fb] rounded-[18px] sm:rounded-[24px] shadow-2xl p-3 sm:p-4 flex flex-col justify-between transform -rotate-6 transition-transform duration-500 hover:rotate-0 hover:scale-105 select-none border border-white/20">
-                {/* Side ticket cutouts */}
                 <div className="absolute top-1/2 -left-2.5 w-5 h-5 sm:-left-3.5 sm:w-7 sm:h-7 bg-white/95 rounded-full -translate-y-1/2 shadow-inner"></div>
                 <div className="absolute top-1/2 -right-2.5 w-5 h-5 sm:-right-3.5 sm:w-7 sm:h-7 bg-white/95 rounded-full -translate-y-1/2 shadow-inner"></div>
 
-                {/* Token Header */}
                 <div className="text-center mt-1">
                   <p className="text-[7px] sm:text-[9px] tracking-[0.25em] text-indigo-950/60 font-bold uppercase">
                     Your Token
                   </p>
                 </div>
 
-                {/* Token Number */}
                 <div className="text-center my-auto">
                   <h3 className="text-3xl sm:text-5xl font-black text-indigo-950 tracking-tight">
                     #18
                   </h3>
                 </div>
 
-                {/* Bottom lines inside token */}
                 <div className="space-y-1.5 opacity-40 mb-1">
                   <div className="h-1 bg-indigo-950 rounded-full w-full"></div>
                   <div className="h-1 bg-indigo-950 rounded-full w-2/3 mx-auto"></div>
                 </div>
 
-                {/* Green Verification Badge with Shield */}
                 <div className="absolute bottom-1.5 -right-1.5 sm:bottom-2.5 sm:right-[-8px] bg-emerald-500 text-white rounded-full p-1.5 sm:p-2.5 shadow-lg border-2 border-white flex items-center justify-center transform translate-x-1 translate-y-1">
                   <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -158,7 +144,6 @@ const TrackPatientPage = () => {
               </div>
             </div>
 
-            {/* Description Text */}
             <div className="text-center max-w-sm mx-auto mb-4 sm:mb-8">
               <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">
                 Track Your Queue
@@ -168,7 +153,6 @@ const TrackPatientPage = () => {
               </p>
             </div>
 
-            {/* Features Row - Hidden on mobile view to align with design */}
             <div className="hidden sm:grid grid-cols-3 gap-4 pt-6 border-t border-slate-100">
               <div className="flex items-start gap-2.5">
                 <div className="p-2 bg-blue-50 text-blue-600 rounded-xl shrink-0">
@@ -203,7 +187,6 @@ const TrackPatientPage = () => {
 
           </div>
 
-          {/* Right Column: OTP Input Form */}
           <div className="lg:col-span-5 p-5 sm:p-10 md:p-12 flex flex-col justify-center bg-white">
             
             <h3 className="text-lg sm:text-xl font-bold text-slate-800 tracking-tight mb-4 sm:mb-6">
@@ -211,7 +194,6 @@ const TrackPatientPage = () => {
             </h3>
 
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-              {/* Digit Inputs Row */}
               <div className="flex justify-around md:justify-between gap-2.5 sm:gap-4 my-1 sm:my-2">
                 {[0, 1, 2, 3].map((index) => (
                   <input
@@ -231,14 +213,12 @@ const TrackPatientPage = () => {
                 ))}
               </div>
 
-              {/* Error Box */}
               {error && (
                 <p className="text-xs text-rose-600 bg-rose-50/50 border border-rose-100 rounded-xl p-2.5 text-center animate-fade-in font-medium">
                   {error}
                 </p>
               )}
 
-              {/* Security Validation Banner */}
               <div className="flex items-start gap-2.5 sm:gap-3 bg-blue-50/60 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-blue-100/40 text-blue-900/80">
                 <FiShield className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 shrink-0 mt-0.5" />
                 <p className="text-[10px] sm:text-[11px] leading-normal font-medium">
@@ -246,7 +226,6 @@ const TrackPatientPage = () => {
                 </p>
               </div>
 
-              {/* Submission Button */}
               <button
                 type="submit"
                 disabled={loading || code.length !== 4}
@@ -270,14 +249,12 @@ const TrackPatientPage = () => {
               </button>
             </form>
 
-            {/* Divider */}
             <div className="flex items-center my-4 sm:my-6">
               <div className="flex-grow border-t border-slate-100"></div>
               <span className="px-3 text-[9px] sm:text-[10px] text-slate-400 font-bold tracking-widest uppercase">or</span>
               <div className="flex-grow border-t border-slate-100"></div>
             </div>
 
-            {/* Help/No OTP Banner */}
             <div className="flex items-start gap-2.5 sm:gap-3 bg-slate-50 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-slate-100 text-slate-600">
               <FiInfo className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 shrink-0 mt-0.5" />
               <div>

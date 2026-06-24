@@ -34,7 +34,7 @@ export const useDoc = () => {
   const fetchIncomingRequests = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/auth/association-requests", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/association-requests`, {
         credentials: "include",
       });
       const data = await res.json();
@@ -51,7 +51,7 @@ export const useDoc = () => {
   const handleAction = async (receptionistId, action) => {
     try {
       setActionLoading({ id: receptionistId, action });
-      const res = await fetch("/api/auth/handle-association-request", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/handle-association-request`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ targetUserId: receptionistId, action }),
@@ -85,7 +85,7 @@ export const useDoc = () => {
       setSearchLoading(true);
       setSearchError("");
       const targetRole = user?.role === "doctor" ? "receptionist" : "doctor";
-      const res = await fetch("/api/auth/search", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/search`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: searchQuery.trim(), role: targetRole }),
@@ -113,7 +113,7 @@ export const useDoc = () => {
   const sendRequest = async (receptionistId) => {
     try {
       setHireLoading(true);
-      const res = await fetch("/api/auth/request-association", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/request-association`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ targetUserId: receptionistId }),
@@ -139,7 +139,7 @@ export const useDoc = () => {
   const cancelSentRequest = async () => {
     try {
       setIsCancelling(true);
-      const res = await fetch("/api/auth/cancel-association-request", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/cancel-association-request`, {
         method: "POST",
         credentials: "include",
       });
@@ -161,7 +161,7 @@ export const useDoc = () => {
   const removeReceptionist = async () => {
     try {
       setRemoveLoading(true);
-      const res = await fetch("/api/auth/remove-association", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/remove-association`, {
         method: "POST",
         credentials: "include",
       });
@@ -184,7 +184,7 @@ export const useDoc = () => {
     try {
       setSessionLoading(true);
       setSessionLoadingMessage("Starting your live session...");
-      const res = await fetch("/api/session/start", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/session/start`, {
         method: "POST",
         credentials: "include",
       });
@@ -209,7 +209,7 @@ export const useDoc = () => {
 
   const callNextPatient = async () => {
     try {
-      const res = await fetch("/api/doctor/call-next", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/doctor/call-next`, {
         method: "POST",
         credentials: "include",
       });
@@ -230,7 +230,7 @@ export const useDoc = () => {
 
   const skipCurrentPatient = async () => {
     try {
-      const res = await fetch("/api/doctor/skip-patient", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/doctor/skip-patient`, {
         method: "POST",
         credentials: "include",
       });
@@ -251,7 +251,7 @@ export const useDoc = () => {
 
   const completeCurrentPatient = async () => {
     try {
-      const res = await fetch("/api/doctor/complete-patient", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/doctor/complete-patient`, {
         method: "POST",
         credentials: "include",
       });
@@ -274,7 +274,7 @@ export const useDoc = () => {
     try {
       setSessionLoading(true);
       setSessionLoadingMessage("Ending your session. Please wait...");
-      const res = await fetch("/api/session/end", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/session/end`, {
         method: "PATCH",
         credentials: "include",
       });

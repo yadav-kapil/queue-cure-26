@@ -31,7 +31,7 @@ export const useRec = () => {
   const fetchIncomingRequests = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/auth/association-requests", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/association-requests`, {
         credentials: "include",
       });
       const data = await res.json();
@@ -50,7 +50,7 @@ export const useRec = () => {
   const handleAction = async (doctorId, action) => {
     try {
       setActionLoading({ id: doctorId, action });
-      const res = await fetch("/api/auth/handle-association-request", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/handle-association-request`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ targetUserId: doctorId, action }),
@@ -82,7 +82,7 @@ export const useRec = () => {
     try {
       setSearchLoading(true);
       setSearchError("");
-      const res = await fetch("/api/auth/search", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/search`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: searchQuery.trim(), role: "doctor" }),
@@ -110,7 +110,7 @@ export const useRec = () => {
   const sendRequest = async (doctorId) => {
     try {
       setHireLoading(true);
-      const res = await fetch("/api/auth/request-association", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/request-association`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ targetUserId: doctorId }),
@@ -136,7 +136,7 @@ export const useRec = () => {
   const cancelSentRequest = async () => {
     try {
       setIsCancelling(true);
-      const res = await fetch("/api/auth/cancel-association-request", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/cancel-association-request`, {
         method: "POST",
         credentials: "include",
       });
@@ -158,7 +158,7 @@ export const useRec = () => {
   const removeReceptionist = async () => {
     try {
       setRemoveLoading(true);
-      const res = await fetch("/api/auth/remove-association", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/remove-association`, {
         method: "POST",
         credentials: "include",
       });
@@ -182,7 +182,7 @@ export const useRec = () => {
     try {
       setSessionLoadingMessage("Leaving session. Please wait...");
       setSessionLoading(true);
-      const res = await fetch("/api/rec/leave-session", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/rec/leave-session`, {
         method: "POST",
         credentials: "include",
       });
@@ -205,7 +205,7 @@ export const useRec = () => {
   const addPatientToQueue = async ({ name, mobile, age, gender, initialAvgTime }) => {
     try {
       setAddPatientLoading(true);
-      const res = await fetch("/api/rec/add-patient", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/rec/add-patient`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, mobile, age, gender, initialAvgTime }),

@@ -57,7 +57,6 @@ const DashboardRec = () => {
     }
   }
 
-  // Track session duration
   useEffect(() => {
     if (!isSessionActive || !session?.startedAt) return
 
@@ -72,7 +71,6 @@ const DashboardRec = () => {
     return () => clearInterval(timer)
   }, [isSessionActive, session?.startedAt])
 
-  // Track last sync time (simulated ticker or based on session context updates)
   useEffect(() => {
     setLastSyncSeconds(0)
     const syncTimer = setInterval(() => {
@@ -81,18 +79,14 @@ const DashboardRec = () => {
     return () => clearInterval(syncTimer)
   }, [queue])
 
-  // Filter patients: only show patients who are NOT done (consultationEndedAt is empty)
   const activeQueuePatients = useMemo(() => {
     if (!queue || !queue.patients) return []
     
-    // Filter out completed consultations
     const notDone = queue.patients.filter((p) => !p.consultationEndedAt)
     
-    // Arrange properly: current patient (tokenNumber === queue.currentToken) at the top
     const current = notDone.find((p) => p.tokenNumber === queue.currentToken)
     const rest = notDone.filter((p) => p.tokenNumber !== queue.currentToken)
     
-    // Sort rest by token number (ascending)
     rest.sort((a, b) => a.tokenNumber - b.tokenNumber)
     
     return current ? [current, ...rest] : rest
@@ -103,11 +97,9 @@ const DashboardRec = () => {
     return queue.patients.find((p) => p.tokenNumber === queue.currentToken) || null
   }, [queue])
 
-  // Next Patient is the first waiting patient in the queue
   const nextPatient = useMemo(() => {
     if (!queue || !queue.patients) return null
     
-    // Next patient is the first one after the current token that is not completed and not skipped
     const waiting = queue.patients.filter(
       (p) => p.tokenNumber > queue.currentToken && !p.skipped && !p.consultationEndedAt
     )
@@ -198,7 +190,6 @@ const DashboardRec = () => {
       )}
       <section className="space-y-5 sm:space-y-6">
       <div className="grid gap-5 sm:gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-        {/* Welcome Hero Banner */}
         <article className="relative min-h-[240px] sm:min-h-[280px] overflow-hidden rounded-[28px] sm:rounded-[32px] bg-gradient-to-br from-[#5b5ff7] via-[#346dff] to-[#5ab7ff] p-5 sm:p-8 text-white shadow-[0_16px_38px_rgba(77,124,254,0.18)]">
           <div className="absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.22),transparent_62%)]" />
           <div className="relative z-10 sm:max-w-[58%]">
@@ -249,11 +240,9 @@ const DashboardRec = () => {
           />
         </article>
 
-        {/* Doctor Association Handler */}
         <RecHandleDoc />
       </div>
 
-      {/* Statistics Cards */}
       <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         {statCards.map((card) => {
           const Icon = card.icon
@@ -277,9 +266,7 @@ const DashboardRec = () => {
         })}
       </div>
 
-      {/* Main Content Layout */}
       <div className="grid gap-5 sm:gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-        {/* Left Column: Current Queue Table */}
         <article className="rounded-[28px] border border-[#e5eaf4] bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,0.05)]">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
@@ -326,7 +313,6 @@ const DashboardRec = () => {
             </div>
           ) : (
             <div>
-              {/* Mobile: Card layout */}
               <div className="space-y-3 md:hidden">
                 {activeQueuePatients.map((patient, index) => {
                   const avgTimeForCalc = averageConsultationTime
@@ -381,7 +367,6 @@ const DashboardRec = () => {
                 })}
               </div>
 
-              {/* Desktop: Table layout */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
@@ -464,9 +449,7 @@ const DashboardRec = () => {
           )}
         </article>
 
-        {/* Right Column: Session Overview & Next Patient */}
         <aside className="space-y-6">
-          {/* Session Overview Card */}
           <article className="rounded-[28px] border border-[#e5eaf4] bg-white p-5 shadow-[0_12px_40px_rgba(15,23,42,0.05)]">
             <h2 className="text-lg font-extrabold text-[#07122f] mb-4">Session Overview</h2>
             
@@ -527,7 +510,6 @@ const DashboardRec = () => {
             )}
           </article>
 
-          {/* Next Patient Card */}
           {isSessionActive && (
             <article className="rounded-[28px] border border-emerald-100 bg-[#f4fbf8] p-5 shadow-[0_12px_45px_rgba(34,197,94,0.04)]">
               <div className="flex items-center gap-2 text-emerald-600 font-extrabold text-sm mb-4">

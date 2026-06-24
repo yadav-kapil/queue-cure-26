@@ -11,7 +11,6 @@ const RecHandleDoc = () => {
 
   const activeDoc = hasHired ? user.associatedDoctorId : null;
 
-  // CTA Text logic
   let ctaText = "Manage Doctor";
   if (!hasHired && !hasPendingSent) {
     ctaText = "Search For Doctor";
@@ -19,7 +18,6 @@ const RecHandleDoc = () => {
 
   return (
     <>
-      {/* Main Dashboard Card */}
       <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)] relative overflow-hidden flex flex-col justify-between h-full min-h-[280px]">
         {hasHired && activeDoc && (
           <div className="absolute top-5 right-5">
@@ -57,7 +55,6 @@ const RecHandleDoc = () => {
               No active doctor has been assigned to your account.
             </p>
 
-            {/* Premium Info Panel */}
             <div className="space-y-3 bg-[#f8fafc] rounded-2xl p-4 border border-slate-100">
               <div className="flex items-start gap-2.5">
                 <span className="mt-0.5 grid size-5 place-items-center rounded-md bg-blue-50 text-blue-600">

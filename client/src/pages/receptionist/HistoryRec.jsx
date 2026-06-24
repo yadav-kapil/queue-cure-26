@@ -30,7 +30,7 @@ const HistoryRec = () => {
       try {
         setLoading(true)
         setErrorMsg(null)
-        const res = await fetch("/api/session/history", {
+        const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/session/history`, {
           credentials: "include"
         })
         const data = await res.json()
@@ -109,14 +109,12 @@ const HistoryRec = () => {
     return true
   }
 
-  // Filter queue patients who have completed consultations or are skipped across all ended sessions
   const historicalPatients = useMemo(() => {
     return history.flatMap(
       (item) => item.queue?.patients?.filter((p) => p.consultationEndedAt || p.skipped) || []
     )
   }, [history])
 
-  // Calculate stats for History Summary
   const stats = useMemo(() => {
     const sessionsToday = history.filter(
       (item) => item.session?.endedAt && isToday(item.session.endedAt)
@@ -146,7 +144,6 @@ const HistoryRec = () => {
     }
   }, [history])
 
-  // Filter completed/skipped consultations based on search term, status filter and date range
   const filteredHistory = useMemo(() => {
     const query = searchTerm.trim().toLowerCase()
 
@@ -265,7 +262,6 @@ const HistoryRec = () => {
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-          {/* Left Table Panel */}
           <article className="rounded-[28px] border border-[#e5eaf4] bg-white p-4 sm:p-5 shadow-[0_12px_40px_rgba(15,23,42,0.05)] h-[550px] md:h-[680px] flex flex-col">
             <div className="flex flex-col gap-3 md:flex-row mb-5">
               <label className="relative flex-1">
@@ -517,7 +513,6 @@ const HistoryRec = () => {
 
                   return (
                     <div key={session._id} className="rounded-[20px] border border-[#e5eaf4] bg-white p-4 sm:p-5 shadow-[0_4px_20px_rgba(15,23,42,0.03)] space-y-4">
-                      {/* Session Header */}
                       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-3">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
@@ -538,7 +533,6 @@ const HistoryRec = () => {
                         </div>
                       </div>
 
-                      {/* Processed Patients inside this Session */}
                       {patientsList.length === 0 ? (
                         <p className="text-center text-xs text-slate-400 py-3 font-semibold">No consultations in this session.</p>
                       ) : (
@@ -568,7 +562,6 @@ const HistoryRec = () => {
                               return (
                                 <div key={p.tokenNumber} className="flex flex-col gap-2.5 md:grid md:grid-cols-[100px_minmax(160px,1fr)_120px_120px_120px] px-4 py-3.5 text-xs font-semibold text-[#111827] hover:bg-slate-50/50 transition border-b border-slate-100 last:border-0">
                                   
-                                  {/* Row 1 (Mobile): Token, Name, Status Badge */}
                                   <div className="flex items-center justify-between w-full md:hidden">
                                     <div className="flex items-center gap-2">
                                       <span className="font-extrabold text-[#2459ff]">#{p.tokenNumber}</span>
@@ -579,7 +572,6 @@ const HistoryRec = () => {
                                     </span>
                                   </div>
 
-                                  {/* Row 2 (Mobile): Finished time, Duration, Mobile, OTP */}
                                   <div className="flex items-center justify-between w-full md:hidden text-[10px] text-slate-400 font-bold">
                                     <div>
                                       Finished: {finishedTime} {hasEnded && `• ${getDuration(p.consultationStartedAt, p.consultationEndedAt)}`}
@@ -589,7 +581,6 @@ const HistoryRec = () => {
                                     </div>
                                   </div>
 
-                                  {/* Desktop Columns */}
                                   <span className="hidden md:inline font-extrabold text-[#2459ff]">#{p.tokenNumber}</span>
                                   <div className="hidden md:block">
                                     <div className="font-extrabold text-[#07122f]">{p.name}</div>
@@ -620,12 +611,10 @@ const HistoryRec = () => {
             )}
           </article>
 
-          {/* Right Info Box */}
           <aside className="space-y-6">
             <article className="rounded-[28px] border border-[#e5eaf4] bg-white p-5 shadow-[0_12px_40px_rgba(15,23,42,0.05)]">
               <h2 className="text-lg font-extrabold text-[#07122f] mb-4">Summary Stats</h2>
               
-              {/* Today's Report */}
               <div className="mb-4">
                 <p className="text-xs font-bold uppercase tracking-wider text-[#2459ff] mb-2.5 font-black">Today&apos;s Report</p>
                 <div className="space-y-2">
@@ -640,7 +629,6 @@ const HistoryRec = () => {
                 </div>
               </div>
 
-              {/* Total Report */}
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5 font-black">Total Report</p>
                 <div className="space-y-2">

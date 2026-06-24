@@ -11,8 +11,6 @@ export const verifyOtp = wrapAsync(async (req, res, next) => {
     throw new ExpressError(400, "A valid 4-digit OTP code is required.");
   }
 
-  // Find all queues that have a patient with this code
-  // Sort by createdAt descending to get the most recent ones first
   const queues = await Queue.find({ "patients.code": code })
     .populate("sessionId")
     .sort({ createdAt: -1 });
@@ -21,14 +19,12 @@ export const verifyOtp = wrapAsync(async (req, res, next) => {
     throw new ExpressError(404, "Invalid OTP or Patient not found.");
   }
 
-  // Find the queue that belongs to an active session
   const activeQueue = queues.find((q) => q.sessionId && q.sessionId.status === "active");
 
   if (!activeQueue) {
     throw new ExpressError(404, "No active session found for this OTP. The session might have ended.");
   }
 
-  // Find the specific patient in the active queue
   const patient = activeQueue.patients.find((p) => p.code === code);
 
   if (!patient) {
@@ -38,7 +34,7 @@ export const verifyOtp = wrapAsync(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "OTP verified successfully.",
-    trackingId: patient._id, // This is the automatically generated MongoDB _id
+    trackingId: patient._id,
   });
 });
 
@@ -50,7 +46,6 @@ export const getPatientSession = wrapAsync(async (req, res, next) => {
     throw new ExpressError(400, "Tracking ID is required.");
   }
 
-  // Find the queue that contains this patient
   const queue = await Queue.findOne({ "patients._id": trackingId }).populate({
     path: "sessionId",
     populate: {
@@ -77,7 +72,6 @@ export const getPatientSession = wrapAsync(async (req, res, next) => {
       estimatedWaitTime: queue.estimatedWaitTime,
       currentToken: queue.currentToken,
       patients: queue.patients.map(p => ({
-        // We only send safe data to the frontend for other patients to calculate queue position if needed
         _id: p._id,
         tokenNumber: p.tokenNumber,
         skipped: p.skipped,

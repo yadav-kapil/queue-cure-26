@@ -59,13 +59,11 @@ export const register = wrapAsync(async (req, res, next) => {
 export const login = wrapAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
-  // Find user by email
   const user = await User.findOne({ email });
   if (!user) {
     throw new ExpressError(401, "Invalid email or password");
   }
 
-  // Verify password
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     throw new ExpressError(401, "Invalid email or password");

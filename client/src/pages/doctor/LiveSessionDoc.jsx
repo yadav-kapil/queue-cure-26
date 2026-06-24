@@ -24,7 +24,6 @@ const LiveSessionDoc = () => {
 
   const [elapsedMinutes, setElapsedMinutes] = useState(0)
 
-  // Track session duration since starting
   useEffect(() => {
     if (!isSessionActive || !session?.startedAt) return
 
@@ -39,7 +38,6 @@ const LiveSessionDoc = () => {
     return () => clearInterval(timer)
   }, [isSessionActive, session?.startedAt])
 
-  // Extract receptionist details
   const receptionist = useMemo(() => {
     if (!session || !session.receptionistId) return null
     return {
@@ -48,7 +46,6 @@ const LiveSessionDoc = () => {
     }
   }, [session])
 
-  // Map currently serving patient
   const currentPatient = useMemo(() => {
     if (!queue || !queue.patients || !queue.currentToken) return null
     const patient = queue.patients.find((p) => p.tokenNumber === queue.currentToken)
@@ -64,7 +61,6 @@ const LiveSessionDoc = () => {
     }
   }, [queue])
 
-  // Map waiting patients
   const waitingPatients = useMemo(() => {
     if (!queue || !queue.patients) return []
     return queue.patients
@@ -78,11 +74,9 @@ const LiveSessionDoc = () => {
       }))
   }, [queue])
 
-  // Combine current patient and waiting patients for the main queue list
   const patientsQueue = useMemo(() => {
     const list = []
     
-    // Add current patient at the top of the queue if active
     if (currentPatient) {
       list.push({
         id: currentPatient.token,
@@ -94,7 +88,6 @@ const LiveSessionDoc = () => {
       })
     }
     
-    // Add waiting patients
     waitingPatients.forEach((p) => {
       list.push({
         ...p,
@@ -105,19 +98,16 @@ const LiveSessionDoc = () => {
     return list
   }, [currentPatient, waitingPatients])
 
-  // Map skipped patients
   const skippedPatients = useMemo(() => {
     if (!queue || !queue.patients) return []
     return queue.patients.filter((p) => p.skipped)
   }, [queue])
 
-  // Map completed patients
   const completedPatients = useMemo(() => {
     if (!queue || !queue.patients) return []
     return queue.patients.filter((p) => p.consultationEndedAt && !p.skipped)
   }, [queue])
 
-  // Map completed patients with time details for listing
   const completedPatientsList = useMemo(() => {
     if (!queue || !queue.patients) return []
     return queue.patients
@@ -189,9 +179,7 @@ const LiveSessionDoc = () => {
       {sessionLoading && <Loading message={sessionLoadingMessage} />}
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
         <div className="space-y-5">
-          {/* Top Row: Active Session & Receptionist Status */}
           <div className="grid gap-5 sm:grid-cols-2">
-            {/* Active Session Info */}
             <article className="flex items-center rounded-[24px] border border-[#dff7e9] bg-[#f4fbf8] p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
               <div className="flex flex-1 items-center justify-between gap-4">
                 <div>
@@ -209,7 +197,6 @@ const LiveSessionDoc = () => {
               </div>
             </article>
 
-            {/* Active Receptionist Connection info */}
             <article className="flex items-center rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
               {receptionist ? (
                 <div className="flex items-center gap-4 text-left">
@@ -233,7 +220,6 @@ const LiveSessionDoc = () => {
             </article>
           </div>
 
-          {/* Current Patient Banner */}
           <article className="rounded-[28px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
             <div className="rounded-[24px] bg-gradient-to-br from-[#5b5ff7] to-[#4d9eff] p-6 text-white">
               <span className="rounded-full bg-white/18 px-3 py-1 text-xs font-bold">Current Patient</span>
@@ -262,7 +248,6 @@ const LiveSessionDoc = () => {
             </div>
           </article>
 
-          {/* Mini Metrics list */}
           <div className="grid gap-4 sm:grid-cols-3">
             <MiniMetric label="Patients Waiting" value={waitingPatients.length} icon={FiUsers} tone="green" />
             <MiniMetric label="Average Wait Time" value={completedPatients.length === 0 ? '--' : `${averageConsultationTime} min`} icon={FiClock} tone="blue" />
@@ -271,7 +256,6 @@ const LiveSessionDoc = () => {
         </div>
 
         <aside className="space-y-5">
-          {/* Session Records */}
           <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
             <h2 className="text-lg font-extrabold text-[#07122f]">Session Records</h2>
             <div className="mt-4 grid gap-3">
@@ -281,11 +265,9 @@ const LiveSessionDoc = () => {
             </div>
           </article>
 
-          {/* Up Next & Queue Progress Card */}
           <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
             <h2 className="text-lg font-extrabold text-[#07122f]">Up Next</h2>
             
-            {/* Next Patient Info */}
             <div className="mt-4">
               {waitingPatients.length > 0 ? (
                 <div className="flex items-center justify-between rounded-2xl bg-[#f8fbff] p-4 border border-[#eef4ff]">
@@ -315,12 +297,10 @@ const LiveSessionDoc = () => {
               )}
             </div>
 
-            {/* Queue Progress Bar */}
             <div className="mt-6 pt-5 border-t border-slate-100">
               {(() => {
                 const total = queue?.patients ? queue.patients.length : 0;
                 
-                // Find highest token that has started or completed consultation
                 const servedPatients = queue?.patients 
                   ? queue.patients.filter((p) => p.consultationStartedAt || p.consultationEndedAt)
                   : [];
@@ -341,7 +321,6 @@ const LiveSessionDoc = () => {
                       <span className="text-slate-500">Queue Progress</span>
                       <span className="text-[#07122f]">{allCalled ? "100%" : `Token #${current} of ${total} (${pct}%)`}</span>
                     </div>
-                    {/* The small progress bar */}
                     <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
                       <div 
                         className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-500"
@@ -356,9 +335,7 @@ const LiveSessionDoc = () => {
         </aside>
       </div>
 
-      {/* Enhanced Viewport Full-Width (divided equally) Patients Lists */}
       <div className="grid gap-5 md:grid-cols-2">
-        {/* Patients Queue List (including Current Patient) */}
         <article className="flex flex-col h-[400px] rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
           <div className="flex items-center justify-between gap-4 shrink-0 border-b border-slate-100 pb-4 mb-4">
             <div className="flex items-center gap-2">
@@ -423,7 +400,6 @@ const LiveSessionDoc = () => {
           )}
         </article>
  
-        {/* Completed Patients Queue List */}
         <article className="flex flex-col h-[400px] rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
           <div className="flex items-center justify-between gap-4 shrink-0 border-b border-slate-100 pb-4 mb-4">
             <div className="flex items-center gap-2">

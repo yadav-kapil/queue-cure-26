@@ -19,7 +19,6 @@ const LiveClock = () => {
 
   return (
     <article className="rounded-[24px] border border-[#e5eaf4] bg-gradient-to-b from-white to-[#fcfdfe] p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)] flex flex-col justify-between h-full flex-1">
-      {/* Top: Header & pulsing icon */}
       <div className="flex items-center justify-between">
         <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
           Live Clock
@@ -29,7 +28,6 @@ const LiveClock = () => {
         </span>
       </div>
 
-      {/* Middle: Big digital time */}
       <div className="my-auto py-2">
         <div className="flex items-baseline justify-start">
           <span className="text-3xl font-black tracking-tight text-[#07122f] tabular-nums">
@@ -45,7 +43,6 @@ const LiveClock = () => {
         </div>
       </div>
 
-      {/* Bottom: Date */}
       <div className="border-t border-slate-100/80 pt-3 text-left">
         <p className="text-[9px] font-black uppercase tracking-wider text-[#2459ff]">
           {liveTime.toLocaleDateString([], { weekday: 'long' })}
@@ -71,7 +68,6 @@ const DocHandleRec = () => {
 
   return (
     <div className="flex flex-col gap-4 h-full">
-      {/* Card 1: Receptionist Status */}
       <article className="rounded-[24px] border border-[#e5eaf4] bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)] relative overflow-hidden flex flex-col justify-between h-full flex-1 h-0">
         {hasHired && activeRec ? (
           <div className="flex flex-col justify-between h-full w-full">
@@ -173,7 +169,6 @@ const DocHandleRec = () => {
         )}
       </article>
 
-      {/* Card 2: Clock Bar */}
       <LiveClock />
     </div>
   );

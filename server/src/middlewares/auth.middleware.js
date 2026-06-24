@@ -14,7 +14,6 @@ export const authenticate = wrapAsync(async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, config.JWT_SECRET);
     
-    // Find user and select everything except password
     const user = await User.findById(decoded.id)
       .select("-password")
       .populate("associatedDoctorId", "-password")

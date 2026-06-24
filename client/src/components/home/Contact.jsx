@@ -29,7 +29,7 @@ const Contact = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/form", {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/form`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

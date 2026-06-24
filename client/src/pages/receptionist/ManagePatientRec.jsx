@@ -18,7 +18,6 @@ const ManagePatientRec = () => {
   const { queue, isSessionActive } = useSession()
   const { addPatientToQueue, addPatientLoading } = useRec()
 
-  // Form State
   const [name, setName] = useState('')
   const [mobile, setMobile] = useState('')
   const [age, setAge] = useState('')
@@ -28,7 +27,6 @@ const ManagePatientRec = () => {
   const [formSuccess, setFormSuccess] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
 
-  // Submit Handler
   const handleSubmit = async (e) => {
     e.preventDefault()
     setFormError('')
@@ -68,7 +66,6 @@ const ManagePatientRec = () => {
 
       const patientCode = data?.patient?.code ? ` (OTP: ${data.patient.code})` : ''
       setFormSuccess(`Patient "${name}" has been successfully added to the queue!${patientCode}`)
-      // Clear form
       setName('')
       setMobile('')
       setAge('')
@@ -79,11 +76,9 @@ const ManagePatientRec = () => {
     }
   }
 
-  // Filter patients based on search
   const filteredPatients = useMemo(() => {
     if (!queue || !queue.patients) return []
     
-    // Sort patients so current token is at top, followed by waiting
     const notDone = queue.patients.filter((p) => !p.consultationEndedAt)
     const current = notDone.find((p) => p.tokenNumber === queue.currentToken)
     const rest = notDone.filter((p) => p.tokenNumber !== queue.currentToken)
@@ -132,7 +127,6 @@ const ManagePatientRec = () => {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[380px_1fr]">
-        {/* Left Column: Add Patient Form */}
         <article className="rounded-[28px] border border-[#e5eaf4] bg-white p-5 shadow-[0_12px_40px_rgba(15,23,42,0.05)] h-fit">
           <div className="flex items-center gap-2 text-md font-extrabold text-[#07122f] mb-4">
             <FiUserPlus className="h-5 w-5 text-[#2459ff]" />
@@ -257,12 +251,10 @@ const ManagePatientRec = () => {
           )}
         </article>
 
-        {/* Right Column: Active Queue List */}
         <article className="rounded-[28px] border border-[#e5eaf4] bg-white p-5 shadow-[0_12px_40px_rgba(15,23,42,0.05)]">
           <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center justify-between gap-3 mb-4">
             <h2 className="text-lg font-extrabold text-[#07122f]">Patients in Queue</h2>
             
-            {/* Search Input */}
             <div className="relative w-full sm:max-w-[280px]">
               <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
               <input
@@ -297,7 +289,6 @@ const ManagePatientRec = () => {
             </div>
           ) : (
             <div>
-              {/* Mobile: Card layout */}
               <div className="space-y-3 md:hidden">
                 {filteredPatients.map((patient, index) => {
                   const avgTimeForCalc = averageConsultationTime
@@ -330,7 +321,6 @@ const ManagePatientRec = () => {
                         isCurrent ? 'border-[#c7d8ff] bg-[#f4f7ff]' : 'border-slate-100 bg-slate-50/40'
                       }`}
                     >
-                      {/* Row 1: Token + Name + Status */}
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2.5 min-w-0">
                           <span className={`text-sm font-black shrink-0 ${isCurrent ? 'text-[#2459ff]' : 'text-slate-400'}`}>
@@ -343,7 +333,6 @@ const ManagePatientRec = () => {
                           {statusText}
                         </span>
                       </div>
-                      {/* Row 2: Meta info */}
                       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-semibold text-slate-500">
                         <span>📱 {patient.mobile}</span>
                         {patient.code && <span>OTP: <span className="text-[#07122f] font-bold">{patient.code}</span></span>}
@@ -361,7 +350,6 @@ const ManagePatientRec = () => {
                 })}
               </div>
 
-              {/* Desktop: Table layout */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>

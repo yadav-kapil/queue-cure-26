@@ -13,7 +13,7 @@ const useSignup = () => {
       setIsLoading(true);
       setError("");
 
-      const res = await fetch(`/api/auth/register`, {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/register`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -30,7 +30,6 @@ const useSignup = () => {
         return { success: false, message: data.message || "Registration failed" };
       }
 
-      // Dispatch login action
       dispatch({
         type: "LOGIN",
         payload: {
@@ -38,7 +37,6 @@ const useSignup = () => {
         },
       });
 
-      // Role-based redirect
       const redirectPath = data.user.role === "doctor" ? "/doctor" : "/receptionist";
       navigate(redirectPath, { replace: true });
 

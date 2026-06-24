@@ -13,7 +13,7 @@ const useLogin = () => {
       setIsLoading(true);
       setError("");
 
-      const res = await fetch(`/api/auth/login`, {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/login`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -31,7 +31,6 @@ const useLogin = () => {
         return { success: false, message: data.message || "Login failed" };
       }
 
-      // Dispatch login action
       dispatch({
         type: "LOGIN",
         payload: {
@@ -39,7 +38,6 @@ const useLogin = () => {
         },
       });
 
-      // Role-based redirect
       const redirectPath = data.user.role === "doctor" ? "/doctor" : "/receptionist";
       navigate(redirectPath, { replace: true });
 

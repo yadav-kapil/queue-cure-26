@@ -8,7 +8,6 @@ export const initializeSocket = (io) => {
       socket.join(sessionId);
       console.log(`Socket ${socket.id} joined session room: ${sessionId}`);
 
-      // Attach details to socket instance
       socket.userId = receptionistId;
       socket.role = receptionistId ? "receptionist" : "doctor";
       socket.sessionId = sessionId;
@@ -34,7 +33,6 @@ export const initializeSocket = (io) => {
               console.log(`Receptionist ${receptionist.name} joined session: ${sessionId}`);
             }
           } else {
-            // Emitted globally so associated receptionist (even if offline/ready state) gets notified
             io.emit("doctor-session-started", { doctorId: session.doctorId });
             console.log(`Doctor session started event broadcasted globally for doctor: ${session.doctorId}`);
           }

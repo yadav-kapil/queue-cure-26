@@ -9,7 +9,7 @@ const Profile = ({ onClose }) => {
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true);
-      const res = await fetch('/api/auth/logout', {
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/logout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -31,7 +31,6 @@ const Profile = ({ onClose }) => {
 
   if (!user) return null;
 
-  // Get initials for profile picture placeholder (only first letter)
   const getInitials = (name) => {
     if (!name) return 'U';
     return name.split(' ').map((n) => n[0]).slice(0, 1).join('').toUpperCase();
@@ -39,13 +38,10 @@ const Profile = ({ onClose }) => {
 
   return (
     <>
-      {/* Transparent overlay backdrop to handle close on click outside */}
       <div className="fixed inset-0 z-40 cursor-default" onClick={onClose} />
 
-      {/* Popover container */}
       <div className="absolute right-0 top-full mt-2.5 w-72 origin-top-right rounded-3xl border border-slate-100 bg-white p-4 shadow-[0_12px_40px_rgba(0,0,0,0.08)] z-50 animate-in fade-in slide-in-from-top-3 duration-200">
         
-        {/* Profile Header Block */}
         <div className="flex items-center gap-3 bg-slate-50/70 rounded-2xl p-3 mb-3 text-left">
           <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-[#2559ff] to-[#5b5ff7] text-white font-extrabold text-base shadow-xs select-none">
             {getInitials(user.fullName)}
@@ -60,7 +56,6 @@ const Profile = ({ onClose }) => {
           </div>
         </div>
 
-        {/* User Model Details (Replacing generic placeholder links) */}
         <div className="space-y-3 px-1 py-2 text-left">
           <div className="flex items-center gap-3 text-slate-600">
             <FiMail className="h-4.5 w-4.5 text-[#2559ff]/70 flex-shrink-0" />
@@ -89,10 +84,8 @@ const Profile = ({ onClose }) => {
           )}
         </div>
 
-        {/* Divider */}
         <div className="my-2 border-t border-slate-100" />
 
-        {/* Logout Action */}
         <button
           type="button"
           onClick={handleLogout}

@@ -176,13 +176,11 @@ export const removeAssociationAsDoctor = async (doctorId) => {
 
   const receptionistId = doctor.associatedReceptionistId;
 
-  // Clear receptionist's side
   await User.findByIdAndUpdate(receptionistId, {
     associatedDoctorId: null,
     associationStatus: "none",
   });
 
-  // Clear doctor's side
   return await User.findByIdAndUpdate(
     doctorId,
     {
@@ -202,13 +200,11 @@ export const removeAssociationAsReceptionist = async (receptionistId) => {
 
   const doctorId = receptionist.associatedDoctorId;
 
-  // Clear doctor's side
   await User.findByIdAndUpdate(doctorId, {
     associatedReceptionistId: null,
     associationStatus: "none",
   });
 
-  // Clear receptionist's side
   return await User.findByIdAndUpdate(
     receptionistId,
     {

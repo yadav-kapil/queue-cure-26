@@ -19,7 +19,6 @@ export const callNext = wrapAsync(async (req, res, next) => {
     throw new ExpressError(404, "Queue not found for this session.");
   }
 
-  // 1. If there's an active patient, automatically mark them as skipped
   if (queue.currentToken && queue.currentToken > 0) {
     const activePatient = queue.patients.find((p) => p.tokenNumber === queue.currentToken);
     if (activePatient && !activePatient.consultationEndedAt) {
@@ -28,7 +27,6 @@ export const callNext = wrapAsync(async (req, res, next) => {
     }
   }
 
-  // 2. Find the next waiting patient in the queue
   const nextPatient = queue.patients.find(
     (p) => !p.consultationStartedAt && !p.consultationEndedAt && !p.skipped
   );
@@ -37,14 +35,12 @@ export const callNext = wrapAsync(async (req, res, next) => {
     throw new ExpressError(400, "No waiting patients in the queue.");
   }
 
-  // 3. Start consultation for the next patient
   nextPatient.consultationStartedAt = new Date();
   queue.currentToken = nextPatient.tokenNumber;
   queue.currentTokenStartedAt = new Date();
 
   await queue.save();
 
-  // Broadcast the queue update
   const io = req.app.get("io");
   if (io) {
     io.to(session._id.toString()).emit("queue-updated", { queue });
@@ -88,7 +84,6 @@ export const skipPatient = wrapAsync(async (req, res, next) => {
 
   await queue.save();
 
-  // Broadcast the queue update
   const io = req.app.get("io");
   if (io) {
     io.to(session._id.toString()).emit("queue-updated", { queue });
@@ -127,7 +122,6 @@ export const completePatient = wrapAsync(async (req, res, next) => {
     activePatient.skipped = false;
 
     if (activePatient.consultationStartedAt) {
-      // Calculate duration in minutes, with a minimum of 1 minute to prevent skew
       const durationMs = activePatient.consultationEndedAt.getTime() - activePatient.consultationStartedAt.getTime();
       let durationMins = Number((durationMs / 60000).toFixed(1));
       if (durationMins < 1) durationMins = 1;
@@ -141,7 +135,6 @@ export const completePatient = wrapAsync(async (req, res, next) => {
 
   await queue.save();
 
-  // Broadcast the queue update
   const io = req.app.get("io");
   if (io) {
     io.to(session._id.toString()).emit("queue-updated", { queue });

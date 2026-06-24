@@ -55,7 +55,6 @@ const NavigationbarDoc = () => {
               <FiSettings className="h-5 w-5" />
             </NavLink>
 
-            {/* Profile Dropdown Wrapper */}
             <div className="relative">
               <button
                 type="button"

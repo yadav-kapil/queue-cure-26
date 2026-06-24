@@ -109,7 +109,6 @@ const ManageDocPopover = ({ setIsPopoverOpen, isInline = false }) => {
             </div>
           )}
 
-          {/* Current Doctor Section */}
           <section>
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Current Doctor</h3>
             {hasHired && activeDoc ? (
@@ -138,7 +137,6 @@ const ManageDocPopover = ({ setIsPopoverOpen, isInline = false }) => {
               </div>
             )}
 
-            {/* Remove Confirmation Inline */}
             {showRemoveConfirm && (
               <div className="mt-2 p-3 rounded-xl bg-red-50 border border-red-100 flex flex-col gap-3">
                 <p className="text-xs text-red-700 font-medium">Are you sure you want to remove your current doctor? You will immediately lose access to their queue.</p>
@@ -160,7 +158,6 @@ const ManageDocPopover = ({ setIsPopoverOpen, isInline = false }) => {
             )}
           </section>
 
-          {/* Requests Section */}
           <section>
             <div className="flex items-center border-b border-slate-100 mb-4">
               <button
@@ -189,7 +186,6 @@ const ManageDocPopover = ({ setIsPopoverOpen, isInline = false }) => {
             </div>
 
             <div className="h-[260px] overflow-y-auto pr-2">
-              {/* Received Tab */}
               {activeTab === 'received' && (
                 <div className="space-y-2">
                 {loading ? (
@@ -231,7 +227,6 @@ const ManageDocPopover = ({ setIsPopoverOpen, isInline = false }) => {
               </div>
             )}
 
-            {/* Sent Tab */}
             {activeTab === 'sent' && (
               <div className="min-h-[100px]">
                 {hasPendingSent && pendingDoc ? (
@@ -261,7 +256,6 @@ const ManageDocPopover = ({ setIsPopoverOpen, isInline = false }) => {
               </div>
             )}
 
-            {/* Search Tab */}
             {activeTab === 'search' && (
               <div className="space-y-4">
                 <form onSubmit={handleSearch} className="flex gap-2">
@@ -349,7 +343,6 @@ const ManageDocPopover = ({ setIsPopoverOpen, isInline = false }) => {
               </div>
             )}
 
-            {/* Current Doctor Section */}
             <section>
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Current Doctor</h3>
               {hasHired && activeDoc ? (
@@ -378,7 +371,6 @@ const ManageDocPopover = ({ setIsPopoverOpen, isInline = false }) => {
                 </div>
               )}
 
-              {/* Remove Confirmation Inline */}
               {showRemoveConfirm && (
                 <div className="mt-2 p-3 rounded-xl bg-red-50 border border-red-100 flex flex-col gap-3">
                   <p className="text-xs text-red-700 font-medium">Are you sure you want to remove your current doctor? You will immediately lose access to their queue.</p>
@@ -400,7 +392,6 @@ const ManageDocPopover = ({ setIsPopoverOpen, isInline = false }) => {
               )}
             </section>
 
-            {/* Requests Section */}
             <section>
               <div className="flex items-center border-b border-slate-100 mb-4">
                 <button
@@ -429,7 +420,6 @@ const ManageDocPopover = ({ setIsPopoverOpen, isInline = false }) => {
               </div>
 
               <div className="h-[260px] overflow-y-auto pr-2">
-                {/* Received Tab */}
                 {activeTab === 'received' && (
                   <div className="space-y-2">
                   {loading ? (
@@ -471,7 +461,6 @@ const ManageDocPopover = ({ setIsPopoverOpen, isInline = false }) => {
                 </div>
               )}
 
-              {/* Sent Tab */}
               {activeTab === 'sent' && (
                 <div className="min-h-[100px]">
                   {hasPendingSent && pendingDoc ? (
@@ -508,7 +497,6 @@ const ManageDocPopover = ({ setIsPopoverOpen, isInline = false }) => {
                 </div>
               )}
 
-              {/* Search Tab */}
               {activeTab === 'search' && (
                 <div className="space-y-4">
                   <form onSubmit={handleSearch} className="flex gap-2">
@@ -535,7 +523,6 @@ const ManageDocPopover = ({ setIsPopoverOpen, isInline = false }) => {
 
                   {searchError && <p className="mt-2 text-[10px] text-red-500 font-semibold">{searchError}</p>}
                   
-                  {/* Replace Sent Request Confirm Inline */}
                   {showReplaceConfirm && (
                     <div className="p-4 rounded-xl bg-amber-50 border border-amber-200">
                       <p className="text-xs text-amber-800 font-bold mb-1">Replace pending request?</p>
