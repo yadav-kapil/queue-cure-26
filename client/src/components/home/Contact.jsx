@@ -7,8 +7,8 @@ import {
   FiArrowRight,
   FiUsers,
   FiMapPin,
-  FiHeadphones,
   FiCheckCircle,
+  FiLinkedin,
 } from "react-icons/fi";
 import { motion } from "motion/react";
 import doctorContactImg from "../../assets/doctor-contactpage.png";
@@ -280,8 +280,8 @@ const Contact = () => {
         
         
         <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-6">
-          
-          <motion.div
+          <motion.a
+            href="tel:+919560340701"
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
@@ -294,13 +294,13 @@ const Contact = () => {
             </span>
             <div>
               <p className="text-xs font-black text-slate-500 uppercase tracking-wider">Call Us</p>
-              <p className="text-base font-extrabold text-[#315cf0] mt-1.5">+91 98765 43210</p>
+              <p className="text-base font-extrabold text-[#315cf0] mt-1.5">+91-9560340701</p>
               <p className="text-xs text-slate-400 font-semibold mt-1">Mon - Sat, 9:00 AM - 7:00 PM</p>
             </div>
-          </motion.div>
+          </motion.a>
 
-          
-          <motion.div
+          <motion.a
+            href="mailto:ky843622@gmail.com"
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
@@ -313,13 +313,15 @@ const Contact = () => {
             </span>
             <div>
               <p className="text-xs font-black text-slate-500 uppercase tracking-wider">Email Us</p>
-              <p className="text-base font-extrabold text-[#315cf0] mt-1.5">hello@queuecure.com</p>
+              <p className="text-base font-extrabold text-[#315cf0] mt-1.5">ky843622@gmail.com</p>
               <p className="text-xs text-slate-400 font-semibold mt-1">We reply within 24 hours</p>
             </div>
-          </motion.div>
+          </motion.a>
 
-          
-          <motion.div
+          <motion.a
+            href="https://maps.google.com/?q=IIEST+Shibpur,+Kolkata,+West+Bengal"
+            target="_blank"
+            rel="noopener noreferrer"
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
@@ -332,13 +334,15 @@ const Contact = () => {
             </span>
             <div>
               <p className="text-xs font-black text-slate-500 uppercase tracking-wider">Visit Us</p>
-              <p className="text-base font-extrabold text-slate-850 mt-1.5">123, Health Street, Bangalore, 560001</p>
+              <p className="text-base font-extrabold text-slate-850 mt-1.5 leading-snug">IIEST Shibpur, Kolkata, West Bengal</p>
               <p className="text-xs text-slate-400 font-semibold mt-1">Mon - Sat, 10:00 AM - 6:00 PM</p>
             </div>
-          </motion.div>
+          </motion.a>
 
-          
-          <motion.div
+          <motion.a
+            href="https://www.linkedin.com/in/kapilyadav9560/"
+            target="_blank"
+            rel="noopener noreferrer"
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
@@ -346,18 +350,17 @@ const Contact = () => {
             transition={{ duration: 0.5 }}
             className="bg-white rounded-[28px] p-7 border border-slate-100 shadow-xs flex flex-col gap-4 text-left transition-shadow duration-300 hover:shadow-lg hover:border-blue-500/10 cursor-pointer min-h-[180px] justify-between"
           >
-            <span className="size-11 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0 border border-orange-100/30">
-              <FiHeadphones className="text-xl" />
+            <span className="size-11 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100/30">
+              <FiLinkedin className="text-xl" />
             </span>
             <div>
-              <p className="text-xs font-black text-slate-500 uppercase tracking-wider">Support</p>
-              <p className="text-sm font-extrabold text-slate-850 mt-1.5">help@queuecure.com</p>
-              <p className="text-xs text-slate-400 font-semibold mt-1">We're here to help</p>
+              <p className="text-xs font-black text-slate-500 uppercase tracking-wider">LinkedIn</p>
+              <p className="text-sm font-extrabold text-[#315cf0] mt-1.5 truncate">kapilyadav9560</p>
+              <p className="text-xs text-slate-400 font-semibold mt-1">Let's connect</p>
             </div>
-          </motion.div>
+          </motion.a>
         </div>
 
-        
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -365,36 +368,42 @@ const Contact = () => {
           transition={{ duration: 0.5 }}
           className="md:hidden bg-white rounded-2xl p-3 border border-slate-100 shadow-xs grid grid-cols-4 gap-2 text-center"
         >
-          
-          <a href="tel:+919876543210" className="flex flex-col items-center gap-1 hover:scale-105 transition-transform duration-200">
+          <a href="tel:+919560340701" className="flex flex-col items-center gap-1 hover:scale-105 transition-transform duration-200">
             <span className="size-9 rounded-xl bg-blue-50 text-[#315cf0] flex items-center justify-center">
               <FiPhone className="text-base" />
             </span>
             <span className="text-[9px] font-bold text-slate-500">Call Us</span>
           </a>
 
-          
-          <a href="mailto:hello@queuecure.com" className="flex flex-col items-center gap-1 hover:scale-105 transition-transform duration-200">
+          <a href="mailto:ky843622@gmail.com" className="flex flex-col items-center gap-1 hover:scale-105 transition-transform duration-200">
             <span className="size-9 rounded-xl bg-blue-50 text-[#315cf0] flex items-center justify-center">
               <FiMail className="text-base" />
             </span>
             <span className="text-[9px] font-bold text-slate-500">Email Us</span>
           </a>
 
-          
-          <a href="#visit" className="flex flex-col items-center gap-1 hover:scale-105 transition-transform duration-200">
+          <a 
+            href="https://maps.google.com/?q=IIEST+Shibpur,+Kolkata,+West+Bengal" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="flex flex-col items-center gap-1 hover:scale-105 transition-transform duration-200"
+          >
             <span className="size-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
               <FiMapPin className="text-base" />
             </span>
             <span className="text-[9px] font-bold text-slate-500">Visit Us</span>
           </a>
 
-          
-          <a href="mailto:help@queuecure.com" className="flex flex-col items-center gap-1 hover:scale-105 transition-transform duration-200">
-            <span className="size-9 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center">
-              <FiHeadphones className="text-base" />
+          <a 
+            href="https://www.linkedin.com/in/kapilyadav9560/" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="flex flex-col items-center gap-1 hover:scale-105 transition-transform duration-200"
+          >
+            <span className="size-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+              <FiLinkedin className="text-base" />
             </span>
-            <span className="text-[9px] font-bold text-slate-500">Support</span>
+            <span className="text-[9px] font-bold text-slate-500">LinkedIn</span>
           </a>
         </motion.div>
 

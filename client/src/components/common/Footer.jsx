@@ -1,6 +1,6 @@
+import { Link } from "react-router";
 import { FiPlus } from "react-icons/fi";
-import { FaLinkedinIn, FaInstagram, FaFacebookF } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
+import { FaLinkedinIn, FaInstagram, FaGithub, FaWhatsapp } from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -37,32 +37,40 @@ const Footer = () => {
               
               <div className="flex items-center gap-3 pt-2">
                 <a 
-                  href="#linkedin" 
+                  href="https://www.linkedin.com/in/kapilyadav9560/" 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label="LinkedIn"
                   className="size-9 rounded-full bg-slate-800/80 hover:bg-[#2f75ff] text-white flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
                 >
                   <FaLinkedinIn className="text-sm" />
                 </a>
                 <a 
-                  href="#instagram" 
+                  href="https://www.instagram.com/_yadav__kapil_" 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label="Instagram"
                   className="size-9 rounded-full bg-slate-800/80 hover:bg-[#2f75ff] text-white flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
                 >
                   <FaInstagram className="text-sm" />
                 </a>
                 <a 
-                  href="#twitter" 
-                  aria-label="X (Twitter)"
+                  href="https://github.com/yadav-kapil" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub"
                   className="size-9 rounded-full bg-slate-800/80 hover:bg-[#2f75ff] text-white flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
                 >
-                  <FaXTwitter className="text-sm" />
+                  <FaGithub className="text-sm" />
                 </a>
                 <a 
-                  href="#facebook" 
-                  aria-label="Facebook"
+                  href="https://wa.me/919560340701" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="WhatsApp"
                   className="size-9 rounded-full bg-slate-800/80 hover:bg-[#2f75ff] text-white flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
                 >
-                  <FaFacebookF className="text-sm" />
+                  <FaWhatsapp className="text-sm" />
                 </a>
               </div>
             </div>
@@ -97,18 +105,18 @@ const Footer = () => {
                 <h3 className="text-xs font-black tracking-wider uppercase text-slate-400">Legal</h3>
                 <ul className="space-y-2.5">
                   {[
-                    "Terms & Condition",
-                    "Privacy Policy",
-                    "Support",
-                    "FAQ"
+                    { label: "About Us", href: "/legal/aboutus" },
+                    { label: "Terms & Conditions", href: "/legal/terms" },
+                    { label: "Privacy Policy", href: "/legal/privacy" },
+                    { label: "Support & FAQ", href: "/legal/support" }
                   ].map((item) => (
-                    <li key={item}>
-                      <a 
-                        href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
+                    <li key={item.label}>
+                      <Link 
+                        to={item.href}
                         className="text-xs font-semibold text-slate-400 hover:text-white transition duration-200"
                       >
-                        {item}
-                      </a>
+                        {item.label}
+                      </Link>
                     </li>
                   ))}
                 </ul>

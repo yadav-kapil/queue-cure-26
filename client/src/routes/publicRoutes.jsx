@@ -1,6 +1,7 @@
 import Home from "../pages/public/Home";
 import MainLayout from "../layouts/MainLayout";
 import { patientRoutes } from "./patientRoutes";
+import { legalRoutes } from "./legalRoutes";
 
 export const publicRoutes = {
   path: "/",
@@ -11,5 +12,6 @@ export const publicRoutes = {
       element: <Home />,
     },
     patientRoutes,
+    legalRoutes,
   ],
 };

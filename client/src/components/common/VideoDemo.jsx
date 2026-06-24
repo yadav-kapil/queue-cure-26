@@ -139,13 +139,28 @@ const VideoDemo = ({ onClose }) => {
   };
 
   const handleFullscreen = () => {
-    if (!videoWrapperRef.current) return;
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
+    const video = videoRef.current;
+    if (!video) return;
+
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      if (video.webkitEnterFullscreen) {
+        video.webkitEnterFullscreen();
+      } else if (video.requestFullscreen) {
+        video.requestFullscreen().catch((err) => {
+          console.error("Fullscreen error", err);
+        });
+      }
     } else {
-      videoWrapperRef.current.requestFullscreen().catch((err) => {
-        console.error("Fullscreen error", err);
-      });
+      if (!videoWrapperRef.current) return;
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        videoWrapperRef.current.requestFullscreen().catch((err) => {
+          console.error("Fullscreen error", err);
+        });
+      }
     }
   };
 
@@ -220,7 +235,7 @@ const VideoDemo = ({ onClose }) => {
           <video
             ref={videoRef}
             src={videoUrl}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-contain"
             preload="metadata"
             playsInline
           />
@@ -356,10 +371,37 @@ const VideoDemo = ({ onClose }) => {
                 title="Toggle Fullscreen">
                 <FiMaximize className="w-4 h-4" />
               </button>
-              <button type="button" onClick={handleDownload}
-                className="size-10 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-800 transition-colors flex items-center justify-center cursor-pointer border border-slate-100/50"
-                title="Download video">
-                <FiDownload className="w-4 h-4" />
+              <button
+                type="button"
+                onClick={handleDownload}
+                disabled={isDownloading}
+                className={`size-10 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-800 transition-colors flex items-center justify-center border border-slate-100/50 ${isDownloading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                title={isDownloading ? "Downloading..." : "Download video"}
+              >
+                {isDownloading ? (
+                  <svg
+                    className="animate-spin h-4 w-4 text-blue-600"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                ) : (
+                  <FiDownload className="w-4 h-4" />
+                )}
               </button>
             </div>
           </div>
@@ -400,10 +442,37 @@ const VideoDemo = ({ onClose }) => {
                   title="Toggle Fullscreen">
                   <FiMaximize className="w-3.5 h-3.5" />
                 </button>
-                <button type="button" onClick={handleDownload}
-                  className="size-9 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-800 transition-colors flex items-center justify-center cursor-pointer border border-slate-100/50"
-                  title="Download video">
-                  <FiDownload className="w-3.5 h-3.5" />
+                <button
+                  type="button"
+                  onClick={handleDownload}
+                  disabled={isDownloading}
+                  className={`size-9 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-800 transition-colors flex items-center justify-center border border-slate-100/50 ${isDownloading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                  title={isDownloading ? "Downloading..." : "Download video"}
+                >
+                  {isDownloading ? (
+                    <svg
+                      className="animate-spin h-3.5 w-3.5 text-blue-600"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                  ) : (
+                    <FiDownload className="w-3.5 h-3.5" />
+                  )}
                 </button>
               </div>
             </div>
