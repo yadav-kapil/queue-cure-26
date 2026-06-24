@@ -5,7 +5,7 @@ import { registerSocketHandlers } from "../../services/socketHandlers";
 import { useAuth } from "../auth/AuthContext";
 import { io } from "socket.io-client";
 
-export const socket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:3003", {
+export const socket = io(import.meta.env.VITE_SOCKET_URL || window.location.origin, {
   withCredentials: true,
   autoConnect: false,
 });
@@ -46,7 +46,7 @@ export const SessionContextProvider = ({ children }) => {
     return () => {
       socket.off("connect", joinRoom);
     };
-  }, [state.session?._id]);
+  }, [state.session?._id, user]);
 
   useEffect(() => {
     socket.connect();

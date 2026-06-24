@@ -11,7 +11,7 @@ export const registerSocketHandlers = (socket, dispatch, user) => {
   const handleReceptionistLeft = () => {
     dispatch({
       type: "SET_RECEPTIONIST",
-      payload: { receptionistId: null },
+      payload: { receptionist: null },
     });
   };
 

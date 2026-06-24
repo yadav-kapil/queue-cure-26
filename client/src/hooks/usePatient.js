@@ -54,7 +54,7 @@ export const usePatient = (trackingId) => {
 
   const connectSocket = useCallback(
     (sessionId) => {
-      const newSocket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:3003", {
+      const newSocket = io(import.meta.env.VITE_SOCKET_URL || window.location.origin, {
         withCredentials: true,
       });
 

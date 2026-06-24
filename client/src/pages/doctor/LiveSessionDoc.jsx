@@ -41,7 +41,7 @@ const LiveSessionDoc = () => {
   const receptionist = useMemo(() => {
     if (!session || !session.receptionistId) return null
     return {
-      name: session.receptionistId.fullName || session.receptionistId.username,
+      name: session.receptionistId.name || session.receptionistId.fullName || session.receptionistId.username || "Receptionist",
       connectedAt: session.receptionistId.connectedAt || new Date(session.startedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     }
   }, [session])
