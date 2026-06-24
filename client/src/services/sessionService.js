@@ -1,6 +1,6 @@
 export const fetchSession = async (dispatch) => {
   try {
-    const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/session/current`, {
+    const res = await fetch(`/api/session/current`, {
       method: "GET",
       credentials: "include",
     });

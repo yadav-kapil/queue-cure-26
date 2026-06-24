@@ -29,7 +29,7 @@ const HistoryDoc = () => {
       try {
         setLoading(true)
         setErrorMsg(null)
-        const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/session/history`, {
+        const res = await fetch(`/api/session/history`, {
           credentials: "include"
         })
         const data = await res.json()

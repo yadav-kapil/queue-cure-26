@@ -13,7 +13,7 @@ const useLogin = () => {
       setIsLoading(true);
       setError("");
 
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/login`, {
+      const res = await fetch(`/api/auth/login`, {
         method: "POST",
         credentials: "include",
         headers: {

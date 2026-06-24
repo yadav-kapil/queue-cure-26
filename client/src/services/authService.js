@@ -1,6 +1,6 @@
 export const verifyUser = async (dispatch) => {
   try {
-    const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/me`, {
+    const res = await fetch(`/api/auth/me`, {
       method: "GET",
       credentials: "include",
     });

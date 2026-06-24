@@ -139,7 +139,7 @@ const ProfileTab = () => {
     }
     setIsLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/profile`, {
+      const res = await fetch(`/api/auth/profile`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -317,7 +317,7 @@ const AccountTab = () => {
     }
     setPwLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/password`, {
+      const res = await fetch(`/api/auth/password`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -337,7 +337,7 @@ const AccountTab = () => {
   const handleLogout = async () => {
     setLogoutLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL || ''}/api/auth/logout`, { method: 'POST', credentials: 'include' });
+      const res = await fetch(`/api/auth/logout`, { method: 'POST', credentials: 'include' });
       if (res.ok) {
         dispatch({ type: 'LOGOUT' });
       } else {
