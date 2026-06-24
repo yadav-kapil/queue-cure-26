@@ -74,10 +74,11 @@ export const login = wrapAsync(async (req, res, next) => {
 
 // logout
 export const logout = wrapAsync(async (req, res) => {
+  const isProd = process.env.NODE_ENV === "production";
   res.clearCookie("token", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
     signed: true,
   });
 
