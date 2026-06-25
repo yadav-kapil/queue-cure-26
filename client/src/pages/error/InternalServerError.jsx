@@ -11,7 +11,6 @@ const InternalServerError = () => {
     window.location.reload();
   };
 
-  // Safely extract error message if there's any active RouteError
   const errorMessage = error instanceof Error 
     ? error.message 
     : typeof error === "string" 
@@ -24,11 +23,9 @@ const InternalServerError = () => {
 
   return (
     <div className="relative min-h-screen w-full bg-[#f8fafc] text-[#0f172a] flex flex-col items-center justify-center p-4 overflow-hidden">
-      {/* Decorative background glows */}
       <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-rose-500/5 blur-[100px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-80 h-80 rounded-full bg-[#2f75ff]/8 blur-[100px] pointer-events-none" />
       
-      {/* Subtle Grid Pattern Overlay */}
       <div 
         className="absolute inset-0 opacity-[0.015] pointer-events-none" 
         style={{
@@ -38,7 +35,6 @@ const InternalServerError = () => {
       />
 
       <div className="relative z-10 w-full max-w-lg flex flex-col items-center">
-        {/* Logo Header */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -53,18 +49,15 @@ const InternalServerError = () => {
           </span>
         </motion.div>
 
-        {/* Diagnostic Monitor Card */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
           className="relative w-full bg-white rounded-3xl border border-slate-200/60 shadow-[0_20px_50px_rgba(15,23,42,0.06)] overflow-hidden"
         >
-          {/* Card Side Cutouts */}
           <div className="absolute left-0 top-[45%] -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#f8fafc] border-r border-slate-200/60 z-20" />
           <div className="absolute right-0 top-[45%] translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#f8fafc] border-l border-slate-200/60 z-20" />
 
-          {/* Monitor Top Section */}
           <div className="p-6 pb-4 sm:p-8 sm:pb-5">
             <div className="flex items-center justify-between text-[11px] font-bold tracking-wider text-slate-400 uppercase">
               <span>System Diagnostics</span>
@@ -87,12 +80,10 @@ const InternalServerError = () => {
             </div>
           </div>
 
-          {/* Ticket Divider */}
           <div className="relative px-6 sm:px-8">
             <div className="border-t-2 border-dashed border-slate-100 w-full" />
           </div>
 
-          {/* Diagnostic Details */}
           <div className="p-6 pt-5 sm:p-8 sm:pt-6 bg-slate-50/50">
             <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-xs mb-6">
               <div>
@@ -113,7 +104,6 @@ const InternalServerError = () => {
               </div>
             </div>
 
-            {/* Live Flatline Animation */}
             <div className="w-full bg-slate-100/50 rounded-xl p-3 flex items-center justify-between gap-4 border border-slate-100">
               <div className="flex items-center gap-2">
                 <FiActivity className="text-rose-500 animate-pulse text-base" />
@@ -121,7 +111,6 @@ const InternalServerError = () => {
               </div>
               <div className="flex-1 max-w-[200px] h-6 flex items-center">
                 <svg className="w-full h-full text-slate-300" viewBox="0 0 100 20" preserveAspectRatio="none">
-                  {/* Real flatline with small static/noise spikes */}
                   <motion.path
                     d="M0,10 L35,10 L37,9 L39,11 L41,10 L75,10 L76,8 L77,12 L78,10 L100,10"
                     fill="none"
@@ -135,7 +124,6 @@ const InternalServerError = () => {
               </div>
             </div>
 
-            {/* Error Detail Toggler */}
             {error && (
               <div className="border-t border-slate-200/50 pt-4 mt-4">
                 <button
@@ -163,7 +151,6 @@ const InternalServerError = () => {
           </div>
         </motion.div>
 
-        {/* Message and Description */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -178,7 +165,6 @@ const InternalServerError = () => {
           </p>
         </motion.div>
 
-        {/* Navigation Action Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}

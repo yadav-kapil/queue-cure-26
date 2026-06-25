@@ -5,11 +5,9 @@ import { FiHome, FiSearch, FiActivity, FiClock, FiArrowLeft } from "react-icons/
 const Error404 = () => {
   return (
     <div className="relative min-h-screen w-full bg-[#f8fafc] text-[#0f172a] flex flex-col items-center justify-center p-4 overflow-hidden">
-      {/* Decorative background glows */}
       <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-[#2f75ff]/8 blur-[100px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-80 h-80 rounded-full bg-emerald-400/8 blur-[100px] pointer-events-none" />
       
-      {/* Subtle Grid Pattern Overlay */}
       <div 
         className="absolute inset-0 opacity-[0.015] pointer-events-none" 
         style={{
@@ -19,7 +17,6 @@ const Error404 = () => {
       />
 
       <div className="relative z-10 w-full max-w-md flex flex-col items-center">
-        {/* Logo Header */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -34,7 +31,6 @@ const Error404 = () => {
           </span>
         </motion.div>
 
-        {/* Ticket Container */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -42,11 +38,9 @@ const Error404 = () => {
           whileHover={{ y: -4 }}
           className="relative w-full bg-white rounded-3xl border border-slate-200/60 shadow-[0_20px_50px_rgba(15,23,42,0.06)] overflow-hidden"
         >
-          {/* Ticket Side Cutouts */}
           <div className="absolute left-0 top-[60%] -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#f8fafc] border-r border-slate-200/60 z-20" />
           <div className="absolute right-0 top-[60%] translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#f8fafc] border-l border-slate-200/60 z-20" />
 
-          {/* Ticket Top Section */}
           <div className="p-6 pb-4 sm:p-8 sm:pb-5">
             <div className="flex items-center justify-between text-[11px] font-bold tracking-wider text-slate-400 uppercase">
               <span>Clinic Ticket Pass</span>
@@ -69,12 +63,10 @@ const Error404 = () => {
             </div>
           </div>
 
-          {/* Ticket Divider */}
           <div className="relative px-6 sm:px-8">
             <div className="border-t-2 border-dashed border-slate-100 w-full" />
           </div>
 
-          {/* Ticket Bottom Section */}
           <div className="p-6 pt-5 sm:p-8 sm:pt-6 bg-slate-50/50">
             <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-xs mb-6">
               <div>
@@ -97,7 +89,6 @@ const Error404 = () => {
               </div>
             </div>
 
-            {/* Heartbeat Line Illustration */}
             <div className="w-full bg-slate-100/50 rounded-xl p-3 flex items-center justify-between gap-4 border border-slate-100">
               <div className="flex items-center gap-2">
                 <FiActivity className="text-[#2f75ff] animate-pulse text-base" />
@@ -105,7 +96,6 @@ const Error404 = () => {
               </div>
               <div className="flex-1 max-w-[200px] h-6 flex items-center">
                 <svg className="w-full h-full text-slate-300" viewBox="0 0 100 20" preserveAspectRatio="none">
-                  {/* Flatline transitioning to heartbeat peaks */}
                   <motion.path
                     d="M0,10 L30,10 L35,2 L40,18 L45,10 L70,10 L74,4 L78,16 L82,10 L100,10"
                     fill="none"
@@ -121,7 +111,6 @@ const Error404 = () => {
           </div>
         </motion.div>
 
-        {/* Message and Description */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -136,7 +125,6 @@ const Error404 = () => {
           </p>
         </motion.div>
 
-        {/* Navigation Action Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -159,7 +147,6 @@ const Error404 = () => {
           </Link>
         </motion.div>
 
-        {/* Small footer link */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

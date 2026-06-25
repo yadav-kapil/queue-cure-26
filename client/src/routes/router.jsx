@@ -6,7 +6,6 @@ import { recRoutes } from "./recRoutes";
 import Error404 from "../pages/error/Error404";
 import InternalServerError from "../pages/error/InternalServerError";
 
-// Inject errorElement to each top-level route group to handle any runtime exceptions gracefully
 const routeGroups = [
   publicRoutes,
   authRoutes,
