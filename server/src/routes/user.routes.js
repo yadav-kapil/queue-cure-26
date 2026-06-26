@@ -3,6 +3,7 @@ import { login, register, logout, getMe, requestAssociation, handleAssociationRe
 import validate from '../middlewares/validate.middleware.js';
 import { loginSchemaValidation, signupSchemaValidation } from '../validator/user.validator.js';
 import { authenticate } from '../middlewares/auth.middleware.js';
+import upload from '../middlewares/upload.middleware.js';
 
 const userRouter = express.Router();
 
@@ -19,6 +20,7 @@ userRouter.post('/cancel-association-request', authenticate, cancelAssociationRe
 userRouter.post('/remove-association', authenticate, removeAssociation);
 
 userRouter.patch('/profile', authenticate, updateProfile);
+userRouter.put('/profile', authenticate, upload.single("file"), updateProfile);
 userRouter.patch('/password', authenticate, changePassword);
 
 export default userRouter;

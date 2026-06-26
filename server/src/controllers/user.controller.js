@@ -15,6 +15,28 @@ import {
   removeAssociationAsDoctor,
   removeAssociationAsReceptionist
 } from "../services/user.services.js";
+import cloudinary from "../config/cloudinary.js";
+
+// Helper function to upload buffer to Cloudinary
+const uploadToCloudinary = (fileBuffer, folder = "profiles") => {
+  return new Promise((resolve, reject) => {
+    if (!cloudinary.config().cloud_name) {
+      return reject(
+        new Error(
+          "Cloudinary is not configured. Please add CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET to environment variables."
+        )
+      );
+    }
+    const stream = cloudinary.uploader.upload_stream(
+      { folder },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    );
+    stream.end(fileBuffer);
+  });
+};
 
 // register
 export const register = wrapAsync(async (req, res, next) => {
@@ -239,9 +261,9 @@ export const removeAssociation = wrapAsync(async (req, res, next) => {
   });
 });
 
-// update profile (fullName, mobileNumber, clinicName)
+// update profile (fullName, mobileNumber, clinicName, removeProfileImage)
 export const updateProfile = wrapAsync(async (req, res, next) => {
-  const { fullName, mobileNumber, clinicName } = req.body;
+  const { fullName, mobileNumber, clinicName, removeProfileImage } = req.body;
 
   if (!fullName || !fullName.trim()) {
     throw new ExpressError(400, "Full name is required");
@@ -251,13 +273,32 @@ export const updateProfile = wrapAsync(async (req, res, next) => {
     throw new ExpressError(400, "Mobile number is required");
   }
 
+  let profileImageUrl = undefined;
+
+  if (req.file) {
+    try {
+      const result = await uploadToCloudinary(req.file.buffer, "profiles");
+      profileImageUrl = result.secure_url;
+    } catch (err) {
+      throw new ExpressError(500, "Failed to upload profile image: " + err.message);
+    }
+  } else if (removeProfileImage === "true") {
+    profileImageUrl = "";
+  }
+
+  const updateFields = {
+    fullName: fullName.trim(),
+    mobileNumber: mobileNumber.trim(),
+    clinicName: (clinicName || "").trim(),
+  };
+
+  if (profileImageUrl !== undefined) {
+    updateFields.profileImage = profileImageUrl;
+  }
+
   const updatedUser = await User.findByIdAndUpdate(
     req.user._id,
-    {
-      fullName: fullName.trim(),
-      mobileNumber: mobileNumber.trim(),
-      clinicName: (clinicName || "").trim(),
-    },
+    updateFields,
     { new: true, runValidators: true }
   ).populate([
     { path: "associatedDoctorId", select: "-password" },

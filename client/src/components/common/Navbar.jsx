@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { NavLink } from "react-router";
+import { NavLink, useLocation } from "react-router";
 import {
   FiArrowRight,
   FiCalendar,
@@ -11,11 +11,17 @@ import {
   FiSearch,
 } from "react-icons/fi";
 import { useAuth } from "../../context/auth/AuthContext";
+import Banner from "./Banner";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { isAuthenticated, user } = useAuth();
+  const location = useLocation();
+  const [showBanner, setShowBanner] = useState(true);
+
+  const isHomePage = location.pathname === "/";
+  const shouldRenderBanner = showBanner && isHomePage;
 
   const dashboardPath = user?.role === "doctor" ? "/doctor" : "/rec";
 
@@ -39,17 +45,30 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (shouldRenderBanner) {
+      document.documentElement.classList.add("has-banner");
+    } else {
+      document.documentElement.classList.remove("has-banner");
+    }
+    return () => {
+      document.documentElement.classList.remove("has-banner");
+    };
+  }, [shouldRenderBanner]);
+
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-30 transition-all duration-300 ${
-        isScrolled
-          ? "px-4 pt-3 sm:px-6 lg:px-8"
-          : "px-0 pt-0"
-      }`}
-    >
-      <nav
-        className={`mx-auto flex items-center justify-between transition-all duration-300 ${
+    <header className="fixed top-0 left-0 right-0 z-30">
+      {shouldRenderBanner && <Banner setShowBanner={setShowBanner} />}
+      <div
+        className={`transition-all duration-300 ${
           isScrolled
+            ? "px-4 pt-3 sm:px-6 lg:px-8"
+            : "px-0 pt-0"
+        }`}
+      >
+        <nav
+          className={`mx-auto flex items-center justify-between transition-all duration-300 ${
+            isScrolled
             ? "max-w-7xl rounded-[24px] bg-white/80 border border-slate-200/50 px-5 py-3 shadow-[0_20px_50px_rgba(15,23,42,0.05)] backdrop-blur-lg md:px-7"
             : "max-w-full rounded-none bg-white/90 px-6 py-4 shadow-[0_10px_30px_rgba(15,23,42,0.04)] border-b border-slate-100/60 backdrop-blur-lg md:px-12"
         }`}
@@ -67,7 +86,7 @@ const Navbar = () => {
           </span>
         </NavLink>
 
-        <div className="hidden items-center gap-9 text-sm font-bold text-slate-650 lg:flex">
+        <div className="hidden items-center gap-9 text-sm font-semibold text-slate-650 lg:flex">
           {navLinks.map((link) => (
             <NavLink
               key={link.label}
@@ -115,6 +134,7 @@ const Navbar = () => {
           )}
         </button>
       </nav>
+      </div>
 
       {isOpen && (
         <>
@@ -133,7 +153,7 @@ const Navbar = () => {
                   <NavLink
                     key={link.label}
                     to={link.href}
-                    className="group flex items-center gap-4 rounded-2xl px-4 py-3 text-[15px] font-bold text-slate-700 transition hover:bg-blue-50/40 hover:text-[#315cf0] active:bg-slate-100"
+                    className="group flex items-center gap-4 rounded-2xl px-4 py-3 text-[15px] font-semibold text-slate-700 transition hover:bg-blue-50/40 hover:text-[#315cf0] active:bg-slate-100"
                     onClick={() => setIsOpen(false)}
                   >
                     <span className="grid size-9 place-items-center rounded-xl bg-slate-50 text-slate-500 transition-colors group-hover:bg-blue-50 group-hover:text-[#315cf0]">

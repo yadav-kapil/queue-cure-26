@@ -111,6 +111,9 @@ const ProfileTab = () => {
   const fileRef = useRef(null);
 
   const [preview, setPreview] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [removeProfileImage, setRemoveProfileImage] = useState(false);
+  
   const [form, setForm] = useState({
     fullName: user?.fullName || '',
     mobileNumber: user?.mobileNumber || '',
@@ -123,11 +126,17 @@ const ProfileTab = () => {
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
-    if (file) setPreview(URL.createObjectURL(file));
+    if (file) {
+      setSelectedFile(file);
+      setPreview(URL.createObjectURL(file));
+      setRemoveProfileImage(false);
+    }
   };
 
   const handleRemovePhoto = () => {
     setPreview(null);
+    setSelectedFile(null);
+    setRemoveProfileImage(true);
     if (fileRef.current) fileRef.current.value = '';
   };
 
@@ -137,18 +146,36 @@ const ProfileTab = () => {
       setError({ heading: 'Validation Error', message: 'Full name cannot be empty.' });
       return;
     }
+    if (!form.mobileNumber.trim()) {
+      setError({ heading: 'Validation Error', message: 'Mobile number cannot be empty.' });
+      return;
+    }
     setIsLoading(true);
     try {
+      const formData = new FormData();
+      formData.append('fullName', form.fullName.trim());
+      formData.append('mobileNumber', form.mobileNumber.trim());
+      formData.append('clinicName', form.clinicName.trim());
+
+      if (selectedFile) {
+        formData.append('file', selectedFile);
+      } else if (removeProfileImage) {
+        formData.append('removeProfileImage', 'true');
+      }
+
       const res = await fetch(`/api/auth/profile`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'PUT',
         credentials: 'include',
-        body: JSON.stringify(form),
+        body: formData,
       });
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.message || 'Failed to save changes.');
       dispatch({ type: 'LOGIN', payload: { user: data.user } });
       setSuccess({ heading: 'Profile Updated', message: 'Your profile information has been saved successfully.' });
+      
+      setSelectedFile(null);
+      setPreview(null);
+      setRemoveProfileImage(false);
     } catch (err) {
       setError({ heading: 'Update Failed', message: err.message });
     } finally {
@@ -162,8 +189,14 @@ const ProfileTab = () => {
       mobileNumber: user?.mobileNumber || '',
       clinicName: user?.clinicName || '',
     });
-    handleRemovePhoto();
+    setPreview(null);
+    setSelectedFile(null);
+    setRemoveProfileImage(false);
+    if (fileRef.current) fileRef.current.value = '';
   };
+
+  const showImage = !removeProfileImage && (preview || user?.profileImage);
+  const imageSrc = preview || user?.profileImage;
 
   return (
     <div className="space-y-5">
@@ -177,50 +210,48 @@ const ProfileTab = () => {
       </div>
 
       <Card>
-        <SectionHeader title="Profile Picture" subtitle="Upload a photo to personalise your account." />
-        <div className="flex items-center gap-5">
-          <div className="relative shrink-0">
-            {preview || user?.profileImage ? (
-              <img
-                src={preview || user.profileImage}
-                alt="Profile"
-                className="h-20 w-20 rounded-2xl object-cover border-2 border-[#e5eaf4]"
-              />
-            ) : (
-              <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#2559ff] to-[#5b5ff7] flex items-center justify-center text-white text-2xl font-black select-none shadow-[0_8px_20px_rgba(36,89,255,0.18)]">
-                {getInitials(user?.fullName)}
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 flex-wrap">
-              <button
-                type="button"
-                onClick={() => fileRef.current?.click()}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-[#e5eaf4] bg-white px-3 py-2 text-xs font-bold text-[#07122f] hover:bg-slate-50 transition cursor-pointer"
-              >
-                <FiCamera className="h-3.5 w-3.5" /> Change Photo
-              </button>
-              {(preview || user?.profileImage) && (
-                <button
-                  type="button"
-                  onClick={handleRemovePhoto}
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-red-100 bg-red-50 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-100 transition cursor-pointer"
-                >
-                  <FiTrash2 className="h-3.5 w-3.5" /> Remove
-                </button>
+        <form onSubmit={handleSave}>
+          <SectionHeader title="Profile Information" subtitle="Update your photo, name, contact and clinic details." />
+          
+          <div className="flex items-center gap-5 pb-6 mb-6 border-b border-[#f1f5f9]">
+            <div className="relative shrink-0">
+              {showImage ? (
+                <img
+                  src={imageSrc}
+                  alt="Profile"
+                  className="h-20 w-20 rounded-2xl object-cover border-2 border-[#e5eaf4] shadow-sm"
+                />
+              ) : (
+                <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#2559ff] to-[#5b5ff7] flex items-center justify-center text-white text-2xl font-black select-none shadow-[0_8px_20px_rgba(36,89,255,0.18)]">
+                  {getInitials(user?.fullName)}
+                </div>
               )}
             </div>
-            <p className="text-[11px] text-slate-400 font-medium">JPG, PNG or GIF. Max 2MB recommended.</p>
-            <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
-          </div>
-        </div>
-      </Card>
 
-      <Card>
-        <SectionHeader title="Personal Information" subtitle="Update your name, contact and clinic details." />
-        <form onSubmit={handleSave}>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-[#e5eaf4] bg-white px-3 py-2 text-xs font-bold text-[#07122f] hover:bg-slate-50 transition cursor-pointer"
+                >
+                  <FiCamera className="h-3.5 w-3.5" /> Change Photo
+                </button>
+                {showImage && (
+                  <button
+                    type="button"
+                    onClick={handleRemovePhoto}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-red-100 bg-red-50 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-100 transition cursor-pointer"
+                  >
+                    <FiTrash2 className="h-3.5 w-3.5" /> Remove
+                  </button>
+                )}
+              </div>
+              <p className="text-[11px] text-slate-400 font-medium">JPG, PNG or GIF. Max 2MB recommended.</p>
+              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <EditableField
               label="Full Name"
@@ -270,7 +301,7 @@ const ProfileTab = () => {
               type="submit"
               className="px-5 py-2.5 rounded-xl bg-[#2459ff] text-sm font-bold text-white hover:bg-[#1a44cc] transition cursor-pointer shadow-[0_4px_14px_rgba(36,89,255,0.22)]"
             >
-              Save Changes
+              Apply Changes
             </button>
           </div>
         </form>

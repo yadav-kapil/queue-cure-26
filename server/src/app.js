@@ -8,6 +8,7 @@ import recRouter from './routes/rec.routes.js';
 import doctorRouter from './routes/doctor.routes.js';
 import patientRouter from './routes/patient.routes.js';
 import formRouter from './routes/form.routes.js';
+import blogRouter from './routes/blog.routes.js';
 import config from './config/config.js';
 
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api/doctor', doctorRouter);
 app.use('/api/patient', patientRouter);
 app.use('/api/form', formRouter);
 app.use('/form', formRouter);
+app.use('/api/blogs', blogRouter);
 
 app.use((req, res, next) => {
   throw new ExpressError(404, "Page Not Found");

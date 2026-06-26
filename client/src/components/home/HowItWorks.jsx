@@ -179,7 +179,7 @@ const HowItWorks = () => {
             
             <div className="absolute top-[1%] left-1/2 -translate-x-1/2 z-10 w-[210px] sm:w-[280px] bg-[#0d1527]/95 border border-slate-800 hover:border-slate-700 rounded-2xl p-2 sm:p-3 flex items-center gap-2 sm:gap-3 shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition duration-300">
               <img
-                src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=150"
+                src="https://plus.unsplash.com/premium_photo-1658506671316-0b293df7c72b?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 alt="Doctor Avatar"
                 className="size-8 sm:size-12 rounded-lg sm:rounded-xl object-cover border border-slate-700/50"
               />
@@ -212,7 +212,7 @@ const HowItWorks = () => {
             
             <div className="absolute bottom-[2%] left-[2%] sm:left-[5%] z-10 w-[150px] sm:w-[220px] bg-[#0d1527]/95 border border-slate-800 hover:border-slate-700 rounded-2xl p-2.5 sm:p-3 flex items-center gap-2 sm:gap-3 shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition duration-300">
               <img
-                src="https://images.unsplash.com/photo-1594824813573-246434e33963?auto=format&fit=crop&q=80&w=150"
+                src="https://plus.unsplash.com/premium_photo-1661484704761-a488b3d3cd59?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDl8fHxlbnwwfHx8fHw%3D"
                 alt="Receptionist Avatar"
                 className="size-8 sm:size-11 rounded-lg object-cover border border-slate-700/50"
               />
@@ -229,7 +229,7 @@ const HowItWorks = () => {
             
             <div className="absolute bottom-[2%] right-[2%] sm:right-[5%] z-10 w-[150px] sm:w-[220px] bg-[#0d1527]/95 border border-slate-800 hover:border-slate-700 rounded-2xl p-2.5 sm:p-3 flex items-center gap-2 sm:gap-3 shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition duration-300">
               <img
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"
+                src="https://media.istockphoto.com/id/2232654463/photo/a-male-cancer-patient-in-a-wheelchair-with-an-iv-smiles-with-joy-and-hope-showing-strength.webp?a=1&b=1&s=612x612&w=0&k=20&c=_rTSX5eBa560eSPWulwRkQfYKKCxcvTjssbyBnHgr2Q="
                 alt="Patient Avatar"
                 className="size-8 sm:size-11 rounded-lg object-cover border border-slate-700/50"
               />

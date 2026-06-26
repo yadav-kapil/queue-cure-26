@@ -83,10 +83,10 @@ const Footer = () => {
                 <h3 className="text-xs font-black tracking-wider uppercase text-slate-400">Menu</h3>
                 <ul className="space-y-2.5">
                   {[
-                    { label: "Home", href: "#home" },
-                    { label: "Features", href: "#features" },
-                    { label: "How It Works", href: "#how-it-works" },
-                    { label: "Contact", href: "#contact" }
+                    { label: "Home", href: "/#home" },
+                    { label: "Features", href: "/#features" },
+                    { label: "How It Works", href: "/#how-it-works" },
+                    { label: "Contact", href: "/#contact" }
                   ].map((link) => (
                     <li key={link.label}>
                       <a 
@@ -97,6 +97,14 @@ const Footer = () => {
                       </a>
                     </li>
                   ))}
+                  <li>
+                    <Link 
+                      to="/blog"
+                      className="text-xs font-semibold text-slate-400 hover:text-white transition duration-200"
+                    >
+                      Blog
+                    </Link>
+                  </li>
                 </ul>
               </div>
 

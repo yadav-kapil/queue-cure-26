@@ -62,9 +62,17 @@ const NavigationbarDoc = () => {
                 className="flex items-center gap-2 rounded-2xl border border-slate-200/60 bg-white p-1.5 transition hover:bg-slate-50 cursor-pointer shadow-xs"
                 aria-label="Doctor profile menu"
               >
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-[#2559ff] to-[#5b5ff7] text-white font-extrabold text-sm select-none">
-                  {getInitials(user?.fullName)}
-                </span>
+                {user?.profileImage ? (
+                  <img
+                    src={user.profileImage}
+                    alt="Profile"
+                    className="h-8 w-8 rounded-full object-cover border border-slate-100 shadow-xs"
+                  />
+                ) : (
+                  <span className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-[#2559ff] to-[#5b5ff7] text-white font-extrabold text-sm select-none">
+                    {getInitials(user?.fullName)}
+                  </span>
+                )}
                 {isProfileOpen ? (
                   <FiChevronUp className="h-4 w-4 text-slate-600" />
                 ) : (

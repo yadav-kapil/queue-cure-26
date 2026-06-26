@@ -8,7 +8,8 @@ import {
   FiSearch,
   FiInfo,
   FiRadio,
-  FiTrash2
+  FiTrash2,
+  FiMail
 } from 'react-icons/fi'
 import { useSession } from '../../context/session/SessionContext'
 import { useRec } from '../../hooks/useRec'
@@ -20,12 +21,14 @@ const ManagePatientRec = () => {
 
   const [name, setName] = useState('')
   const [mobile, setMobile] = useState('')
+  const [email, setEmail] = useState('')
   const [age, setAge] = useState('')
   const [gender, setGender] = useState('male')
   const [initialAvgTime, setInitialAvgTime] = useState('')
   const [formError, setFormError] = useState('')
   const [formSuccess, setFormSuccess] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
+  const [sendMail, setSendMail] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -59,18 +62,22 @@ const ManagePatientRec = () => {
       const data = await addPatientToQueue({
         name: name.trim(),
         mobile: mobile.trim(),
+        email: email.trim(),
         age: age ? Number(age) : undefined,
         gender,
-        initialAvgTime: initialAvgTime ? Number(initialAvgTime) : undefined
+        initialAvgTime: initialAvgTime ? Number(initialAvgTime) : undefined,
+        sendMail
       })
 
       const patientCode = data?.patient?.code ? ` (OTP: ${data.patient.code})` : ''
       setFormSuccess(`Patient "${name}" has been successfully added to the queue!${patientCode}`)
       setName('')
       setMobile('')
+      setEmail('')
       setAge('')
       setGender('male')
       setInitialAvgTime('')
+      setSendMail(true)
     } catch (err) {
       setFormError(err.message || 'Failed to add patient to queue.')
     }
@@ -212,6 +219,20 @@ const ManagePatientRec = () => {
                 </div>
               </div>
 
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-[#5b6478]">Email Address (Optional)</label>
+                <div className="relative">
+                  <FiMail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 h-4.5 w-4.5" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter email address"
+                    className="w-full h-11 pl-10 pr-4 rounded-xl border border-slate-200 bg-[#f8fbff]/60 text-sm font-semibold text-[#07122f] focus:outline-none focus:border-[#2459ff] focus:bg-white transition"
+                  />
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-[#5b6478]">Age (Optional)</label>
@@ -238,6 +259,19 @@ const ManagePatientRec = () => {
                     <option value="other">Other</option>
                   </select>
                 </div>
+              </div>
+
+              <div className="flex items-center gap-2.5 mt-2.5 mb-1.5 select-none">
+                <input
+                  type="checkbox"
+                  id="sendMail"
+                  checked={sendMail}
+                  onChange={(e) => setSendMail(e.target.checked)}
+                  className="h-4.5 w-4.5 rounded border-slate-200 text-[#2459ff] focus:ring-[#2459ff] cursor-pointer"
+                />
+                <label htmlFor="sendMail" className="text-xs font-bold text-[#5b6478] cursor-pointer">
+                  Send Alert via Mail
+                </label>
               </div>
 
               <button
@@ -335,6 +369,7 @@ const ManagePatientRec = () => {
                       </div>
                       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-semibold text-slate-500">
                         <span>📱 {patient.mobile}</span>
+                        {patient.email && <span className="truncate max-w-[180px]" title={patient.email}>📧 {patient.email}</span>}
                         {patient.code && <span>OTP: <span className="text-[#07122f] font-bold">{patient.code}</span></span>}
                         {(patient.age || patient.gender) && (
                           <span>
@@ -358,6 +393,7 @@ const ManagePatientRec = () => {
                       <th className="py-3 px-4">Name</th>
                       <th className="py-3 px-4">OTP</th>
                       <th className="py-3 px-4">Mobile</th>
+                      <th className="py-3 px-4">Email</th>
                       <th className="py-3 px-4">Age / Gender</th>
                       <th className="py-3 px-4">Wait Time</th>
                       <th className="py-3 px-4">Status</th>
@@ -400,6 +436,9 @@ const ManagePatientRec = () => {
                           <td className="py-3.5 px-4 text-sm font-semibold text-slate-600">{patient.code || '--'}</td>
                           <td className="py-3.5 px-4">
                             <span className="text-sm font-semibold text-slate-500">{patient.mobile}</span>
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <span className="text-sm font-semibold text-slate-500 truncate max-w-[150px] block" title={patient.email}>{patient.email || '--'}</span>
                           </td>
                           <td className="py-3.5 px-4 text-sm font-semibold text-slate-500">
                             {patient.age ? `${patient.age} / ` : ''}{patient.gender ? (patient.gender.charAt(0).toUpperCase() + patient.gender.slice(1)) : '--'}

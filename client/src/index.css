@@ -139,3 +139,12 @@ body {
   animation: wave 2.2s infinite ease-in-out;
 }
 
+main#home {
+  transition: padding-top 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.has-banner main#home {
+  padding-top: 7.75rem;
+}
+
+

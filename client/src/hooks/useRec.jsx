@@ -202,20 +202,19 @@ export const useRec = () => {
     }
   };
 
-  const addPatientToQueue = async ({ name, mobile, age, gender, initialAvgTime }) => {
+  const addPatientToQueue = async ({ name, mobile, email, age, gender, initialAvgTime, sendMail }) => {
     try {
       setAddPatientLoading(true);
       const res = await fetch(`/api/rec/add-patient`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, mobile, age, gender, initialAvgTime }),
+        body: JSON.stringify({ name, mobile, email, age, gender, initialAvgTime, sendMail }),
         credentials: "include",
       });
       const data = await res.json();
       if (!res.ok || !data.success) {
         throw new Error(data.message || "Failed to add patient to queue");
       }
-      // Update local state if needed (though Socket handler will also fire)
       sessionDispatch({
         type: "UPDATE_QUEUE",
         payload: { queue: data.queue },

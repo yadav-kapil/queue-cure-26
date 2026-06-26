@@ -2,8 +2,9 @@ import Session from "../models/session.model.js";
 import Queue from "../models/queue.model.js";
 import wrapAsync from "../utils/wrapAsync.js";
 import ExpressError from "../utils/ExpressError.js";
+import { sendQueueNotification } from "../services/mail.service.js";
 
-// Add a patient to the active session queue
+// Add a patient to queue
 export const addPatient = wrapAsync(async (req, res, next) => {
   if (req.user.role !== "receptionist") {
     throw new ExpressError(403, "Access denied. Only receptionists can add patients.");
@@ -31,10 +32,7 @@ export const addPatient = wrapAsync(async (req, res, next) => {
     throw new ExpressError(404, "Queue not found for this session.");
   }
 
-  const { name, mobile, age, gender, initialAvgTime } = req.body;
-  if (!name || !mobile) {
-    throw new ExpressError(400, "Patient name and mobile number are required.");
-  }
+  const { name, mobile, email, age, gender, initialAvgTime, sendMail } = req.body;
 
   let nextToken = 1;
   if (queue.patients && queue.patients.length > 0) {
@@ -48,6 +46,7 @@ export const addPatient = wrapAsync(async (req, res, next) => {
     tokenNumber: nextToken,
     name,
     mobile,
+    email: email ? email.trim() : undefined,
     age: age ? Number(age) : undefined,
     gender,
     code,
@@ -62,6 +61,12 @@ export const addPatient = wrapAsync(async (req, res, next) => {
 
   await queue.save();
 
+  const savedPatient = queue.patients[queue.patients.length - 1];
+
+  if (sendMail !== false && email && email.trim()) {
+    sendQueueNotification(email.trim(), name, nextToken, code, savedPatient._id).catch(() => {});
+  }
+
   const io = req.app.get("io");
   if (io) {
     io.to(session._id.toString()).emit("queue-updated", { queue });
@@ -70,7 +75,7 @@ export const addPatient = wrapAsync(async (req, res, next) => {
   res.status(201).json({
     success: true,
     message: "Patient added to the queue successfully.",
-    patient: newPatient,
+    patient: savedPatient,
     queue,
   });
 });

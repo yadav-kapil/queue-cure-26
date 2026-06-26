@@ -43,9 +43,17 @@ const Profile = ({ onClose }) => {
       <div className="absolute right-0 top-full mt-2.5 w-72 origin-top-right rounded-3xl border border-slate-100 bg-white p-4 shadow-[0_12px_40px_rgba(0,0,0,0.08)] z-50 animate-in fade-in slide-in-from-top-3 duration-200">
         
         <div className="flex items-center gap-3 bg-slate-50/70 rounded-2xl p-3 mb-3 text-left">
-          <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-[#2559ff] to-[#5b5ff7] text-white font-extrabold text-base shadow-xs select-none">
-            {getInitials(user.fullName)}
-          </div>
+          {user.profileImage ? (
+            <img
+              src={user.profileImage}
+              alt="Profile"
+              className="h-10 w-10 rounded-full object-cover border border-slate-200 shadow-xs"
+            />
+          ) : (
+            <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-[#2559ff] to-[#5b5ff7] text-white font-extrabold text-base shadow-xs select-none">
+              {getInitials(user.fullName)}
+            </div>
+          )}
           <div className="flex-1 min-w-0">
             <h3 className="text-sm font-extrabold text-slate-800 truncate leading-tight">
               {user.fullName}

@@ -2,6 +2,7 @@ import Session from "../models/session.model.js";
 import Queue from "../models/queue.model.js";
 import wrapAsync from "../utils/wrapAsync.js";
 import ExpressError from "../utils/ExpressError.js";
+import { sendTurnNotification } from "../services/mail.service.js";
 
 // Call the next patient in the queue
 export const callNext = wrapAsync(async (req, res, next) => {
@@ -40,6 +41,10 @@ export const callNext = wrapAsync(async (req, res, next) => {
   queue.currentTokenStartedAt = new Date();
 
   await queue.save();
+
+  if (nextPatient.email && nextPatient.email.trim()) {
+    sendTurnNotification(nextPatient.email.trim(), nextPatient.name, nextPatient.tokenNumber, nextPatient._id).catch(() => {});
+  }
 
   const io = req.app.get("io");
   if (io) {
