@@ -7,13 +7,13 @@ const Banner = ({ setShowBanner }) => {
         New
       </span>
       <span className="font-semibold text-xs sm:text-sm text-white">
-        Feature: Email Alerts
+        Feature: Email Alerts 
       </span>
       <Link
         to="/blog/6a3ec5d79f046a84d0b8b084"
         className="px-3.5 py-1 text-xs font-bold bg-[#090d15] text-white rounded-full hover:scale-105 hover:bg-slate-900 transition-all duration-200 shadow-sm cursor-pointer no-underline border-0 outline-none"
       >
-        Read More
+        Read More.
       </Link>
       <button
         onClick={() => setShowBanner(false)}
