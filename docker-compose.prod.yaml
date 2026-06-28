@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # 1. Backend Express Server
   server:
     image: yadavkapil9560/queue-cure-server:latest
     container_name: queue-cure-server
@@ -10,7 +9,6 @@ services:
     networks:
       - queue-cure-prod-network
 
-  # 2. Frontend React Client (acts as internal router to server)
   client:
     image: yadavkapil9560/queue-cure-client:latest
     container_name: queue-cure-client

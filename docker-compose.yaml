@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # 1. Backend Express Server
   server:
     build:
       context: ./server
@@ -13,7 +12,6 @@ services:
     networks:
       - queue-cure-network
 
-  # 2. Frontend React Client (acts as internal router to server)
   client:
     build:
       context: ./client

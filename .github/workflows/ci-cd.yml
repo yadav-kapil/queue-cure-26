@@ -47,7 +47,7 @@ jobs:
 
   deploy:
     needs: test-build-push
-    runs-on: 
+    runs-on:
       - self-hosted
       - queue-cure-runner
     steps:
@@ -56,9 +56,10 @@ jobs:
 
       - name: Copy Compose and Deploy
         run: |
-          sudo cp docker-compose.prod.yaml /app/docker-compose.yaml
-          cd /app
+          sudo mkdir -p /home/ubuntu/app
+          sudo cp docker-compose.prod.yaml /home/ubuntu/app/docker-compose.yaml
+          cd /home/ubuntu/app
           echo "${{ secrets.DOCKERHUB_TOKEN }}" | sudo docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
           sudo docker compose pull
-          sudo docker compose up -d --remove-orphans
+          sudo docker compose up -d --force-recreate --remove-orphans
           sudo docker image prune -f
