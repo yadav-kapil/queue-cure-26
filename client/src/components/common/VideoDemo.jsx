@@ -24,7 +24,7 @@ const VideoDemo = ({ onClose }) => {
   const videoRef = useRef(null);
   const videoWrapperRef = useRef(null);
 
-  const videoUrl = import.meta.env.VITE_DEMO_VIDEO_URL;
+  const videoUrl = "https://res.cloudinary.com/dlwwiurn1/video/upload/v1782368418/lv_0_20260625114237_lqrkjd.mp4";
 
   useEffect(() => {
     document.body.style.overflow = "hidden";

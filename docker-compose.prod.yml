@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  # 1. Backend Express Server
+  server:
+    image: yadavkapil9560/queue-cure-server:latest
+    container_name: queue-cure-server
+    restart: always
+    env_file: .env
+    networks:
+      - queue-cure-prod-network
+
+  # 2. Frontend React Client (acts as internal router to server)
+  client:
+    image: yadavkapil9560/queue-cure-client:latest
+    container_name: queue-cure-client
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - server
+    networks:
+      - queue-cure-prod-network
+
+networks:
+  queue-cure-prod-network:
+    driver: bridge

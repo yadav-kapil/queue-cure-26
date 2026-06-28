@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # 1. Backend Express Server
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: queue-cure-server
+    restart: always
+    env_file:
+      - ./server/.env
+    networks:
+      - queue-cure-network
+
+  # 2. Frontend React Client (acts as internal router to server)
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: queue-cure-client
+    restart: always
+    ports:
+      - "5173:80"
+    depends_on:
+      - server
+    networks:
+      - queue-cure-network
+
+networks:
+  queue-cure-network:
+    driver: bridge
