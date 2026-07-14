@@ -216,7 +216,7 @@ const DashboardRec = () => {
               ) : (
                 <button
                   type="button"
-                  onClick={() => navigate('/rec/manage-patient')}
+                  onClick={() => navigate('/rec/manage-patient', { viewTransition: true })}
                   className="inline-flex h-10 sm:h-12 items-center gap-2 sm:gap-3 rounded-full bg-white px-4 sm:px-6 text-xs sm:text-sm font-bold text-[#2459ff] shadow-[0_12px_25px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(15,23,42,0.15)] cursor-pointer"
                 >
                   <FiUsers className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -225,7 +225,7 @@ const DashboardRec = () => {
               )}
               <button
                 type="button"
-                onClick={() => navigate('/rec/history')}
+                onClick={() => navigate('/rec/history', { viewTransition: true })}
                 className="inline-flex h-10 sm:h-12 items-center gap-2 sm:gap-3 rounded-full bg-white/15 px-4 sm:px-6 text-xs sm:text-sm font-bold text-white ring-1 ring-white/30 transition hover:bg-white/20 cursor-pointer"
               >
                 History
@@ -305,7 +305,7 @@ const DashboardRec = () => {
                 Add patients to the queue from the Manage Patient tab to start the clinic session.
               </p>
               <button
-                onClick={() => navigate('/rec/manage-patient')}
+                onClick={() => navigate('/rec/manage-patient', { viewTransition: true })}
                 className="mt-4 inline-flex h-9 items-center justify-center rounded-xl bg-[#2459ff] px-4 text-xs font-bold text-white hover:bg-[#1a44cc] transition cursor-pointer"
               >
                 Add First Patient
@@ -439,7 +439,7 @@ const DashboardRec = () => {
 
               <div className="mt-5 text-center border-t border-slate-100 pt-4">
                 <button
-                  onClick={() => navigate('/rec/manage-patient')}
+                  onClick={() => navigate('/rec/manage-patient', { viewTransition: true })}
                   className="text-sm font-extrabold text-[#2459ff] hover:text-[#1a44cc] hover:underline cursor-pointer"
                 >
                   View Full Queue

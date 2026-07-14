@@ -180,6 +180,7 @@ const InternalServerError = () => {
           </button>
           <Link
             to="/"
+            viewTransition
             className="flex items-center justify-center gap-2 w-full sm:flex-1 rounded-2xl bg-white border border-slate-200 py-3.5 px-6 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 hover:border-slate-350 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer"
           >
             <FiHome className="text-base" />

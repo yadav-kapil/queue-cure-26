@@ -1,7 +1,10 @@
 import { FiArrowRight, FiUsers, FiClock, FiShield, FiPlus, FiBarChart2 } from "react-icons/fi";
 import { motion } from "motion/react";
+import { Link } from "react-router";
+import { useAuth } from "../../context/auth/AuthContext";
 
 const CTA = () => {
+  const { isAuthenticated, user } = useAuth();
   return (
     <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
       
@@ -38,15 +41,15 @@ const CTA = () => {
             </p>
 
             <div className="pt-2">
-              <a
-                href="#contact"
+              <Link
+                to={isAuthenticated ? (user?.role === 'doctor' ? '/doctor' : '/rec') : '/auth/login'}
                 className="group inline-flex items-center gap-3 rounded-full bg-white py-2 pl-6 pr-2 text-sm font-medium text-black transition-all duration-350 hover:bg-[#080c14] hover:text-white hover:shadow-xl hover:shadow-black/15 cursor-pointer"
               >
                 Get Started
                 <span className="grid size-9 place-items-center rounded-full bg-[#080c14] text-white transition-all duration-300 group-hover:bg-white group-hover:text-[#080c14] group-hover:translate-x-0.5">
                   <FiArrowRight className="text-base" />
                 </span>
-              </a>
+              </Link>
             </div>
           </motion.div>
 

@@ -194,7 +194,7 @@ export const useDoc = () => {
           type: "SET_SESSION",
           payload: { session: data.session, queue: data.queue },
         });
-        navigate("/doctor/live-session");
+        navigate("/doctor/live-session", { viewTransition: true });
       } else {
         alert(data.message || "Failed to start session");
       }
@@ -281,7 +281,7 @@ export const useDoc = () => {
       const data = await res.json();
       if (data.success) {
         sessionDispatch({ type: "CLEAR_SESSION" });
-        navigate("/doctor/dashboard");
+        navigate("/doctor/dashboard", { viewTransition: true });
       } else {
         alert(data.message || "Failed to end session");
       }

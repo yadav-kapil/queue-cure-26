@@ -9,6 +9,10 @@ const ChangelogDetail = () => {
   const { currentBlog, isLoading, error, fetchBlogById } = useBlogs();
 
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [id]);
+
+  useEffect(() => {
     fetchBlogById(id);
   }, [id, fetchBlogById]);
 
@@ -57,6 +61,7 @@ const ChangelogDetail = () => {
       <div className="max-w-3xl mx-auto">
         <Link
           to="/blog"
+          viewTransition
           className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors duration-200 mb-8 group"
         >
           <FiArrowLeft className="group-hover:-translate-x-1 transition-transform duration-200" />
@@ -80,6 +85,7 @@ const ChangelogDetail = () => {
             <p className="text-red-500 font-semibold">{error}</p>
             <Link
               to="/blog"
+              viewTransition
               className="mt-4 inline-block px-6 py-2 bg-slate-900 text-white rounded-full font-semibold hover:bg-slate-800 transition"
             >
               Back to Updates
@@ -90,6 +96,7 @@ const ChangelogDetail = () => {
             <p className="text-slate-500 font-semibold">Post not found.</p>
             <Link
               to="/blog"
+              viewTransition
               className="mt-4 inline-block px-6 py-2 bg-slate-900 text-white rounded-full font-semibold hover:bg-slate-800 transition"
             >
               Back to Updates
@@ -142,7 +149,7 @@ const ChangelogDetail = () => {
                     const href = anchor.getAttribute("href");
                     if (href && href.startsWith("/") && !href.startsWith("//")) {
                       e.preventDefault();
-                      navigate(href);
+                      navigate(href, { viewTransition: true });
                     }
                   }
                 }}

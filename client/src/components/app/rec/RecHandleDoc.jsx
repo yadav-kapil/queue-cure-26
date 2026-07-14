@@ -97,7 +97,7 @@ const RecHandleDoc = () => {
 
         <button
           type="button"
-          onClick={() => navigate('/rec/settings?tab=doctor')}
+          onClick={() => navigate('/rec/settings?tab=doctor', { viewTransition: true })}
           className="w-full inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#315cf0] text-white hover:bg-[#204ad0] transition text-xs font-bold cursor-pointer mt-2"
         >
           {ctaText === "Search For Doctor" ? <FiUserPlus className="text-base" /> : <FiActivity className="text-base" />}

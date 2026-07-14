@@ -220,7 +220,7 @@ const DashboardDoc = () => {
             <div className="mt-6 flex flex-wrap gap-3">
               <button
                 type="button"
-                onClick={isSessionActive ? () => navigate('/doctor/live-session') : goLive}
+                onClick={isSessionActive ? () => navigate('/doctor/live-session', { viewTransition: true }) : goLive}
                 className="inline-flex h-12 items-center gap-3 rounded-full bg-white px-6 text-sm font-bold text-[#2459ff] shadow-[0_12px_25px_rgba(15,23,42,0.14)] transition hover:-translate-y-0.5 cursor-pointer"
               >
                 {isSessionActive ? <FiRadio className="h-5 w-5" /> : <FiPlay className="h-5 w-5" />}
@@ -228,7 +228,7 @@ const DashboardDoc = () => {
               </button>
               <button
                 type="button"
-                onClick={() => navigate('/doctor/live-session')}
+                onClick={() => navigate('/doctor/live-session', { viewTransition: true })}
                 className="inline-flex h-12 items-center gap-3 rounded-full bg-white/14 px-6 text-sm font-bold text-white ring-1 ring-white/30 transition hover:bg-white/20 cursor-pointer"
               >
                 View Live Session

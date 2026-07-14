@@ -10,8 +10,11 @@ import {
 import { motion } from "motion/react";
 import doctorHero from "../../assets/doctor-hero.png";
 import doctorConsultation from "../../assets/doctor-consultation.png";
+import { Link } from "react-router";
+import { useAuth } from "../../context/auth/AuthContext";
 
 const Hero = ({ onShowDemo }) => {
+  const { isAuthenticated, user } = useAuth();
   return (
     <main id="home" className="px-4 pb-2 pt-20 sm:px-6 lg:px-8 ">
       <section className="relative mx-auto mt-5 max-w-7xl overflow-hidden rounded-[34px] bg-[radial-gradient(circle_at_76%_22%,#46b7ff_0%,#356df4_38%,#3541c9_100%)] px-6 pt-10 pb-4 text-white shadow-[0_30px_90px_rgba(21,42,133,0.24)] sm:rounded-[42px] sm:px-10 lg:min-h-[640px] lg:px-14 lg:pt-12 lg:pb-2">
@@ -61,15 +64,15 @@ const Hero = ({ onShowDemo }) => {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center"
             >
-              <a
-                href="#contact"
+              <Link
+                to={isAuthenticated ? (user?.role === 'doctor' ? '/doctor' : '/rec') : '/auth/login'}
                 className="group inline-flex w-fit items-center gap-3 rounded-full bg-[#080c14] py-2 pl-5 pr-2 text-xs font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] transition hover:bg-white hover:text-[#080c14]"
               >
                 Start Free Session
                 <span className="grid size-8 place-items-center rounded-full bg-white text-[#080c14] group-hover:bg-[#080c14] group-hover:text-white">
                   <FiArrowRight className="text-base" />
                 </span>
-              </a>
+              </Link>
 
               <button
                 type="button"

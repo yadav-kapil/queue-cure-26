@@ -64,7 +64,7 @@ const DocHandleRec = () => {
 
   const activeRec = hasHired ? user.associatedReceptionistId : null;
 
-  const goToSettings = () => navigate('/doctor/settings?tab=receptionist');
+  const goToSettings = () => navigate('/doctor/settings?tab=receptionist', { viewTransition: true });
 
   return (
     <div className="flex flex-col gap-4 h-full">

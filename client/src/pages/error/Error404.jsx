@@ -133,6 +133,7 @@ const Error404 = () => {
         >
           <Link
             to="/"
+            viewTransition
             className="flex items-center justify-center gap-2 w-full sm:flex-1 rounded-2xl bg-[#315cf0] py-3.5 px-6 text-sm font-semibold text-white shadow-md hover:bg-[#204ad0] hover:scale-[1.02] hover:shadow-lg hover:shadow-blue-500/10 active:scale-[0.98] transition-all duration-200 cursor-pointer"
           >
             <FiHome className="text-base" />
@@ -140,6 +141,7 @@ const Error404 = () => {
           </Link>
           <Link
             to="/patient/track"
+            viewTransition
             className="flex items-center justify-center gap-2 w-full sm:flex-1 rounded-2xl bg-white border border-slate-200 py-3.5 px-6 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 hover:border-slate-350 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer"
           >
             <FiSearch className="text-base" />
@@ -153,7 +155,7 @@ const Error404 = () => {
           transition={{ delay: 0.4, duration: 0.5 }}
           className="mt-12 text-xs font-semibold text-slate-400"
         >
-          <Link to="/" className="flex items-center gap-1.5 hover:text-[#2f75ff] transition-colors duration-200">
+          <Link to="/" viewTransition className="flex items-center gap-1.5 hover:text-[#2f75ff] transition-colors duration-200">
             <FiArrowLeft /> Back to home page
           </Link>
         </motion.div>

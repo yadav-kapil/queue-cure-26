@@ -31,7 +31,7 @@ const NavigationbarRec = () => {
     <>
       <header className="fixed left-0 right-0 top-0 z-40 border-b border-slate-100 bg-white/90 shadow-sm backdrop-blur-xl">
         <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-          <NavLink to="/rec/dashboard" className="flex items-center gap-3" aria-label="Queue Cure receptionist dashboard">
+          <NavLink to="/rec/dashboard" viewTransition className="flex items-center gap-3" aria-label="Queue Cure receptionist dashboard">
             <span className="grid h-10 w-10 place-items-center rounded-xl border-2 border-[#4d7cfe] text-[#2459ff] shadow-[0_8px_18px_rgba(77,124,254,0.16)]">
               <FiPlus className="h-6 w-6 stroke-[3]" />
             </span>
@@ -43,6 +43,7 @@ const NavigationbarRec = () => {
           <div className="flex items-center gap-2 sm:gap-3">
             <NavLink
               to="/rec/settings"
+              viewTransition
               className={({ isActive }) =>
                 `grid h-9.5 w-9.5 place-items-center rounded-2xl border transition cursor-pointer ${
                   isActive
@@ -97,6 +98,7 @@ const NavigationbarRec = () => {
                 key={item.label}
                 to={item.to}
                 end={item.end}
+                viewTransition
                 className={({ isActive }) => {
                   return [
                     'flex flex-1 flex-col items-center justify-center gap-1 py-2 text-xs font-bold transition-all duration-300',

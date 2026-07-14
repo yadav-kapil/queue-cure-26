@@ -34,7 +34,7 @@ const Login = () => {
   useEffect(() => {
     if (isAuthenticated && user) {
       const redirectPath = user.role === "doctor" ? "/doctor" : "/rec";
-      navigate(redirectPath, { replace: true });
+      navigate(redirectPath, { replace: true, viewTransition: true });
     }
   }, [isAuthenticated, user, navigate]);
 
@@ -170,7 +170,7 @@ const Login = () => {
         <div className="w-full max-w-[450px] text-center space-y-8 shrink-0 mx-auto">
           
           <div className="flex flex-col items-center gap-2 max-w-[400px] mx-auto">
-            <NavLink to="/" className="inline-flex items-center gap-2">
+            <NavLink to="/" viewTransition className="inline-flex items-center gap-2">
               <span className="grid size-7 place-items-center rounded-[7px] border-2 border-[#2f75ff] text-[#2f75ff]">
                 <FiPlus className="text-base stroke-[3]" />
               </span>
@@ -277,6 +277,7 @@ const Login = () => {
               Don't have an account?{" "}
               <NavLink
                 to="/auth/signup"
+                viewTransition
                 className="text-[#315cf0] font-black hover:underline"
               >
                 Create Account

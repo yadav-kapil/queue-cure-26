@@ -39,7 +39,7 @@ const useLogin = () => {
       });
 
       const redirectPath = data.user.role === "doctor" ? "/doctor" : "/rec";
-      navigate(redirectPath, { replace: true });
+      navigate(redirectPath, { replace: true, viewTransition: true });
 
       return { success: true, user: data.user };
     } catch (err) {

@@ -11,6 +11,7 @@ const Banner = ({ setShowBanner }) => {
       </span>
       <Link
         to="/blog/6a3ec5d79f046a84d0b8b084"
+        viewTransition
         className="px-3.5 py-1 text-xs font-bold bg-[#090d15] text-white rounded-full hover:scale-105 hover:bg-slate-900 transition-all duration-200 shadow-sm cursor-pointer no-underline border-0 outline-none"
       >
         Read More.

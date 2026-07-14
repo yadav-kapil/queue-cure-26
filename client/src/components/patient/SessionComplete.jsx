@@ -23,14 +23,14 @@ const SessionComplete = () => {
           
           <div className="space-y-3.5">
             <button
-              onClick={() => navigate("/patient/track")}
+              onClick={() => navigate("/patient/track", { viewTransition: true })}
               className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition cursor-pointer"
             >
               <FiSearch className="mr-2 h-4.5 w-4.5" />
               Track Another Queue
             </button>
             <button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/", { viewTransition: true })}
               className="w-full flex justify-center items-center py-2.5 px-4 border border-slate-200 rounded-xl text-sm font-bold text-slate-600 bg-white hover:bg-slate-50 focus:outline-none transition cursor-pointer"
             >
               <FiHome className="mr-2 h-4.5 w-4.5" />

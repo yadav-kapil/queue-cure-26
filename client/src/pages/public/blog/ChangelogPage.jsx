@@ -32,6 +32,10 @@ const ChangelogPage = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, []);
+
+  useEffect(() => {
     fetchBlogs();
   }, [fetchBlogs]);
 
@@ -118,6 +122,7 @@ const ChangelogPage = () => {
         <div className="mb-6">
           <Link
             to="/"
+            viewTransition
             className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors duration-200 group"
           >
             <FiArrowLeft className="group-hover:-translate-x-1 transition-transform duration-200" />
@@ -311,7 +316,7 @@ const ChangelogPage = () => {
                       <div className="flex-1 flex flex-col px-2 pb-2">
                         {/* Title */}
                         <h2 className="text-base font-bold text-slate-900 leading-snug mb-2 hover:text-[#315cf0] transition-colors duration-200 line-clamp-2">
-                          <Link to={`/blog/${blog._id}`}>{blog.title}</Link>
+                          <Link to={`/blog/${blog._id}`} viewTransition>{blog.title}</Link>
                         </h2>
 
                         {/* Excerpt */}

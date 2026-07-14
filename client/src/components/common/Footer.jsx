@@ -15,14 +15,14 @@ const Footer = () => {
             
             <div className="lg:col-span-6 space-y-6 text-left lg:pr-12 lg:border-r border-slate-800/60 h-full">
               
-              <a href="/" className="inline-flex items-center gap-2.5">
+              <Link to="/" viewTransition className="inline-flex items-center gap-2.5">
                 <span className="grid size-8 place-items-center rounded-[8px] border-2 border-[#2f75ff] text-[#2f75ff]">
                   <FiPlus className="text-lg stroke-[3]" />
                 </span>
                 <span className="text-lg font-extrabold tracking-normal sm:text-xl">
                   Queue <span className="text-[#2f75ff]">Cure</span>
                 </span>
-              </a>
+              </Link>
 
               
               <div className="space-y-2 max-w-sm">
@@ -100,6 +100,7 @@ const Footer = () => {
                   <li>
                     <Link 
                       to="/blog"
+                      viewTransition
                       className="text-xs font-semibold text-slate-400 hover:text-white transition duration-200"
                     >
                       Blog
@@ -121,6 +122,7 @@ const Footer = () => {
                     <li key={item.label}>
                       <Link 
                         to={item.href}
+                        viewTransition
                         className="text-xs font-semibold text-slate-400 hover:text-white transition duration-200"
                       >
                         {item.label}

@@ -87,7 +87,7 @@ const TrackPatientPage = () => {
       if (!res.ok || !data.success) {
         setError(data.message || "Invalid OTP. Please try again.");
       } else {
-        navigate(`/patient/track/${data.trackingId}`);
+        navigate(`/patient/track/${data.trackingId}`, { viewTransition: true });
       }
     } catch (err) {
       setError("An error occurred. Please try again later.");
@@ -274,4 +274,3 @@ const TrackPatientPage = () => {
 };
 
 export default TrackPatientPage;
-

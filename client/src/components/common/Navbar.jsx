@@ -75,6 +75,7 @@ const Navbar = () => {
       >
         <NavLink
           to="/"
+          viewTransition
           className="flex items-center gap-2.5 hover:scale-[1.02] transition-transform duration-200"
           aria-label="Queue Cure home"
         >
@@ -91,6 +92,7 @@ const Navbar = () => {
             <NavLink
               key={link.label}
               to={link.href}
+              viewTransition={!link.href.includes("#")}
               className="relative py-1.5 transition-colors duration-300 hover:text-[#315cf0] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:w-0 after:bg-[#315cf0] after:transition-all after:duration-300 hover:after:w-full select-none"
             >
               {link.label}
@@ -101,6 +103,7 @@ const Navbar = () => {
         {isAuthenticated ? (
           <NavLink
             to={dashboardPath}
+            viewTransition
             className="group hidden items-center gap-3 rounded-full bg-[#315cf0] py-2 pl-5 pr-2 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:bg-[#204ad0] hover:scale-[1.03] hover:shadow-lg hover:shadow-blue-500/20 active:scale-[0.97] md:inline-flex cursor-pointer"
           >
             Dashboard
@@ -111,6 +114,7 @@ const Navbar = () => {
         ) : (
           <NavLink
             to="/auth/login"
+            viewTransition
             className="group hidden items-center gap-3 rounded-full bg-[#090d15] py-2 pl-5 pr-2 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-all duration-300 hover:bg-[#1f242d] hover:scale-[1.03] hover:shadow-lg hover:shadow-slate-900/10 active:scale-[0.97] md:inline-flex cursor-pointer"
           >
             Login
@@ -153,6 +157,7 @@ const Navbar = () => {
                   <NavLink
                     key={link.label}
                     to={link.href}
+                    viewTransition={!link.href.includes("#")}
                     className="group flex items-center gap-4 rounded-2xl px-4 py-3 text-[15px] font-semibold text-slate-700 transition hover:bg-blue-50/40 hover:text-[#315cf0] active:bg-slate-100"
                     onClick={() => setIsOpen(false)}
                   >
@@ -168,6 +173,7 @@ const Navbar = () => {
             {isAuthenticated ? (
               <NavLink
                 to={dashboardPath}
+                viewTransition
                 className="mt-6 mx-auto flex w-fit items-center gap-3 rounded-full bg-[#315cf0] py-2 pl-5 pr-2 text-[15px] font-bold text-white shadow-md transition hover:bg-[#204ad0] hover:scale-[1.03] active:scale-[0.97] cursor-pointer"
                 onClick={() => setIsOpen(false)}
               >
@@ -179,6 +185,7 @@ const Navbar = () => {
             ) : (
               <NavLink
                 to="/auth/login"
+                viewTransition
                 className="mt-6 mx-auto flex w-fit items-center gap-3 rounded-full bg-[#090d15] py-2 pl-5 pr-2 text-[15px] font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-[#171d29] hover:scale-[1.03] active:scale-[0.97] cursor-pointer"
                 onClick={() => setIsOpen(false)}
               >
