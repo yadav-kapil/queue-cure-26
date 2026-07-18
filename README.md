@@ -124,8 +124,6 @@ Where:
 
 ## ⚙️ Project Setup & Installation
 
-Follow these steps to run **Queue Cure** locally on your machine.
-
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/yadav-kapil/queue-cure-26.git
@@ -135,7 +133,7 @@ cd queue-cure-26
 ### 2. Configure Environment Variables
 
 #### Backend (`/server/.env`)
-Create a `.env` file inside the `server/` directory and configure the following variables:
+Create a `.env` file inside the `server/` directory:
 ```env
 PORT=3003
 MONGO_URI="your_mongodb_connection_string"
@@ -152,19 +150,45 @@ VITE_SOCKET_URL=http://localhost:3003
 VITE_DEMO_VIDEO_URL="your_demo_video_url"
 ```
 
-### 3. Run the Backend Server
+---
+
+### 🐳 Method 1: Docker Compose (Recommended)
+
+> Make sure **Docker** and **Docker Compose** are installed on your machine.
+
+```bash
+docker-compose up --build
+```
+
+This will spin up both the **backend server** and the **frontend client** in isolated containers.
+
+| Service | URL |
+|---|---|
+| Frontend | http://localhost:5173 |
+| Backend | Internal (via Docker network) |
+
+To stop the containers:
+```bash
+docker-compose down
+```
+
+---
+
+### 💻 Method 2: Manual Setup (npm)
+
+#### Run the Backend Server
 ```bash
 cd server
 npm install
-npm run dev # Starts server using nodemon on port 3003
+npm run dev   # Starts server on http://localhost:3003
 ```
 
-### 4. Run the Frontend Client
+#### Run the Frontend Client
 Open a new terminal window:
 ```bash
 cd client
 npm install
-npm run dev # Starts Vite app on http://localhost:5173
+npm run dev   # Starts Vite app on http://localhost:5173
 ```
 
 ---
